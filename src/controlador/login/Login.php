@@ -51,7 +51,7 @@ class Login extends Principal {
             $captcha = simple_php_captcha();
             $srccaptcha=explode('/', $captcha[image_src], 3);
             $codigocaptcha=md5($captcha[code]);
-            echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.(is_linux?"lib/":"").$srccaptcha[2].'"}]';
+            echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.(is_linux?"":"").$srccaptcha[2].'"}]';
         }
         exit;
     }
@@ -60,7 +60,7 @@ class Login extends Principal {
         $captcha = simple_php_captcha();
         $srccaptcha=explode('/', $captcha[image_src], 3);
         $codigocaptcha=md5($captcha[code]);
-        echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.(is_linux?"lib/":"").$srccaptcha[2].'"}]';
+        echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.(is_linux?"":"").$srccaptcha[2].'"}]';
         exit;
     }
     if($_POST['tarea']=='verificarDominioCorreo'){
