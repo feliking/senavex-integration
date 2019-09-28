@@ -1,0 +1,9 @@
+config/config.ini
+.idea/
+web_cache
+web_cache/
+documents/tmp/*
+documents/ddjj/*
+nbproject
+node_modules
+styles/solicitudes/*
