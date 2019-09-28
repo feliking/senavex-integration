@@ -51,7 +51,7 @@ class Login extends Principal {
             $captcha = simple_php_captcha();
             $srccaptcha=explode('/', $captcha[image_src], 3);
             $codigocaptcha=md5($captcha[code]);
-            echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.$srccaptcha[2].'"}]';
+            echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.(is_linux?"lib/":"").$srccaptcha[2].'"}]';
         }
         exit;
     }
@@ -60,7 +60,7 @@ class Login extends Principal {
         $captcha = simple_php_captcha();
         $srccaptcha=explode('/', $captcha[image_src], 3);
         $codigocaptcha=md5($captcha[code]);
-        echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.$srccaptcha[2].'"}]';
+        echo '[{"suceso":"0"},{"code":"'.$codigocaptcha.'"},{"src":"'.(is_linux?"lib/":"").$srccaptcha[2].'"}]';
         exit;
     }
     if($_POST['tarea']=='verificarDominioCorreo'){
@@ -560,7 +560,7 @@ class Login extends Principal {
        $codigocaptcha=md5($captcha[code]);
        
        $vista->assign("srccaptcha",$srccaptcha[2]); 
-       $vista->assign("codigocaptcha",$codigocaptcha); 
+       $vista->assign("codigocaptcha",(is_linux?"":"lib/").$codigocaptcha);
     /***************************************/
     $vista->assign("mensajelogin",$fechaespanol); 
     $vista->display("Index.tpl"); 

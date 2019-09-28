@@ -187,7 +187,7 @@
                                 <div class="span4 hidden-phone" >
                                 </div>
                                 <div class="span2" >
-                                   <img src="lib/{$srccaptcha}" id="imgcaptcha" alt="CAPTCHA" style="border-radius:10px;width:100%;"> 
+                                   <img src="{$srccaptcha}" id="imgcaptcha" alt="CAPTCHA" style="border-radius:10px;width:100%;">
                                 </div>
                                 <div class="span2" >
                                     <input id="codigocaptcha" maxlength="10" type="text" class="k-textbox" name="codigocaptcha" placeholder="Ingrese el código" required 
@@ -584,7 +584,7 @@ function captchaajax(valor)
            {  
                swcaptcha=respuesta[0].suceso;
                $("#urlexp").val(respuesta[1].code);
-               $('#imgcaptcha').attr('src', 'lib/'+respuesta[2].src);
+               $('#imgcaptcha').attr('src', respuesta[2].src);
                validator.validateInput($("#codigocaptcha"));
            }
 
@@ -603,7 +603,7 @@ function captchaajaxrefrescar()
            if(respuesta[0].suceso=='0')
            {
                $("#urlexp").val(respuesta[1].code);
-               $('#imgcaptcha').attr('src', 'lib/'+respuesta[2].src);
+               $('#imgcaptcha').attr('src', respuesta[2].src);
            }
        }
    });
