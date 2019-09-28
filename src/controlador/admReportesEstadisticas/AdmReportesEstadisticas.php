@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /* Controlar el acceso de los usuarios*/
 defined('_ACCESO') or die('Acceso restringido');

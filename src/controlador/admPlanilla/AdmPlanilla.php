@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 defined('_ACCESO') or die('Acceso restringido');
 

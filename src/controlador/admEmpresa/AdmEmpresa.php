@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 defined('_ACCESO') or die('Acceso restringido');
 
 include_once(PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');

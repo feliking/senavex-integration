@@ -1,4 +1,4 @@
-﻿<div class="row-fluid  form" >
+<div class="row-fluid  form" >
     <div class="row-fluid "  id="planillaDDJJ" >
         <div class="span12" >
             <div class="k-block fadein">
