@@ -1,0 +1,6 @@
+  
+    <script> 
+        {literal}
+           
+        {/literal}
+    </script>

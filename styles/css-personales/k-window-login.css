@@ -1,0 +1,91 @@
+/*
+/* 
+    Created on : 11-09-2014, 12:12:35 PM
+    Author     : Renzo
+*/
+
+/*
+-----------------------------------------------
+renzocallachavez@gmail.com
+----------------------------------------------- */
+
+.k-window-titlebar 
+{border-top-left-radius: 15px;  
+border-top-right-radius: 15px;}
+
+.k-window{
+ border-radius: 15px;
+ -moz-padding-bottom: 10px;
+ -webkit-padding-bottom: 10px;
+ padding-bottom: 10px;
+}
+
+[required] {
+    box-shadow: none;
+}
+input[type="text"],input[type="password"] ,input[type="date"],input[type="email"]  {
+  width: 100%;  
+  //font-size: 18px; 
+  box-shadow: none;
+  /*border-radius: 10px;*/
+}
+#datepicker, span
+{ //font-size: 18px; 
+  color:#A9A9A9; 
+}
+
+ #mensajeloginr ,#mensajelogin
+ {
+     height:25px;
+     font-size: 14px; 
+    color:#A9A9A9; 
+    text-align: center;
+    animation: fadein 2s;
+    -moz-animation: fadein 2s; /* Firefox */
+    -webkit-animation: fadein 2s; /* Safari and Chrome */
+    -o-animation: fadein 2s; /* Opera */
+}
+#mensajecorreo
+ {
+     height:25px;
+     font-size: 14px; 
+    color:#A9A9A9; 
+   position:static;
+}
+#aceptar
+{
+     position:static;
+}
+
+@keyframes fadein {
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-moz-keyframes fadein { /* Firefox */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity:1;
+    }
+}
+@-o-keyframes fadein { /* Opera */
+    from {
+        opacity:0;
+    }
+    to {
+        opacity: 1;
+    }
+}

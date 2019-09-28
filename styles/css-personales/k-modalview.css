@@ -1,0 +1,128 @@
+/*
+/* 
+    Created on : 11-09-2014, 12:12:35 PM
+    Author     : Renzo
+*/
+
+/*
+-----------------------------------------------
+renzocallachavez@gmail.com
+----------------------------------------------- */
+ 
+ 
+input[type=submit],.km-root .transitions-button
+{   
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    width:97%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #0c3b68;
+     margin-top: 10px;
+     display: block;
+      font-size: 1.2em;
+      border:0;
+}
+
+
+
+    .km-ios7 .transitions-button,
+    .km-ios7 .transitions-cancel {
+        color: #fff;
+        border-color: transparent;
+    }
+
+    
+    #view-transitions,
+    #view-transitions-welcome p {
+    	color: #fff;
+        text-align: center;
+    }
+
+    #ingresar img,
+    #registrar img {
+        display: block;
+        margin: 30px auto;
+        width:80%;
+        padding-left: 10%;
+        padding-right: 10%;
+    }
+    
+    #view-transitions-login label {
+        display: inline-block;
+	width: 100%;
+    }
+    #view-transitions .km-content,
+    #view-transitions-login .km-content,
+    #view-transitions-welcome .km-content {
+        
+    }
+
+    .km-ios #view-transitions-welcome .km-button,
+    .km-ios7 #view-transitions-welcome .km-content .km-button,
+    .km-blackberry #view-transitions-welcome .km-content .km-button,
+    .km-flat #view-transitions-welcome .km-content .km-button {
+       
+	color: #fff;
+    }
+    
+    .km-ios #view-transitions-login .transitions-button,
+    .km-ios7 #view-transitions-login .transitions-button,
+    .km-blackberry #view-transitions-login .km-content .transitions-button,
+    .km-flat #view-transitions-login .km-content .transitions-button {
+       
+	color: #fff;
+    }
+
+    .km-blackberry #view-transitions *,
+    .km-blackberry #view-transitions-login *,
+    .km-blackberry #view-transitions-welcome *
+    {
+        color: #fff;
+    }
+
+    .km-ios #view-transitions .km-button,
+    .km-ios7 #view-transitions .km-button,
+    .km-ios #view-transitions-login .transitions-cancel,
+    .km-ios7 #view-transitions-login .transitions-cancel {
+        background-color: #000;
+    }
+    
+    .km-flat #view-transitions .km-button,
+    .km-flat #view-transitions-login .km-content .transitions-cancel {
+        background-color: #000;
+    	color: #fff;
+    }
+    
+    .km-ios #view-transitions .km-navbar,
+    .km-ios #view-transitions-login .km-navbar,
+    .km-ios #view-transitions-welcome .km-navbar,
+    .km-ios7 #view-transitions .km-navbar,
+    .km-ios7 #view-transitions-login .km-navbar,
+    .km-ios7 #view-transitions-welcome .km-navbar,
+    .km-ios7 .km-view-title,
+    .km-blackberry #view-transitions .km-navbar,
+    .km-blackberry #view-transitions-login .km-navbar,
+    .km-blackberry #view-transitions-welcome .km-navbar,
+    .km-flat #view-transitions .km-navbar,
+    .km-flat #view-transitions-login .km-navbar,
+    .km-flat #view-transitions-welcome .km-navbar {
+        background-color: #000;
+	color: #fff;
+    }
+    
+    .km-ios7 #view-transitions .km-navbar,
+    .km-ios7 #view-transitions-login .km-navbar,
+    .km-ios7 #view-transitions-welcome .km-navbar {
+        border-color: transparent;
+    }
+    
+    .km-ios7 #view-transitions-login  .km-list > li,
+    .km-ios7 #view-transitions-login  .km-list > li input,
+    .km-android-light #view-transitions-login  .km-list > li,
+    .km-wp-light #view-transitions-login  .km-list > li {
+	color: #fff;
+    }
+    .km-wp-light #view-transitions .km-view-title {
+    	color: #000;
+    }

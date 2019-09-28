@@ -1,0 +1,26 @@
+/*
+/* 
+    Created on : 11-09-2014, 12:12:35 PM
+    Author     : Renzo
+*/
+
+/*
+-----------------------------------------------
+renzocallachavez@gmail.com
+----------------------------------------------- */
+
+
+
+
+#mensajebienvenida
+ {
+     padding-top:10px;
+     height:25px;
+     font-size: 14px; 
+    color:#A9A9A9; 
+    text-align: center;
+   position:static;
+   -moz-animation: fadein 2s; /* Firefox */
+    -webkit-animation: fadein 2s; /* Safari and Chrome */
+    -o-animation: fadein 2s; /* Opera */
+}
