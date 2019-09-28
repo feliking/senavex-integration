@@ -32,6 +32,6 @@ define('PATH_STYLES', PATH_BASE . DS . 'styles');
 //define('AUTORIZACION',4394016000013o');
 define('NIT',$ini['app_nit']);
 define('EMAIL',$ini['app_email']);
-define('is_linux', $ini['is_linux']);
+define('is_prod', $ini['is_prod']);
 
 ?>
