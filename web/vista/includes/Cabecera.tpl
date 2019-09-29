@@ -282,10 +282,10 @@
                                          </div>  
                                     {/if}
                                     {if $opcion=='M'}
-                                        <div id="i" class="widget menucf" onclick="anadir('Revision API','admRegistroApi','revisionApi')" >
+                                        <div id="i" class="widget menucf" onclick="anadir('Revision RUI','admRegistroApi','revisionApi')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_EmpAdm_B.png"  /> </a>
                                             <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_EmpAdm.png" /> </a>
-                                            <span>REVISION API</span>
+                                            <span>REVISION RUI</span>
                                         </div>
                                     {/if}
                                     {if $opcion=='N'}
@@ -296,10 +296,10 @@
                                         </div>
                                     {/if}
                                     {if $opcion=='O'}
-                                        <div id="i" class="widget menucf" onclick="anadir('API','admAutorizacionPrevia','ListarColaApiEmpresa')" >
+                                        <div id="i" class="widget menucf" onclick="anadir('SOLICITUDES AP','admAutorizacionPrevia','ListarColaApiEmpresa')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_EmpAdm_B.png"  /> </a>
                                             <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_EmpAdm.png" /> </a>
-                                            <span>API</span>
+                                            <span>SOLICITUDES AP</span>
                                         </div>
                                     {/if}
                                 {/foreach}
