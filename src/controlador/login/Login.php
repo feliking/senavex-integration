@@ -559,8 +559,8 @@ class Login extends Principal {
        $srccaptcha=explode('/', $captcha[image_src], 3);
        $codigocaptcha=md5($captcha[code]);
        
-       $vista->assign("srccaptcha",$srccaptcha[2]); 
-       $vista->assign("codigocaptcha",(is_prod?"lib/":"").$codigocaptcha);
+       $vista->assign("srccaptcha",(is_prod?"lib/":"").$srccaptcha[2]);
+       $vista->assign("codigocaptcha",$codigocaptcha);
     /***************************************/
     $vista->assign("mensajelogin",$fechaespanol); 
     $vista->display("Index.tpl"); 
