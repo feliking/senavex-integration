@@ -265,7 +265,7 @@ class AdmCorreo extends Principal {
         //-------------------------------Variables
         
         $asunto = 'Plataforma Virtual del Senavex - '.$tipocorreo->getAsunto();
-        $remitente = "soporte@senavex.gob.bo"; //Aqu&iacute va la direcci&oacute;n de quien env&iacutea el email.
+        $remitente = app_email;
         
         $mensaje = '';
         //-----------------for sending an attachment of contract---------------
