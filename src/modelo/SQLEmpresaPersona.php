@@ -23,10 +23,20 @@ class SQLEmpresaPersona {
         return $empresa_persona->finder()->find('id_persona = ? and id_empresa=0  and activo=2', $empresa_persona->getId_persona());
     }  
     public function getListarEmpresaPorPersona(EmpresaPersona $empresa_persona) {
-        return $empresa_persona->finder()->findAll('id_persona = ? and activo=1', $empresa_persona->getId_Persona());
+        return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil!=23', $empresa_persona->getId_Persona());
     }
-    public function getListarEmpresaPorPersonaApi(EmpresaPersona $empresa_persona) {
-        return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil=23', $empresa_persona->getId_Persona());
+    public function getListarEmpresaPorPersonaApi(EmpresaPersona $empresa_persona, $nit) {
+
+        if ($nit == 346117026){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8064');
+        }elseif ($nit == 228952022){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8232');
+        }else if ($nit == 280940022){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8237');
+        } else {
+            return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil=23', $empresa_persona->getId_Persona());
+        }
+        die;
     }
     public function getEmpresaPorPersonaEmpresa(EmpresaPersona $empresa_persona) {
         return $empresa_persona->finder()->find('id_persona = ? and id_empresa= ? and activo=1', $empresa_persona->getId_Persona(),$empresa_persona->getId_Empresa());

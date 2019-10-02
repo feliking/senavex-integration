@@ -379,12 +379,12 @@ class FuncionesGenerales extends Principal {
     return $empresas;
   }
 
-  public static function perfilesEnEmpresaPorPersonaApi($id_persona)
+  public static function perfilesEnEmpresaPorPersonaApi($id_persona, $nit)
   {
     $empresapersona = new EmpresaPersona();
     $sqlempresapersona = new SQLEmpresaPersona();
     $empresapersona->setId_Persona($id_persona);
-    $empresas=$sqlempresapersona->getListarEmpresaPorPersonaApi($empresapersona);
+    $empresas=$sqlempresapersona->getListarEmpresaPorPersonaApi($empresapersona, $nit);
     return $empresas;
   }
 

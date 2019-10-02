@@ -138,7 +138,6 @@ class Login extends Principal {
         exit;
     }
     if($_POST['tarea']=='ingresarSistema'){
-        
         $separador=substr ($_REQUEST["usuario"],0,2);//Sacamos el delimitador de usuario
         if($separador=='T-')//este es el dsicriminador de usuarios temporal o normal
         {
@@ -309,7 +308,8 @@ class Login extends Principal {
                 $separador=substr ($_REQUEST["usuario"],-4);
 
                 if(substr($_SESSION["usuario"], -4, 4) == '-IMP'){
-                    $empresas=(array)FuncionesGenerales::perfilesEnEmpresaPorPersonaApi($_SESSION["id_persona"]);
+                    $porc = explode("-",$datos_usuario->getUsuario());
+                    $empresas=(array)FuncionesGenerales::perfilesEnEmpresaPorPersonaApi($_SESSION["id_persona"], $porc[0]);
                 } else {
                     $empresas=(array)FuncionesGenerales::perfilesEnEmpresaPorPersona($_SESSION["id_persona"]);
                 }
