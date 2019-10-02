@@ -1,0 +1,14 @@
+[database]
+db_name     = vortex_final
+
+db_user     =
+db_pwd      =
+db_server   =
+
+[application]
+app_email   = soporte@senavex.gob.bo
+app_nit     = 161546020
+app_route   =
+
+[platform]
+is_linux    = true
