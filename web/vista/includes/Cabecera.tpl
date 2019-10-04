@@ -302,6 +302,13 @@
                                             <span>SOLICITUDES AP</span>
                                         </div>
                                     {/if}
+                                    {if $opcion=='P'}
+                                        <div id="i" class="widget menucf" onclick="anadir('listas API','admRegistroApi','listaApis')" >
+                                            <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_EmpAdm_B.png"  /> </a>
+                                            <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_EmpAdm.png" /> </a>
+                                            <span>LISTAS API</span>
+                                        </div>
+                                    {/if}
                                 {/foreach}
                                 <script>
                                     {literal}

@@ -23,6 +23,7 @@ include_once(PATH_TABLA . DS . 'DireccionTipoZona.php');
 include_once(PATH_TABLA . DS . 'DireccionUbicacionEdificio.php');
 include_once(PATH_TABLA . DS . 'Logs.php');
 include_once(PATH_TABLA . DS . 'EmpresaImportadorObservacion.php');
+include_once(PATH_TABLA . DS . 'AutorizacionPrevia.php');
 
 
 include_once(PATH_MODELO . DS . 'SQLCorrelativorui.php');
@@ -31,6 +32,7 @@ include_once(PATH_MODELO . DS . 'SQLEmpresaImportador.php');
 include_once(PATH_MODELO . DS . 'SQLUsuario.php');
 include_once(PATH_MODELO . DS . 'SQLEmpresaPersona.php');
 include_once(PATH_MODELO . DS . 'SQLPerfil.php');
+include_once(PATH_MODELO . DS . 'SQLAutorizacionPrevia.php');
 include_once(PATH_MODELO . DS . 'SQLTipoUsuario.php');
 include_once(PATH_MODELO . DS . 'SQLPerfilOpciones.php');
 include_once(PATH_MODELO . DS . 'SQLPais.php');
@@ -394,6 +396,12 @@ class AdmRegistroApi extends Principal {
             exit;
     }
 
+    if($_REQUEST['tarea']=='listaApis'){
+
+            $vista->display("admEmpresaApi/ListaApi.tpl"); 
+            exit;
+    }
+
     if($_REQUEST['tarea']=='VerificarNIT'){
             $empresaImportador = new EmpresaImportador();
             $sqlEmpresaImportador = new SQLEmpresaImportador();
@@ -446,6 +454,50 @@ class AdmRegistroApi extends Principal {
             echo '['.$strJson.']';
             exit;
         }
+    if($_REQUEST['tarea']=='ListarApis'){
+            switch ($_REQUEST['tipo']) {
+                case 1:
+                    $tipo = "0,1";
+                    break;
+                case 0:
+                    $tipo = "9";
+                    break;
+                case 2:
+                    $tipo = "4";
+                    break;
+                case 3:
+                    $tipo = "13";
+                    break;
+                case 4:
+                    $tipo = "6";
+                    break;
+                case 5:
+                    $tipo = "14";
+                    break;
+            }
+            $autorizacionPrevia = new AutorizacionPrevia();
+            $sqlAutorizacionPrevia = new SQLAutorizacionPrevia();
+            $empresaImportador1 = new EmpresaImportador();
+            $sqlEmpresaImportador1 = new SQLEmpresaImportador();
+            $autorizacionPrevia=$sqlAutorizacionPrevia->getListarAprobadas($autorizacionPrevia);
+            foreach ($autorizacionPrevia as $admision){
+                $empresaImportador1->setId_empresa_importador($admision->getId_empresa_importador());
+                $empresa=$sqlEmpresaImportador1->getEmpresaPorId($empresaImportador1);
+
+                $razon_social = str_replace('"','\"',$empresa->getRazon_social());
+                $strJson .='{"id_api":"'.$admision->getId_autorizacion_previa().
+                    '","razonsocial":"' . (strlen($admision->getRazon_social())>30 ? (substr($razon_social,0,25).' ...'): $razon_social) .
+                    '","nit" : "'.$empresa->getNit().
+                    '","cantidad":"' .$admision->getCantidad_total().
+                    '","peso":"' .$admision->getPeso_total().
+                    '","valor":"' .$admision->getValor_total().
+                    '"},';
+                }
+            $strJson = substr($strJson, 0, strlen($strJson) - 1);
+            echo '['.$strJson.']';
+            exit;
+    }
+
     if($_REQUEST['tarea']=='asignacionrui'){
         //Datos de la empresa
         $hoy = date('Y-m-d H:i:s');

@@ -9,7 +9,7 @@
 class SQLEmpresaPersona {
     
     public function getListarPersonaPorEmpresa(EmpresaPersona $empresa_persona) {
-        return $empresa_persona->finder()->with_persona()->with_perfil()->findAll('id_empresa = ? and (activo=1 or activo=2)', $empresa_persona->getId_Empresa());
+        return $empresa_persona->finder()->with_persona()->with_perfil()->findAll('id_empresa = ? and (activo=1 or activo=2) and id_perfil!=23', $empresa_persona->getId_Empresa());
         //return $empresa_persona->finder()->with_perfil()->findAll('id_empresa = ?', $empresa_persona->getId_Empresa());
     }
     public function getListarPersonaExportadores(EmpresaPersona $empresa_persona) {
