@@ -29,13 +29,17 @@ class SQLEmpresaPersona {
 
         if ($nit == 346117026){
             return $empresa_persona->finder()->findAll('id_empresa_persona = 8064');
-        }elseif ($nit == 228952022){
+        } else if ($nit == 168184027){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8277');
+        } else if ($nit == 6374040012){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8312');
+        } else if ($nit == 228952022){
             return $empresa_persona->finder()->findAll('id_empresa_persona = 8232');
-        }else if ($nit == 280940022){
+        } else if ($nit == 280940022){
             return $empresa_persona->finder()->findAll('id_empresa_persona = 8237');
-        }elseif ($nit == 290072021){
+        } elseif ($nit == 290072021){
             return $empresa_persona->finder()->findAll('id_empresa_persona = 8264');
-        }else if ($nit == 265628026){
+        } else if ($nit == 265628026){
             return $empresa_persona->finder()->findAll('id_empresa_persona = 8227');
         } else {
             return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil=23', $empresa_persona->getId_Persona());
