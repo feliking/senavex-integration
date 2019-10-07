@@ -140,12 +140,15 @@ class PDF extends FPDF
       
         //////////////////////////TITULO//////////////////
         
-        $this->SetFont('Arial','B',26);
-        $this->SetXY(140, 40);
+        $this->SetFont('Arial','B',15);
+        $this->SetXY(140, 32);
         $this->Ln(38);
-        $this->Cell(0,10,utf8_decode('AUTORIZACIÓN PREVIA DE'),0,0,'C');
+        $this->Cell(0,10,utf8_decode('AUTORIZACIÓN PREVIA DE IMPORTACIÓN'),0,0,'C');
+        $this->SetFont('Arial','',10);
+        // $this->SetXY(120, 58);
         $this->Ln(10);
-        $this->Cell(0,10,utf8_decode('IMPORTACIÓN '),0,0,'C');
+        $this->Cell(12,10,' ',0,0,'C');
+        $this->MultiCell(170,5,utf8_decode('En el marco de lo dispuesto en el Art. 118 parágrafo I del Reglamento a la Ley General de Aduanas aprobado mediante Decreto Supremo No. 25870 de 11 de agosto de 2000, Decreto Supremo No. 2752 de 1° de mayo de 2016 que aprueba la emisión de Autorizaciones Previas de Importación y Decreto Supremo No. 4010 de 14 de agosto de 2019 que sustituye el Anexo del Decreto Supremo Nº 2752. En ese sentido el SENAVEX procede a la Emisión de Autorización Previa de Importación de acuerdo al siguiente detalle: '),0,'J');
         //$this->Ln(5);
        
         //-----------codigoQR-----------
@@ -159,13 +162,13 @@ class PDF extends FPDF
         }
 
 
-        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO ITEMS: '.$nro_fojas.' -FECHA DE EMISION: 07/10/19 -FECHA DE VENCIMIENTO: 06/12/19';//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
+        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO ITEMS: '.$nro_fojas.' -FECHA DE EMISION: 07/10/19 -FECHA DE VENCIMIENTO: 06/12/19   ';//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
         //$codigo.=utf8_decode(' Fecha de impresión:').date("Y-m-d");
         //$codigo.=' http://vortex.senavex.gob.bo/ruex.php?datos='.$empresaImportador->getCodigo_seguridad();
         $aleato = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 15);
         $numerocombinado = 7851 +$_REQUEST['id_autorizacionPrevia'];
 
-        $codigo.=' http://vortex.senavex.gob.bo/index.php?opcion=Kv43uTew&'.$aleato.'&qkeeCer='.$numerocombinado;
+        $codigo.='      http://vortex.senavex.gob.bo/index.php?opcion=Kv43uTew&'.$aleato.'&qkeeCer='.$numerocombinado;
         $qrcode = new QRcode(utf8_encode($codigo));
         $qrcode->disableBorder();
         $qrcode->displayFPDF($this ,36, 231, 40); 
@@ -245,56 +248,67 @@ $pdf->CodigoQR($autorizacionPrevia->getId_empresa_importador());
 
 
 ////////////// EMPRESA ////////////////////////
-$pdf->SetXY(30, 110);
-$pdf->SetFont('Arial','B',14);
+$pdf->SetXY(22, 110);
+$pdf->SetFont('Arial','BU',10);
 $pdf->Cell(45,6,utf8_decode('EMPRESA'),0,0,'L'); 
-$pdf->SetFont('Arial','',14);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->Cell(140,6,utf8_decode($empresaImportador->getRazon_social()),0,0,'L');
 ////////////// NIT ////////////////////////
-$pdf->SetXY(30, 116);
-$pdf->SetFont('Arial','B',14);
+$pdf->SetXY(22, 116);
+$pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('NIT'),0,0,'L');
-$pdf->SetFont('Arial','',14);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->Cell(50,6,utf8_decode($empresaImportador->getNit()),0,0,'L');
 ////////////// REPRESENTACION LEGAL ////////////////////////
-$pdf->SetXY(30, 122);
-$pdf->SetFont('Arial','B',14);
+$pdf->SetXY(22, 122);
+$pdf->SetFont('Arial','B',10);
 $pdf->Cell(63,6,utf8_decode('REPRESENTANTE LEGAL'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->MultiCell(140,6,utf8_decode($persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno()),'','L');
 $pdf->SetFont('Arial','B',10);
 ///////////// PARA CANTIDAD U/2U /////////////////////////
-$pdf->SetXY(45, 132);
-$pdf->SetFont('Arial','',12);
+$pdf->SetXY(22, 132);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(45,6,utf8_decode('CANTIDAD'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->MultiCell(120,6,utf8_decode($autorizacionPrevia->getCantidad_total()),'','L');
 $pdf->SetFont('Arial','B',10);
 /////////// PARA PESO NETO KG ///////////////////////
-$pdf->SetXY(45, 138);
-$pdf->SetFont('Arial','',12);
+$pdf->SetXY(22, 138);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(45,6,utf8_decode('PESO'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->MultiCell(140,6,utf8_decode($autorizacionPrevia->getPeso_total()).' Kg.','','L');
-$pdf->SetFont('Arial','B',12);
+$pdf->SetFont('Arial','B',10);
 /////////// PARA VALOR FOB $US ///////////////////////
-$pdf->SetXY(45, 144);
-$pdf->SetFont('Arial','',12);
+$pdf->SetXY(22, 144);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(45,6,utf8_decode('VALOR FOB'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->MultiCell(140,6,utf8_decode($autorizacionPrevia->getValor_total()).' $us','','L');
 $pdf->SetFont('Arial','B',10);
+
+/////////// NRO ITEMS///////////////////////
+$pdf->SetXY(22, 154);
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(45,6,utf8_decode('Nro. de Items'),0,0,'L'); 
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(5,6,':',0,0,'L');
+$pdf->Cell(40,6,utf8_decode($nro_fojas),0,1,'L');
+$pdf->SetFont('Arial','',10);
+
+
 /////////// PAIS DE ORIGEN///////////////////////
-$pdf->SetXY(30, 154);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('PAÍS DE ORIGEN'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
+$pdf->SetXY(22, 164);
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(45,6,utf8_decode('País de origen'),0,0,'L'); 
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $y=6;
     if(count($paises)>8)
@@ -331,21 +345,21 @@ foreach ($paises as &$paiss) {
 $pdf->MultiCell(120,$y,utf8_decode(strtoupper($arrayPais)),'','L');
 $pdf->SetFont('Arial','',10);
 /////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 163);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('DEPARTAMENTO DESTINO :'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(14,6,'',0,0,'L');
+$pdf->SetXY(22, 173);
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(45,6,utf8_decode('Departamento destino'),0,0,'L'); 
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(5,6,':',0,0,'L');
 $y=6;
     if(count($departamentos)>5)
     {
-        $pdf->SetFont('Arial','',11);
+        $pdf->SetFont('Arial','',10);
         $y=6;
     }
    
     if(count($departamentos)>7)
     {
-        $pdf->SetFont('Arial','',10);
+        $pdf->SetFont('Arial','',8);
         $y=4;
     }
    
@@ -363,31 +377,24 @@ foreach ($departamentos as &$depto) {
 $pdf->MultiCell(120,$y,utf8_decode($arrayDepartamento),'','L');
 $pdf->SetFont('Arial','B',10);
  
+
 /////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 175);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('Nro. de Items'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->Cell(40,6,utf8_decode($nro_fojas),0,1,'L');
+$pdf->SetXY(22, 181);
 $pdf->SetFont('Arial','',10);
-/////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 181);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('FECHA DE EMISIÓN:'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
+$pdf->Cell(45,6,utf8_decode('Fecha de emisión   '),0,0,'L'); 
+$pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $date = '10/07/2019';
 //$date = $autorizacionPrevia->getFecha_registro();
 $date_registro = strtotime($date);
 $pdf->MultiCell(140,6,date("d/m/y",$date_registro),'','L');
-$pdf->SetFont('Arial','',12);
+$pdf->SetFont('Arial','',10);
 /////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 187);
+$pdf->SetXY(22, 187);
 //$pdf->SetFont('Arial','B',10);
-$pdf->Cell(45,6,utf8_decode('FECHA DE VENCIMIENTO :'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(12,6,'',0,0,'L');
+$pdf->Cell(45,6,utf8_decode('Fecha de vencimiento   '),0,0,'L'); 
+$pdf->SetFont('Arial','',10);
+$pdf->Cell(5,6,':',0,0,'L');
 //$date = $autorizacionPrevia->getFecha_registro();
 $mod_date = strtotime($date."+ 60 days");
 $pdf->MultiCell(140,6,date("d/m/y",$mod_date),'','L');
@@ -409,7 +416,7 @@ if($empresaImportador->getEstado()=='0' || $empresaImportador->getEstado()=='1' 
 }
 else
 {
-    $pdf->Cell(40,4,utf8_decode('AUTORIZACION PREVIA DE IMPORTACION'),0,1,'C');
+    $pdf->Cell(40,4,utf8_decode('AUTORIZACIÓN PREVIA DE IMPORTACIÓN'),0,1,'C');
 }
 //$pdf->Cell(107,4,'',0,0);
 
