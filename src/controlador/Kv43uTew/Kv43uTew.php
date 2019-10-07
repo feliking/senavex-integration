@@ -34,8 +34,8 @@ include_once(PATH_TABLA . DS . 'AutorizacionPreviaDetalle.php');
 //DATOS PARA LA AUTORIZACION PREVIA
 $autorizacionPrevia = new AutorizacionPrevia();
 $sqlAutorizacionPrevia= new SQLAutorizacionPrevia();
-$id_autorizacion_previa=$_REQUEST['id_autorizacionPrevia'];
-$autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['id_autorizacionPrevia'])?$_REQUEST['id_autorizacionPrevia']:$_SESSION['id_autorizacionPrevia']));
+$id_autorizacion_previa=$_REQUEST['qkeeCer']-7851;
+$autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['qkeeCer'])?$_REQUEST['qkeeCer']-7851:$_SESSION['id_autorizacionPrevia']));
 $autorizacionPrevia=$sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
 
 /////////////////////////// DATOS PARA EMPRESA////////////
@@ -93,8 +93,8 @@ class PDF extends FPDF
         
         $autorizacionPrevia = new AutorizacionPrevia();
         $sqlAutorizacionPrevia= new SQLAutorizacionPrevia();
-        $id_autorizacion_previa=$_REQUEST['id_autorizacionPrevia'];
-        $autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['id_autorizacionPrevia'])?$_REQUEST['id_autorizacionPrevia']:$_SESSION['id_autorizacionPrevia']));
+        $id_autorizacion_previa=$_REQUEST['qkeeCer'];
+        $autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['qkeeCer'])?$_REQUEST['qkeeCer']:$_SESSION['id_autorizacionPrevia']));
         $autorizacionPrevia=$sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
 
         $empresaImportador = new EmpresaImportador();
