@@ -19,35 +19,28 @@ include_once(PATH_MODELO . DS . 'SQLEmpresaImportador.php');
 ///////////////// adicionado la tabla y el modelo de autorizacion ////////////////
 include_once(PATH_MODELO . DS . 'SQLAutorizacionPrevia.php');
 include_once(PATH_TABLA . DS . 'AutorizacionPrevia.php');
-include_once(PATH_MODELO . DS . 'SQLAutorizacionPreviaDetalle.php');
-include_once(PATH_TABLA . DS . 'AutorizacionPreviaDetalle.php');
 ///////////////// adicionado la tabla y el modelo de pais ////////////////
 include_once(PATH_MODELO . DS . 'SQLPais.php');
 include_once(PATH_TABLA . DS . 'Pais.php');
 ///////////////// adicionado la tabla y el modelo de departamento ////////////////
 include_once(PATH_MODELO . DS . 'SQLDepartamento.php');
 include_once(PATH_TABLA . DS . 'Departamento.php');
+///////////////// adicionado la tabla y el modelo de AUTORIZACION PREVIA DETALLE ////////////////
+include_once(PATH_MODELO . DS . 'SQLAutorizacionPreviaDetalle.php');
+include_once(PATH_TABLA . DS . 'AutorizacionPreviaDetalle.php');
 
 
 
 //DATOS PARA LA AUTORIZACION PREVIA
 $autorizacionPrevia = new AutorizacionPrevia();
 $sqlAutorizacionPrevia= new SQLAutorizacionPrevia();
-$id_autorizacion_previa=$_REQUEST['qkeeCer'] - 7851;
-echo 'Empresa '.$id_autorizacion_previa;  die;
-$autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['qkeeCer'])?$_REQUEST['qkeeCer']:$_SESSION['qkeeCer']));
+$id_autorizacion_previa=$_REQUEST['id_autorizacionPrevia'];
+$autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['id_autorizacionPrevia'])?$_REQUEST['id_autorizacionPrevia']:$_SESSION['id_autorizacionPrevia']));
 $autorizacionPrevia=$sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
 
 /////////////////////////// DATOS PARA EMPRESA////////////
 $empresaImportador = new EmpresaImportador();
 $sqlEmpresaImportador = new SQLEmpresaImportador();
-
-$autorizacionPreviaDetalle = new AutorizacionPreviaDetalle();
-$sqlAutorizacionPreviaDetalle = new SQLAutorizacionPreviaDetalle();
-
-$autorizacionPreviaDetalle->setId_autorizacion_previa($_REQUEST['qkeeCer']);
-$autorizacionPreviaDetalle=$sqlAutorizacionPreviaDetalle->getAutorizacionDetallePorId($autorizacionPreviaDetalle);
-
 //$id_empresaImportador=$_REQUEST['id_empresa'];
 //$empresaImportador->setId_empresa_importador((isset($_REQUEST['id_empresa'])?$_REQUEST['id_empresa']:$_SESSION['id_empresa']));
 $empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
@@ -77,15 +70,16 @@ $sqlDepartamento= new SQLDepartamento();
 $departamentos=explode(",",$autorizacionPrevia->getId_departamento_destino());
 //$departamento=$sqlDepartamento->getBuscarDepartamentoPorId($departamento);
 
-$nro_registros = count($autorizacionPreviaDetalle);  //TODO  colocar el numero de registros
-///////////////////////////// para el nro de fojas/////////////////
-$nro_fojas=$nro_registros;
-// $empresaImportador->setId_empresa_importador((isset($_REQUEST['nro_fojas'])?$_REQUEST['nro_fojas']:$_SESSION['nro_fojas']));
+///////////////////////////autorizacion previa detalle /////////////////////
+$autorizacionPreviaDetalle = new AutorizacionPreviaDetalle();
+$sqlAautorizacionPreviaDetalle = new SQLAutorizacionPreviaDetalle();
+//$autorizacionPreviaDetalles=$autorizacionPrevia->getId_autorizacion_previa();
+$autorizacionPreviaDetalle->setId_autorizacion_previa($autorizacionPrevia->getId_autorizacion_previa());
+$autorizacionPreviaDetalles=$sqlAautorizacionPreviaDetalle->getAutorizacionPreviaDetallexIDAutorizacionPrevia($autorizacionPreviaDetalle);
 
-//------------para el rubro de exportaciones---------------------------
-$rubro_exportaciones = new RubroExportaciones();
-$sqlRubro_exportaciones = new SQLRubroExportaciones();
-$rubros=explode(",",$empresaImportador->getIdrubro_exportaciones());
+
+//$autorizacionPreviaDetalle=$sqlAautorizacionPreviaDetalle->getListarAPDxAutorizacionPrevia($autorizacionPrevia->getId_autorizacion_previa());
+
 
 ////////////////////////////////////////////////////-----------------------------------------------------------------------------------------------------
 
@@ -99,8 +93,8 @@ class PDF extends FPDF
         
         $autorizacionPrevia = new AutorizacionPrevia();
         $sqlAutorizacionPrevia= new SQLAutorizacionPrevia();
-        $id_autorizacion_previa=$_REQUEST['qkeeCer'];
-        $autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['qkeeCer'])?$_REQUEST['qkeeCer']:$_SESSION['qkeeCer']));
+        $id_autorizacion_previa=$_REQUEST['id_autorizacionPrevia'];
+        $autorizacionPrevia->setId_autorizacion_previa((isset($_REQUEST['id_autorizacionPrevia'])?$_REQUEST['id_autorizacionPrevia']:$_SESSION['id_autorizacionPrevia']));
         $autorizacionPrevia=$sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
 
         $empresaImportador = new EmpresaImportador();
@@ -110,43 +104,16 @@ class PDF extends FPDF
         $empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
         $empresaImportador=$sqlEmpresaImportador->getEmpresaApiPorID($empresaImportador);
         //aca verificamos si es una persona o es un representante legal
+        
+ 
+        ///////////////////////////////////////////////////////////////////////////////
+        
         $persona = new Persona();
         $sqlPersona= new SQLPersona();
         $persona->setId_persona($empresaImportador->getId_representante_legal());
-        $persona=$sqlPersona->getDatosPersonaPorId($persona);
-        $nro_registros = 7;  //TODO  colocar el numero de registros
-        $nro_fojas=$nro_registros;
+        $persona=$sqlPersona->getDatosPersonaPorId($persona);           
         
-        
-    
-        //Cell(width, height, text, border, position-next-cell, alignment);
-        
-        //////////////////////IMAGEN NO VALIDADA PARA LA AUTIZACION/////////////////////
-        //////modificado por Ivonne 01/10/2019 ////////////////////////
-        ///  $this->Image('styles/img/BGRUI.jpg', 0, 0, $this->w, $this->h);
-        ///$this->SetFillColor(211,211,211);
-        ///$this->RoundedRect(163, 67, 45, 10, 2, '1234', 'FD');
-        ////////////////////////fin modificacion 01/10/2019/////////////////////////////
-        
-        //RUI$this->RoundedRect(9, 71, 30, 8, 2, '1234', 'D');
-        //$this->Image('styles/img/institucion/logo-min.png',7,10,75,25);
-        //$this->Image('styles/img/institucion/vortex2.png',140,7,70,30);
-        ////////// NRO CERTIFICADO///////////////
-        $this->SetFont('Arial','B',12);
-        $this->SetXY(162, 52);
-        $this->Cell(45,10,'API-19/009/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
-        $this->SetFont('Arial','B',22);
-        $this->SetXY(163, 50);
-      
-        //////////////////////////TITULO//////////////////
-        
-        $this->SetFont('Arial','B',26);
-        $this->SetXY(140, 40);
-        $this->Ln(38);
-        $this->Cell(0,10,utf8_decode('AUTORIZACIÓN PREVIA DE'),0,0,'C');
-        $this->Ln(10);
-        $this->Cell(0,10,utf8_decode('IMPORTACIÓN '),0,0,'C');
-        //$this->Ln(5);
+         
        
         //-----------codigoQR-----------
         if($empresaImportador->getEstado()=='0' || $empresaImportador->getEstado()=='1' ||$empresaImportador->getEstado()=='3' ||$empresaImportador->getEstado()=='6' ||$empresaImportador->getEstado()=='9')
@@ -159,13 +126,13 @@ class PDF extends FPDF
         }
 
 
-        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO ITEMS: '.$nro_fojas.' -FECHA DE EMISION: 07/10/19 -FECHA DE VENCIMIENTO: 06/12/19';//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
+        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO FOJAS: '.$nro_fojas.' -FECHA DE EMISION: 07/10/19 -FECHA DE VENCIMIENTO: 06/12/19';//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
         //$codigo.=utf8_decode(' Fecha de impresión:').date("Y-m-d");
         //$codigo.=' http://vortex.senavex.gob.bo/ruex.php?datos='.$empresaImportador->getCodigo_seguridad();
         $codigo.=' http://vortex.senavex.gob.bo/rui.php?rui='.$empresaImportador->getRui();
         $qrcode = new QRcode(utf8_encode($codigo));
         $qrcode->disableBorder();
-        $qrcode->displayFPDF($this ,36, 231, 40); 
+        $qrcode->displayFPDF($this ,36, 200, 40); 
     }
     function Footer()
     {
@@ -176,56 +143,7 @@ class PDF extends FPDF
         // Número de página
        // $this->Cell(0,10,'www.vortex.senavex.gob.bo',0,0,'C');
     }
-    function RoundedRect($x, $y, $w, $h, $r, $corners = '1234', $style = '')
-    {
-        $k = $this->k;
-        $hp = $this->h;
-        if($style=='F')
-            $op='f';
-        elseif($style=='FD' || $style=='DF')
-            $op='B';
-        else
-            $op='S';
-        $MyArc = 4/3 * (sqrt(2) - 1);
-        $this->_out(sprintf('%.2F %.2F m',($x+$r)*$k,($hp-$y)*$k ));
-
-        $xc = $x+$w-$r;
-        $yc = $y+$r;
-        $this->_out(sprintf('%.2F %.2F l', $xc*$k,($hp-$y)*$k ));
-        if (strpos($corners, '2')===false)
-            $this->_out(sprintf('%.2F %.2F l', ($x+$w)*$k,($hp-$y)*$k ));
-        else
-            $this->_Arc($xc + $r*$MyArc, $yc - $r, $xc + $r, $yc - $r*$MyArc, $xc + $r, $yc);
-
-        $xc = $x+$w-$r;
-        $yc = $y+$h-$r;
-        $this->_out(sprintf('%.2F %.2F l',($x+$w)*$k,($hp-$yc)*$k));
-        if (strpos($corners, '3')===false)
-            $this->_out(sprintf('%.2F %.2F l',($x+$w)*$k,($hp-($y+$h))*$k));
-        else
-            $this->_Arc($xc + $r, $yc + $r*$MyArc, $xc + $r*$MyArc, $yc + $r, $xc, $yc + $r);
-
-        $xc = $x+$r;
-        $yc = $y+$h-$r;
-        $this->_out(sprintf('%.2F %.2F l',$xc*$k,($hp-($y+$h))*$k));
-        if (strpos($corners, '4')===false)
-            $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-($y+$h))*$k));
-        else
-            $this->_Arc($xc - $r*$MyArc, $yc + $r, $xc - $r, $yc + $r*$MyArc, $xc - $r, $yc);
-
-        $xc = $x+$r ;
-        $yc = $y+$r;
-        $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-$yc)*$k ));
-        if (strpos($corners, '1')===false)
-        {
-            $this->_out(sprintf('%.2F %.2F l',($x)*$k,($hp-$y)*$k ));
-            $this->_out(sprintf('%.2F %.2F l',($x+$r)*$k,($hp-$y)*$k ));
-        }
-        else
-            $this->_Arc($xc - $r, $yc - $r*$MyArc, $xc - $r*$MyArc, $yc - $r, $xc, $yc - $r);
-        $this->_out($op);
-                
-    }
+   
 
     function _Arc($x1, $y1, $x2, $y2, $x3, $y3)
     {
@@ -235,182 +153,216 @@ class PDF extends FPDF
     }
 }
 
-$pdf = new PDF('P','mm','A4');
+$pdf = new PDF('P','mm','Letter');
 $pdf->AddPage();
-$pdf->CodigoQR($autorizacionPrevia->getId_empresa_importador());
 
-
-
-////////////// EMPRESA ////////////////////////
-$pdf->SetXY(30, 110);
-$pdf->SetFont('Arial','B',14);
-$pdf->Cell(45,6,utf8_decode('EMPRESA'),0,0,'L'); 
-$pdf->SetFont('Arial','',14);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->Cell(140,6,utf8_decode($empresaImportador->getRazon_social()),0,0,'L');
-////////////// NIT ////////////////////////
-$pdf->SetXY(30, 116);
-$pdf->SetFont('Arial','B',14);
-$pdf->Cell(45,6,utf8_decode('NIT'),0,0,'L');
-$pdf->SetFont('Arial','',14);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->Cell(50,6,utf8_decode($empresaImportador->getNit()),0,0,'L');
-////////////// REPRESENTACION LEGAL ////////////////////////
-$pdf->SetXY(30, 122);
-$pdf->SetFont('Arial','B',14);
-$pdf->Cell(63,6,utf8_decode('REPRESENTANTE LEGAL'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->MultiCell(140,6,utf8_decode($persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno()),'','L');
+//----API--
+//--------------
+$pdf->SetXY(20, 20);
 $pdf->SetFont('Arial','B',10);
-///////////// PARA CANTIDAD U/2U /////////////////////////
-$pdf->SetXY(45, 132);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('CANTIDAD'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->MultiCell(120,6,utf8_decode($autorizacionPrevia->getCantidad_total()),'','L');
-$pdf->SetFont('Arial','B',10);
-/////////// PARA PESO NETO KG ///////////////////////
-$pdf->SetXY(45, 138);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('PESO'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->MultiCell(140,6,utf8_decode($autorizacionPrevia->getPeso_total()).' Kg.','','L');
-$pdf->SetFont('Arial','B',12);
-/////////// PARA VALOR FOB $US ///////////////////////
-$pdf->SetXY(45, 144);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('VALOR FOB'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->MultiCell(140,6,utf8_decode($autorizacionPrevia->getValor_total()).' $us','','L');
-$pdf->SetFont('Arial','B',10);
-/////////// PAIS DE ORIGEN///////////////////////
-$pdf->SetXY(30, 154);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('PAÍS DE ORIGEN'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$y=6;
-    if(count($paises)>8)
-    {
-        $pdf->SetFont('Arial','',7);
-        $y=5;
-    }
-    if(count($paises)>10)
-    {
-        $pdf->SetFont('Arial','',7);
-        $y=4.5;
-    }
-    if(count($paises)>12)
-    {
-        $pdf->SetFont('Arial','',6);
-        $y=4;
-    }
-    if(count($paises)>15)
-    {
-        $pdf->SetFont('Arial','',6);
-        $y=3;
-    }
-$tot_pais = count($paises);
-$arrayPais='';
-foreach ($paises as &$paiss) { 
-    $pais->setId_pais($paiss);
-    $pais=$sqlPais->getBuscarDescripcionPorId($pais);    
-    $paiss=$pais->getNombre();
-    if ($paiss == $tot_pais-1)
-        $arrayPais.= $pais->getNombre(); 
-    else      
-       $arrayPais.= $pais->getNombre().', ';    
-}
-$pdf->MultiCell(120,$y,utf8_decode(strtoupper($arrayPais)),'','L');
-$pdf->SetFont('Arial','',10);
-/////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 163);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('DEPARTAMENTO DESTINO :'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(14,6,'',0,0,'L');
-$y=6;
-    if(count($departamentos)>5)
-    {
-        $pdf->SetFont('Arial','',11);
-        $y=6;
-    }
-   
-    if(count($departamentos)>7)
-    {
-        $pdf->SetFont('Arial','',10);
-        $y=4;
-    }
-   
-$tot = count($departamentos);
-$arrayDepartamento='';
-foreach ($departamentos as &$depto) {
-    $departamento->setId_departamento($depto);
-    $departamento=$sqlDepartamento->getBuscarDepartamentoPorId($departamento);
-    $depto=$departamento->getNombre();
-    if ($depto == $tot-1)
-        $arrayDepartamento.= $departamento->getNombre(); 
-    else      
-       $arrayDepartamento.= $departamento->getNombre().', '; 
-}
-$pdf->MultiCell(120,$y,utf8_decode($arrayDepartamento),'','L');
-$pdf->SetFont('Arial','B',10);
- 
-/////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 175);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('Nro. de Items'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$pdf->Cell(40,6,utf8_decode($nro_fojas),0,1,'L');
-$pdf->SetFont('Arial','',10);
-/////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 181);
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(45,6,utf8_decode('FECHA DE EMISIÓN:'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(5,6,':',0,0,'L');
-$date = '10/07/2019';
-//$date = $autorizacionPrevia->getFecha_registro();
-$date_registro = strtotime($date);
-$pdf->MultiCell(140,6,date("d/m/y",$date_registro),'','L');
-$pdf->SetFont('Arial','',12);
-/////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(30, 187);
-//$pdf->SetFont('Arial','B',10);
-$pdf->Cell(45,6,utf8_decode('FECHA DE VENCIMIENTO :'),0,0,'L'); 
-$pdf->SetFont('Arial','',12);
-$pdf->Cell(12,6,'',0,0,'L');
-//$date = $autorizacionPrevia->getFecha_registro();
-$mod_date = strtotime($date."+ 60 days");
-$pdf->MultiCell(140,6,date("d/m/y",$mod_date),'','L');
-$pdf->SetFont('Arial','',8);
+$pdf->Cell(175,6,utf8_decode('API - 19/009/'.$autorizacionPrevia->getCorrelativo()),2,0,'R'); 
 
-//-------------esto es para la firma y admision---------------------------
-$empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
-$empresaImportador=$sqlEmpresaImportador->getEmpresaApiPorID($empresaImportador);
-$pdf->setXY(36,227);
-$pdf->SetFont('Arial','B',7);
-$pdf->Cell(40,4,utf8_decode('V.01'),0,1,'C');
-$pdf->setXY(36,272);
-//$pdf->Ln(20);
-$pdf->SetFont('Arial','B',7);
-//$pdf->Cell(129,4,'',0,0);
-if($empresaImportador->getEstado()=='0' || $empresaImportador->getEstado()=='1' ||$empresaImportador->getEstado()=='3' ||$empresaImportador->getEstado()=='6' ||$empresaImportador->getEstado()=='9')
-{
-    $pdf->Cell(40,4,utf8_decode('RUI-SENAVEX PENDIENTE'),0,1,'C');
-}
-else
-{
-    $pdf->Cell(40,4,utf8_decode('AUTORIZACION PREVIA DE IMPORTACION'),0,1,'C');
-}
-//$pdf->Cell(107,4,'',0,0);
-
-$pdf->setXY(12,248);
+////////////// CABECERA 1////////////////////////
+$pdf->SetXY(20, 40);
+$pdf->SetFont('Arial','B',10);
+$pdf->Cell(140,6,utf8_decode('I. DESCRIPCION IMPORTACION'),1,0,'C'); 
+////////////// TITULO --- NOMBRE O RAZON SOCIAL ////////////////////////
+$pdf->SetXY(20, 46);
 $pdf->SetFont('Arial','B',8);
+$pdf->Cell(120,4,utf8_decode('NOMBRE O RAZON SOCIAL DEL IMPORTADOR'),1,0,'C');
+//variable 
+$pdf->SetXY(20, 50);
+$pdf->SetFont('Arial','',6);
+$pdf->Cell(120,4,utf8_decode($empresaImportador->getRazon_social()),1,0,'C'); 
+////////////// TITULO --- NIT ////////////////////////
+$pdf->SetXY(140, 46);
+$pdf->SetFont('Arial','B',8);
+$pdf->Cell(20,4,utf8_decode('NIT'),1,0,'C');
+//variable
+$pdf->SetXY(140, 50);
+$pdf->SetFont('Arial','',6);
+$pdf->Cell(20,4,utf8_decode($empresaImportador->getNit()),1,0,'C'); 
+
+////////////////////////////// CABECERA 2////////////////////////
+$pdf->SetXY(20, 58);
+$pdf->SetFont('Arial','B',10);
+$pdf->Cell(140,6,utf8_decode('II. MERCANCIA AUTORIZADA'),1,0,'C'); 
+////////////// TITULO --- totales ////////////////////////
+$pdf->SetXY(20, 64);
+$pdf->SetFont('Arial','B',6);
+$pdf->Cell(80,4,utf8_decode('TOTALES'),1,0,'C');
+////////////// TITULO --- total cantidad ////////////////////////
+$pdf->SetXY(100, 64);
+$pdf->SetFont('Arial','',4);
+$pdf->Cell(12,4,utf8_decode($autorizacionPrevia->getCantidad_total()),1,0,'R');
+////////////// TITULO --- total peso bruto ////////////////////////
+$pdf->SetXY(112, 64);
+$pdf->SetFont('Arial','',4);
+$pdf->Cell(12,4,'',0,0,'C');
+////////////// TITULO --- valor total ////////////////////////
+$pdf->SetXY(124, 64);
+$pdf->SetFont('Arial','',4);
+$pdf->Cell(12,4,utf8_decode($autorizacionPrevia->getPeso_total()),1,0,'R');
+////////////// TITULO --- totales ////////////////////////
+$pdf->SetXY(136, 64);
+$pdf->SetFont('Arial','',4);
+$pdf->Cell(12,4,'',0,0,'C');
+////////////// TITULO --- totales ////////////////////////
+$pdf->SetXY(148, 64);
+$pdf->SetFont('Arial','',4);
+$pdf->Cell(12,4,utf8_decode($autorizacionPrevia->getValor_total()),1,0,'R');
+
+////////////////////////////// SUB CABECERA 2///////////////////////////
+/////////////////////////////////nro////////////////////////////////////
+$pdf->SetXY(20, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->Cell(10,5,utf8_decode('Nº'),1,0,'C');
+//////////////////////////////////// nandina /////////////////////////////
+$pdf->SetXY(30, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->Cell(14,5,utf8_decode('SUBPARTIDA'),1,0,'C');
+//////////////////////////////////// descripcion arancelaria/////////////////////////////
+$pdf->SetXY(44, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->Cell(28,5,utf8_decode('DESCRIPCION ARANCELARIA'),1,0,'C');
+//////////////////////////////////// descripcion comercial /////////////////////////////
+$pdf->SetXY(72, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->Cell(28,5,utf8_decode('DESCRIPCION COMERCIAL'),1,0,'C');
+//////////////////////////////////// cantidad /////////////////////////////
+$pdf->SetXY(100, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->Cell(12,5,utf8_decode('CANTIDAD'),1,0,'C');
+//////////////////////////////////// unidad de medida /////////////////////////////
+$pdf->SetXY(112, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->MultiCell(12,2.5,utf8_decode('UNIDAD DE MEDIDA'),1,'C');
+//////////////////////////////////// peso bruto /////////////////////////////
+$pdf->SetXY(124, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->MultiCell(12,2.5,utf8_decode('PESO BRUTO (Kg.)'),1,'C');
+//////////////////////////////////// precio unitario /////////////////////////////
+$pdf->SetXY(136, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->MultiCell(12,1.66,utf8_decode('PRECIO UNITARIO ($us)'),1,'C');
+//////////////////////////////////// valor total /////////////////////////////
+$pdf->SetXY(148, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->MultiCell(12,2.5,utf8_decode('VALOR TOTAL ($us)'),1,'C');
+
+////////////////////////////// SUB CABECERA 2//////////////////////////////////////
+//////////////////////////////// LLENADO DE DATOS /////////////////////////////////
+
+/////////////////////////////////nro////////////////////////////////////
+$pdf->SetXY(20, 73);
+$pdf->SetFont('Arial','',4);
+$num = 1;
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(10,5,$num,1,2,'C');  
+    $num= $num+1;
+}
+//////////////////////////////////// nandina /////////////////////////////
+$pdf->SetXY(30, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(14,5,utf8_decode($autorizacionPrevDet->getCodigo_nandina()),1,2,'C');
+    echo $autorizacionPreviaDetalle->getCodigo_nandina();
+}
+//////////////////////////////////// descripcion arancelaria/////////////////////////////
+$pdf->SetXY(44, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(28,5,utf8_decode($autorizacionPrevDet->getDescripcion_arancelaria()),1,2,'C');
+}
+//////////////////////////////////// descripcion comercial /////////////////////////////
+$pdf->SetXY(72, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(28,5,utf8_decode($autorizacionPrevDet->getDescripcion_comercial()),1,2,'C');
+}
+//////////////////////////////////// cantidad /////////////////////////////
+$pdf->SetXY(100, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(12,5,utf8_decode($autorizacionPrevDet->getCantidad()),1,2,'C');
+}
+//////////////////////////////////// unidad de medida /////////////////////////////
+$pdf->SetXY(112, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(12,5,utf8_decode($autorizacionPrevDet->getUnidad_medida()),1,2,'C');
+}
+//////////////////////////////////// peso bruto /////////////////////////////
+$pdf->SetXY(124, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(12,5,utf8_decode($autorizacionPrevDet->getPeso()),1,2,'C');
+}
+//////////////////////////////////// precio unitario /////////////////////////////
+$pdf->SetXY(136, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(12,5,utf8_decode($autorizacionPrevDet->getPrecio_unitario_fob()),1,2,'C');
+}
+//////////////////////////////////// valor total /////////////////////////////
+$pdf->SetXY(148, 73);
+$pdf->SetFont('Arial','',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(12,5,utf8_decode($autorizacionPrevDet->getFob()),1,2,'C');
+}
+
+
+///////////////////////////////// FIN DE LLENADO DE DATOS ////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////// MENU ///////////////////////////
+///////////////////////////////// tipo de divisas ////////////////////////////////////
+$pdf->SetXY(165, 58);
+$pdf->SetFont('Arial','B',5);
+$pdf->Cell(15,6,utf8_decode('Tipo de Divisa'),1,2,'C');
+
+///////////////////////////////// tipo de divisas ////////////////////////////////////
+$pdf->SetXY(180, 58);
+$pdf->SetFont('Arial','B',5);
+$pdf->Cell(15,6,utf8_decode('Tipo de Cambio'),1,2,'C'); 
+//////////////////////////////////ESPACIO EN BLANCO //////////////////////////////////////
+//////////////////////////////////espacio en blanco divisas //////////////////////////////////////
+$pdf->SetXY(165, 64);
+$pdf->SetFont('Arial','B',10);
+$pdf->Cell(15,4,'',1,0,'C'); 
+//////////////////////////////////espacio en blanco tipo cambio //////////////////////////////////////
+$pdf->SetXY(180, 64);
+$pdf->SetFont('Arial','B',10);
+$pdf->Cell(15,4,'',1,0,'C'); 
+//////////////////////////////////TITULOS MENU //////////////////////////////////////
+//////////////////////////////////titulo divisas //////////////////////////////////////
+$pdf->SetXY(165, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->Cell(15,5,'PRECIO UNITARIO',1,0,'C'); 
+//////////////////////////////////titulo tipo cambio //////////////////////////////////////
+$pdf->SetXY(180, 68);
+$pdf->SetFont('Arial','B',4);
+$pdf->Cell(15,5,'VALOR TOTAL',1,0,'C'); 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////TITULOS MENU //////////////////////////////////////
+//////////////////////////////////LLENADO DE DATOS //////////////////////////////////////
+$pdf->SetXY(165, 73);
+$pdf->SetFont('Arial','B',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(15,5,utf8_decode($autorizacionPrevDet->getValor_fob_total_divisa()),1,2,'C'); 
+}
+
+//////////////////////////////////titulo tipo cambio //////////////////////////////////////
+$pdf->SetXY(180, 73);
+$pdf->SetFont('Arial','B',4);
+foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
+    $pdf->Cell(15,5,utf8_decode($autorizacionPrevDet->getPrecio_unitario_fob_divisa()),1,2,'C');
+}
+ 
+////////////////////////////////////////////FIN LLENADO DE DATOS////////////////////////////////////////////////
+
+
 $pdf->Output();
 ?>
