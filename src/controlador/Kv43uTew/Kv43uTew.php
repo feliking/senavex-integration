@@ -236,19 +236,19 @@ $pdf->SetFont('Times','B',10);
 $pdf->Cell(165,6,utf8_decode('I. DESCRIPCIÓN IMPORTACIÓN'),0,0,'C'); 
 ////////////// TITULO --- NOMBRE O RAZON SOCIAL ////////////////////////
 $pdf->SetXY(10, 46);
-$pdf->SetFont('Times','B',6);
+$pdf->SetFont('Times','B',8);
 $pdf->Cell(130,4,utf8_decode('NOMBRE O RAZÓN SOCIAL DEL IMPORTADOR'),1,0,'C');
 //variable 
 $pdf->SetXY(10, 50);
-$pdf->SetFont('Times','',6);
+$pdf->SetFont('Times','',8);
 $pdf->Cell(130,4,utf8_decode($empresaImportador->getRazon_social()),1,0,'C'); 
 ////////////// TITULO --- NIT ////////////////////////
 $pdf->SetXY(140, 46);
-$pdf->SetFont('Times','B',6);
+$pdf->SetFont('Times','B',8);
 $pdf->Cell(35,4,utf8_decode('NIT'),1,0,'C');
 //variable
 $pdf->SetXY(140, 50);
-$pdf->SetFont('Times','',6);
+$pdf->SetFont('Times','',8);
 $pdf->Cell(35,4,utf8_decode($empresaImportador->getNit()),1,0,'C'); 
 
 ////////////////////////////// CABECERA 2////////////////////////
