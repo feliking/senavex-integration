@@ -355,7 +355,7 @@ srand(microtime()*1000000);
 $num = 1;
 
 foreach ($autorizacionPreviaDetalles as &$autorizacionPrevDet) { 
-    $pdf->Row(array($num,utf8_decode($autorizacionPrevDet->getCodigo_nandina()),utf8_decode($autorizacionPrevDet->getDescripcion_arancelaria()),utf8_decode($autorizacionPrevDet->getDescripcion_comercial()), utf8_decode($autorizacionPrevDet->getCantidad()),utf8_decode($autorizacionPrevDet->getUnidad_medida()),utf8_decode($autorizacionPrevDet->getPeso()),utf8_decode($autorizacionPrevDet->getPrecio_unitario_fob()),utf8_decode($autorizacionPrevDet->getFob()),utf8_decode($autorizacionPrevDet->getValor_fob_total_divisa()),utf8_decode($autorizacionPrevDet->getPrecio_unitario_fob_divisa())));
+    $pdf->Row(array($num,utf8_decode($autorizacionPrevDet->getCodigo_nandina()),utf8_decode($autorizacionPrevDet->getDescripcion_arancelaria()),utf8_decode($autorizacionPrevDet->getDescripcion_comercial()), utf8_decode($autorizacionPrevDet->getCantidad()),utf8_decode($autorizacionPrevDet->getUnidad_medida()),utf8_decode($autorizacionPrevDet->getPeso()),utf8_decode($autorizacionPrevDet->getPrecio_unitario_fob()),utf8_decode($autorizacionPrevDet->getFob()),utf8_decode($autorizacionPrevDet->getPrecio_unitario_fob_divisa()),utf8_decode($autorizacionPrevDet->getValor_fob_total_divisa())));
     $num= $num+1;
 }
 
