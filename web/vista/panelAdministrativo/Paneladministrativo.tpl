@@ -3,7 +3,7 @@
 <head>
 {include file="includes/Librerias.tpl"}
 </head>
-<body> 
+<body>
 {include file="includes/Cabecera.tpl"}
     <div class="row-fluid " >
         {if $id_empresa_persona=='x'} 

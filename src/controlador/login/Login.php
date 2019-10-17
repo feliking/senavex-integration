@@ -264,8 +264,6 @@ class Login extends Principal {
 
                         }
                         $_SESSION["opciones_persona"] = str_split($str);
-//                        $_SESSION["opciones_persona"] = str_split($perfil->getOpciones());// declaramos las opciones que tiene la persona dividiendola en un array                }
-//                        $_SESSION["opciones_persona"] = str_split($empresapersona->getOpciones_persona());// declaramos las opciones que tiene la persona dividiendola en un array                }
                 }
                 else
                 {
@@ -336,9 +334,9 @@ class Login extends Principal {
                         $perfil = $sqlPerfil->getBuscarDescripcionPorId($perfil);
                         $_SESSION["perfil"]=$perfil->getDescripcion();
                     //-----------------------------------
-//                    $_SESSION["opciones_persona"]=str_split($elementoempresa[0]->opciones_persona);
                        $opcion_x=$perfil->getOpciones();
-                        $str='';
+
+                       $str='';
                         for ($index = 0; $index < strlen($opcion_x); $index++) {
                             $POpciones = new PerfilOpciones();
                             $SQLPOpciones = new SQLPerfilOpciones();
@@ -349,8 +347,8 @@ class Login extends Principal {
                             }
 
                         }
+
                         $_SESSION["opciones_persona"] = str_split($str);
-//                    $_SESSION["opciones_persona"]=str_split($perfil->getOpciones());
                     $vista->assign('menor_cuantia', $_SESSION["menor_cuantia"]);
                     if($separador != '-IMP'){
                         $empresa = new Empresa();
@@ -412,7 +410,6 @@ class Login extends Principal {
                 $_SESSION["clave"] = md5($datos_usuario->getClave());            
                 $_SESSION["rol"] = 'root';
                 $_SESSION["opciones_persona"] = str_split($perfilrenato[0]->getOpciones());
-                //$_SESSION["opciones_persona"] = str_split('fheoq');
                 $_SESSION["id_empresa_persona"]='empresa';//esto es un caso especial solo para empresa
                 $_SESSION["ruex"]=$empresa->getRuex();
                 if($empresa->getMenor_Cuantia()=='1')

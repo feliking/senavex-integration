@@ -13,6 +13,13 @@ class BloqueoEmpresa extends Db {
         return parent::finder($className);
     }
 
+    public $acuerdo = array();
+
+    public static $RELATIONS = array
+    (
+        'acuerdo' => array(self:: BELONGS_TO, 'Acuerdo', 'id_acuerdo')
+    );
+
     private $id_bloqueo;
     private $fecha_bloqueo;
     private $fecha_alta;
@@ -23,7 +30,9 @@ class BloqueoEmpresa extends Db {
     private $id_persona_alta;
     private $motivo_alta;
     private $estado_empresa_anterior;
-    
+    private $id_acuerdo;
+    private $tipo_bloqueo;
+
     public function setId_bloqueo($id_bloqueo) {
         $this->id_bloqueo = $id_bloqueo;
     }
@@ -83,6 +92,18 @@ class BloqueoEmpresa extends Db {
     }
     public function getEstado_empresa_anterior() {
         return $this->estado_empresa_anterior;
+    }
+    function getId_acuerdo(){
+        return $this->id_acuerdo;
+    }
+    function setId_acuerdo($id_acuerdo){
+        $this->id_acuerdo=$id_acuerdo;
+    }
+    function getTipo_bloqueo(){
+        return $this->tipo_bloqueo;
+    }
+    function setTipo_bloqueo($tipo_bloqueo){
+        $this->tipo_bloqueo=$tipo_bloqueo;
     }
 }
 ?>

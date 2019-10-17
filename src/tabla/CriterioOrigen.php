@@ -5,7 +5,7 @@ include_once(PATH_BASE . DS . 'config' . DS . 'Db.php');
 //control de acceso
 defined('_ACCESO') or die('Acceso restringido');
 
-class CriterioOrigen extends Db {
+class CriterioOrigen extends Db implements JsonSerializable {
         
     const TABLE = 'planilla_criterio_origen';
 
@@ -52,6 +52,16 @@ class CriterioOrigen extends Db {
 
     function setObligatorio($obligatorio) {
         $this->obligatorio = $obligatorio;
+    }
+
+    public function jsonSerialize() {
+        return [
+          'id_criterio_origen' => $this->id_acuerdo,
+          'id_acuerdo' => $this->id_criterio_origen,
+          'descripcion' => $this->descripcion,
+          'literal' => $this->literal,
+          'obligatorios' => $this->obligatorio
+        ];
     }
 }
 

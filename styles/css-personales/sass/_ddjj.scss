@@ -1,0 +1,260 @@
+.acuerdo{
+  overflow: auto;
+  margin: 10px;
+  .acuerdo-radio{
+    float: left;
+    text-align: left;
+    margin: 5px;
+    width: 156px;
+    line-height: 19px;
+    input{
+      vertical-align: top;
+    }
+  }
+  .acuerdo-checkbox{
+    float: left;
+    text-align: left;
+    margin: 5px;
+    width: 210px;
+    line-height: 19px;
+    input{
+      vertical-align: top;
+    }
+  }
+}
+.ddjj-container{
+ border:1px solid $ddjj-primary;
+ color: $ddjj-primary;
+  .ddjj-header{
+    background-color: $ddjj-primary;
+    position:relative;
+    h1{
+      text-transform: uppercase;
+      color: white;
+      font-size: 26px;
+      margin: 20px 190px;
+      font-weight: normal;
+    }
+    img{
+      position: absolute;
+      top: 0;
+      left: 10px;
+    }
+  }
+  .ddjj-section{
+    padding: 5px;
+    border-bottom: 1px solid $ddjj-primary;
+    overflow: auto;
+    
+    &.ddjj-section-initial{
+      overflow: visible;
+    }
+  }
+  .ddjj-section-fit{
+    border-bottom: 1px solid $ddjj-primary;
+    overflow: auto;
+    .ddjj-declaration{
+      float: left;
+      width: 70%;
+      border-right: 1px solid $ddjj-primary;
+      min-height: 100px;
+      text-align: left;
+      padding: 10px 15px;
+      .ddjj-bold{
+        font-weight: bold;
+        color:#000000;
+      }
+      .ddjj-agree{
+        padding-top: 10px;
+        text-align: center;
+      }
+    }
+    .ddjj-qr{
+      float: left;
+      width: 30%;
+    }
+  }
+  .ddjj-section-label{
+    padding: 5px 10px;
+    text-align: left;
+    display: block;
+    &.ddjj-section-label-right{
+      text-align: right;
+    }
+  }
+  .ddjj-input{
+    padding: 0 5px;
+  }
+  .ddjj-section-field{
+    border-bottom: 1px dashed $ddjj-primary;
+    color: $ddjj-secondary;
+    padding-top: 6px;
+    text-transform: uppercase;
+  }
+  .ddjj-section-area{
+    min-height: 60px;
+    border: 1px solid $ddjj-primary;
+    color: $ddjj-secondary;
+    white-space: pre-line;
+    text-align: left;
+    padding: 10px;
+  }
+  .ddjj-total{
+    font-size: 12px;
+    margin: 6px;
+    float: right;
+    .ddjj-total-result{
+      min-width: 85px;
+      display: inline-block;
+      color: black;
+    }
+    .ddjj-total-input {
+      margin-left: 11px;
+      width: 100px;
+      display: inline-block;
+    }
+  }
+  .ddjj-body{
+    h2{
+      text-transform: uppercase;
+      font-size: 17px;
+      padding: 5px;
+      margin: 0;
+      border-bottom: 1px solid $ddjj-primary;
+    }
+    h3{
+      text-transform: uppercase;
+      font-size: 15px;
+      margin: 5px;
+    }
+  }
+
+  .ddjj-ul{
+    text-align: left;
+    padding-bottom: 5px;
+  }
+  .ddjj-document{
+    display: inline-block;
+    margin: 10px;
+    color:$ddjj-primary;
+    &:hover{
+      cursor: pointer;
+      color:$ddjj-primary;
+    }
+    img{
+      width: 70px;
+    }
+    h3{
+      max-width: 80px;
+      font-size: 11px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+}
+#alta_ddjj{
+  .k-textbox,.k-dirty-cell, .k-input, .k-grid tbody td{
+    text-transform: uppercase !important;
+  }
+}
+
+.ddjj-table{
+  width: 100%;
+  border-spacing: 0.5rem;
+  border-collapse: collapse;
+  td,th{
+    border: 1px solid $ddjj-primary;
+    padding: 0.5rem;
+    font-size: 13px;
+  }
+  td{
+    color:$ddjj-secondary;
+    text-transform: uppercase;
+  }
+  tfoot{
+    td{
+      visibility: hidden;
+      border: none;
+    }
+    td.ddjj-table-total-label{
+      visibility: visible;
+      font-weight: bold;
+      color: $ddjj-primary;
+    }
+    td.ddjj-table-total{
+      visibility: visible;
+      border: 1px solid $ddjj-primary;
+    }
+  }
+}
+.ul-buttons
+{
+  list-style: none;
+  margin: 10px 0;
+  li{
+    display: inline-block;
+  }
+  .btn-lg{
+    font-size: 17px;
+    min-width: 200px;
+    margin: 5px;
+  }
+}
+.ddjj-notice-loading{
+  img{
+    width: 80px;
+  }
+}
+.ddjj-message{
+  padding:10px;
+}
+.cell-sm{
+  max-width: 100px;
+  width: 100px;
+}
+.cell-120{
+  width: 120px;
+}
+.cell-lg{
+  width: 400px;
+}
+.cell-outstand{
+  background-color: $ddjj-tertiary;
+}
+.ddjj-uploader{
+  border: 2px dashed $ddjj-primary;
+}
+* {transition: none !important}
+.ddjj-section-alert{
+  color: $ddjj-alert;
+  text-align: left;
+  display: block;
+  margin-left: 15px;
+}
+.ddjj-codigo{
+  color: $ddjj-tertiary;
+  position: absolute;
+  right: 15px;
+
+  top: 25px;
+  font-weight: bold;
+}
+.tooltip{
+  display: inline-block;
+  height: 18px;
+  width: 18px;
+  text-align: center;
+  border-radius: 50%;
+  border: 1px solid #ffe79e;
+  background-color: #fff4c9;
+  color: #635145;
+}
+.k-tooltip{
+  border: 1px solid #ffe79e !important;
+  background-color: #fff4c9 !important;
+  color: #635145 !important;
+}
+

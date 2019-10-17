@@ -182,6 +182,18 @@ class AdmAcuerdo extends Principal {
         echo ']';
         exit;
     }
+    if ($_REQUEST['tarea'] == 'normas') {
+      $criterios = $this->getCriteriosPorAcuerdo($_REQUEST['id_acuerdo']);
+      echo json_encode($criterios);
+      exit;
+    }
+
+  }
+  function getCriteriosPorAcuerdo($id_acuerdo) {
+    $criterio_origen = new CriterioOrigen();
+    $sqlCriterioOrigen = new SQLCriterioOrigen();
+    $criterio_origen->setId_Acuerdo($id_acuerdo);
+    return $sqlCriterioOrigen->getListarCriterioPorAcuerdo($criterio_origen);
   }
 
 }

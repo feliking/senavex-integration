@@ -92,7 +92,7 @@
                                         </div>
                                     {/if}
                                     {if $opcion=='g'}
-                                        <div id="g" class="widget menucf" onclick="anadir('Declaración Jurada','admDeclaracionJurada','')" >
+                                        <div id="g" class="widget menucf" onclick="anadir('Declaración Jurada','admDeclaracionJurada','declaracionesJuradas')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_ddjj_B.png"  /> </a>
                                             <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_ddjj.png" /> </a>
                                             <span>Declaración Jurada</span>

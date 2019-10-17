@@ -682,7 +682,6 @@ $('input[type="text"],textarea').keypress(function(e){
                         {literal}
                         combobox.dataSource.add({"fabricas": fabrica,"id_fabrica":data});
                         {/literal}
-                        combobox.value(data);
                         $("#form_fabricas")[0].reset();
                     }
                 }

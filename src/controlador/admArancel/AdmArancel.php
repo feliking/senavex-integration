@@ -12,14 +12,26 @@ defined('_ACCESO') or die('Acceso restringido');
 include_once(PATH_TABLA . DS . 'Arancel.php');
 include_once(PATH_TABLA . DS . 'DetalleArancel.php');
 include_once(PATH_TABLA . DS . 'Capitulos.php');
+include_once(PATH_TABLA . DS . 'AcuerdoArancel.php');
+include_once(PATH_TABLA . DS . 'Partida.php');
 
 include_once(PATH_MODELO . DS . 'SQLArancel.php');
 include_once(PATH_MODELO . DS . 'SQLDetalleArancel.php');
 include_once(PATH_MODELO . DS . 'SQLCapitulos.php');
+include_once(PATH_MODELO . DS . 'SQLAcuerdoArancel.php');
+include_once(PATH_MODELO . DS . 'SQLPartida.php');
+include_once(PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');
 
 class AdmArancel extends Principal {
 
   public function AdmArancel() {
+    if($_REQUEST['tarea'] == 'searchPartida') {
+      $partida = new Partida();
+      $sqlPartida = new SQLPartida();
+      $partida->setId_arancel($_REQUEST['id_arancel']);
+      $resultado = $sqlPartida->searchPartidaByArancel($partida,$_REQUEST['term']);
+      echo json_encode($resultado);
+    }
 
     $vista = Principal::getVistaInstance();
 

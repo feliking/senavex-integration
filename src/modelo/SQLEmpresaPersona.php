@@ -52,6 +52,12 @@ class SQLEmpresaPersona {
     public function getListarCertificadoresSenavexParaDDJJ(EmpresaPersona $empresa_persona){
         return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9))AND activo=1', $empresa_persona->getId_empresa_persona());
     }
+  public function getListarCertificadoresSenavexParaDDJJRegional(EmpresaPersona $empresa_persona){
+    return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9)OR(id_perfil=19))AND activo=1 AND id_regional=?', $empresa_persona->getId_regional());
+  }
+  public function getListarCertificadoresSenavexParaDDJJRegionalLPEA(EmpresaPersona $empresa_persona){
+    return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9)OR(id_perfil=19))AND activo=1 AND (id_regional=1 or id_regional=2)     ');
+  }
     public function getListarCertificadoresSenavexParaRuex(EmpresaPersona $empresa_persona){
         return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=6)OR(id_perfil=9))AND activo=1', $empresa_persona->getId_empresa_persona());
     }

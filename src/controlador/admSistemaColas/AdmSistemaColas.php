@@ -161,6 +161,16 @@ class AdmSistemaColas extends Principal {
             return null;
         }
   }
+  public static function listarColaAsistenteDeclaracionJurada($id_persona)
+    {
+        $sistema_colas = new SistemaColas();
+        $sqlSistemaColas = new SQLSistemaColas();
+        $sistema_colas->setId_Asistente($id_persona);
+
+        $resultado = $sqlSistemaColas->getListarColaAsistenteDeclaracionJurada($sistema_colas);
+        if (!empty($resultado)) return $resultado;
+        else  return null;
+    }
   public static function listarColaAsistentePorTemporalesModificacion($id_persona)
   {
       
@@ -196,72 +206,136 @@ class AdmSistemaColas extends Principal {
   /***** Generar el Servicio Exportador para la DDJJ****/
   public static function generarServicioExportadorParaDdjj($id_persona,$costo_total,$id_empresa)
   {
-        $hoy=date("Y-m-d h:i:s");
-        $servicio_exportador = new ServicioExportador();
-        $sqlServicioExportador = new SQLServicioExportador();
-        
-        $servicio_exportador->setId_Servicio(3);
-        $servicio_exportador->setFecha_Servicio($hoy);
-        $servicio_exportador->setId_Persona($id_persona);
-        $servicio_exportador->setEstado(FALSE);
-        $servicio_exportador->setCosto_Actual($costo_total);
-        $servicio_exportador->setId_Empresa($id_empresa);
-        
-        if($sqlServicioExportador->setGuardarServicioExportador($servicio_exportador)){
-            $datServicioExportador = $sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
-            return $datServicioExportador->getId_servicio_exportador();
-        }
-        else{
-            return null;
-        }
+    $servicio=new Servicio();
+    $sqlServicio=new SQLServicio();
+
+    $servicio->setId_servicio(3);
+    $servicio=$sqlServicio->getBuscarServicioPorId($servicio);
+    $hoy=date("Y-m-d h:m:s");
+    $servicio_exportador = new ServicioExportador();
+    $sqlServicioExportador = new SQLServicioExportador();
+
+    $servicio_exportador->setId_Servicio(3);
+    $servicio_exportador->setFecha_Servicio($hoy);
+    $servicio_exportador->setId_Persona($id_persona);
+    $servicio_exportador->setEstado(FALSE);
+    $servicio_exportador->setCosto_Actual($servicio->getCosto());
+    $servicio_exportador->setId_Empresa($id_empresa);
+
+    if($sqlServicioExportador->setGuardarServicioExportador($servicio_exportador)) return $servicio_exportador;
+    else return null;
   }
-  
-  public static function generarColaParaDdjj($serv_export,$cantidad_ddjj)
+  public static function generarServicioExportadorParaDdjjPago($id_persona,$costo_total,$id_servicio_exportador)
   {
-        $sistema_colas = new SistemaColas();
-        $empresa_persona = new EmpresaPersona();
-        $sqlSistemaColas = new SQLSistemaColas();
-        $sqlEmpresaPersona = new SQLEmpresaPersona();
-        
-        $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJ($empresa_persona);
-        
-        //Crear dos variables para almacenar el Certificador($certif) y quien tiene la menor carga laboral($suma_certif)
-        $certif=0; $suma_certif=9999999;
-        foreach ($certificadoresddjj as $certif_ddjj) {
-            $pers = $certif_ddjj->getId_Persona();
-            $suma_cola = $sqlSistemaColas->getSumarColaAsistenteGeneral($sistema_colas, $pers);
-            //echo $suma_cola[0]["suma"];
-            
-            if($suma_cola[0]["suma"]==NULL){
-                $suma_certif=0;
-                $certif = $pers;
-                break;
-            }else{
-                if($suma_cola[0]["suma"]<$suma_certif){
-                    $suma_certif=$suma_cola[0]["suma"];
-                    $certif=$pers;
-                }
-            }
-        }
-        
-        //Calcular la valoración de las ddjj de acuerdo a la cantidad de acuerdos solicitados
-        //Por defecto la valoración de cada ddjj es 3, por eso se multiplica por 3
-        $cantidad_ddjj = $cantidad_ddjj * 3;
-        
-        //Cargar los valores para generar la cola
-        $sistema_colas->setId_Servicio_Exportador($serv_export);
-        $sistema_colas->setId_Asistente($certif);
-        $sistema_colas->setValoracion($cantidad_ddjj);
-        $sistema_colas->setAtendido(0);
-        
-        if($sqlSistemaColas->setGuardarSistemaColas($sistema_colas)){
-            return $certif;
-        }
-        else{
-            return 0;
-        }
+    $servicio=new Servicio();
+    $sqlServicio=new SQLServicio();
+    $servicio->setId_servicio(70);
+    $servicio=$sqlServicio->getBuscarServicioPorId($servicio);
+    $hoy=date("Y-m-d h:m:s");
+
+    $servicio_exportador = new ServicioExportador();
+    $sqlServicioExportador = new SQLServicioExportador();
+    $servicio_exportador->setId_servicio_exportador($id_servicio_exportador);
+    $servicio_exportador = $sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
+    $servicio_exportador->setId_Servicio(70);
+    $servicio_exportador->setFecha_Servicio($hoy);
+    //$servicio_exportador->setId_Persona($id_persona);
+    $servicio_exportador->setEstado(FALSE);
+    $servicio_exportador->setCosto_Actual($servicio->getCosto());
+    //$servicio_exportador->setId_Empresa($id_empresa);
+
+    if($sqlServicioExportador->setGuardarServicioExportador($servicio_exportador)) return $servicio_exportador;
+    else return null;
   }
-  
+  public static function buscarServicioExportadorParaDdjj($id_servicio_exportador)
+  {
+    $servicio_exportador = new ServicioExportador();
+    $sqlServicioExportador = new SQLServicioExportador();
+
+    $servicio_exportador->setId_servicio_exportador($id_servicio_exportador);
+    $servicio_exportador = $sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
+    return $servicio_exportador;
+  }
+  public static function generarColaParaDdjj($serv_export,$regional)
+  {
+    $sistema_colas = new SistemaColas();
+    $empresa_persona = new EmpresaPersona();
+    $empresa_persona->setId_regional($regional);
+    $sqlSistemaColas = new SQLSistemaColas();
+    $sqlEmpresaPersona = new SQLEmpresaPersona();
+
+    //We ask if there si a person that has review this issue before
+    $sistema_colas->setId_Servicio_Exportador($serv_export);
+    $arrayofcolas=$sqlSistemaColas->getBuscarColaPorServicioExportadorAll($sistema_colas);
+    if(empty($arrayofcolas)){
+      if ($regional==1)
+      {
+        $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJRegionalLPEA($empresa_persona);
+      }
+      else
+      {
+        $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJRegional($empresa_persona);
+      }
+      if(count($certificadoresddjj)==0) $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJ($empresa_persona);
+      shuffle($certificadoresddjj);
+      //Crear dos variables para almacenar el Certificador($certif) y quien tiene la menor carga laboral($suma_certif)
+      $certif=0; $suma_certif=9999999;
+      foreach ($certificadoresddjj as $certif_ddjj) {
+        $pers = $certif_ddjj->getId_Persona();
+        $suma_cola = $sqlSistemaColas->getSumarColaAsistenteGeneral($sistema_colas, $pers);
+
+        if($suma_cola[0]["suma"]==NULL){
+          $suma_certif=0;
+          $certif = $pers;
+          break;
+        }else{
+          if($suma_cola[0]["suma"]<$suma_certif){
+            $suma_certif=$suma_cola[0]["suma"];
+            $certif=$pers;
+          }
+        }
+      }
+    }else{
+      $last=end($arrayofcolas);
+      $certif=$last->id_asistente;
+    }
+
+
+    //Calcular la valoración de las ddjj de acuerdo a la cantidad de acuerdos solicitados
+    //Por defecto la valoración de cada ddjj es 3, por eso se multiplica por 3
+
+    //Cargar los valores para generar la cola
+    $sistema_colas->setId_Servicio_Exportador($serv_export);
+    $sistema_colas->setId_Asistente($certif);
+    $sistema_colas->setValoracion(1);
+    $sistema_colas->setAtendido(0);
+
+    if($sqlSistemaColas->setGuardarSistemaColas($sistema_colas)){
+      return $certif;
+    }
+    else{
+      return 0;
+    }
+  }
+  public static function generarColaParaDdjjAsistente($serv_export,$id_persona)
+  {
+    $sistema_colas = new SistemaColas();
+    $sqlSistemaColas = new SQLSistemaColas();
+
+    //Cargar los valores para generar la cola
+    $sistema_colas->setId_Servicio_Exportador($serv_export);
+    $sistema_colas->setId_Asistente($id_persona);
+    $sistema_colas->setValoracion(1);
+    $sistema_colas->setAtendido(0);
+
+    if($sqlSistemaColas->setGuardarSistemaColas($sistema_colas)){
+      return $id_persona;
+    }
+    else{
+      return 0;
+    }
+  }
+
   //-------------------------generar el servicio para el ruex----------------------------------
   public static function generarServicioExportadorParaRuex($costo_total,$id_empresa)
   {

@@ -30,8 +30,8 @@ class AdmPanelPrincipal extends Principal {
     {
    
         $opciones = str_split($_REQUEST['opciones']);
-        $vista->assign('opciones',$opciones);//la asignamos a la vista       
-        $vista->display("panelAdministrativo/menuprincipal.tpl");
+        $vista->assign('opciones',$opciones);//la asignamos a la vista
+      $vista->display("panelAdministrativo/menuprincipal.tpl");
        exit;  
     }
     if($_REQUEST['tarea']=='entroEmpresa')//para cuando un exportador tiene varios perfiles y entra a una empresa

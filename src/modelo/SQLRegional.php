@@ -18,5 +18,8 @@ class SQLRegional {
     public function getBuscarRegionalPorId(Regional $regional) {
         return $regional->finder()->find('id_regional='.$regional->getId_regional());
     }
+  public function getBuscarRegionalPorDepto(Regional $regional) {
+    return $regional->finder()->find('id_departamento='.$regional->getId_departamento());
+  }
       
 }

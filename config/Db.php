@@ -25,7 +25,7 @@ class Db extends TActiveRecord {
      $this->server = $ini['db_server'];
      $this->driver = 'pgsql';
 
-     static $conn;
+   static $conn;
         if ($conn === null)
             $conn = new TDbConnection($this->driver . ":host=" . $this->server . ";dbname=" . $this->db, $this->user, $this->pwd);
         return $conn;
