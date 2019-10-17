@@ -253,7 +253,7 @@ class AdmDireccion extends Principal {
       $vista = Principal::getVistaInstance();
       $direccion =  AdmDireccion::obtenerDireccion($id_direccion);
       $vista->assign('dir',$direccion);
-      return $vista->fetch('admDireccion/direccion.tpl');
+      return $vista->fetch('admDireccion/Direccion.tpl');
     }
 
     public static function guardarDireccion($_request){
