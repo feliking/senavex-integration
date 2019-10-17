@@ -104,7 +104,6 @@
         //grid.hideColumn(0)
         grid.setDataSource(dataddjj);
         grid.refresh();
-        document.getElementById('togglee').style.visibility = 'hidden';
     };
 
     function clonarDeclaracionJurada(id_ddjj){

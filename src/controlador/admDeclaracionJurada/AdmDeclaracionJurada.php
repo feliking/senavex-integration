@@ -294,7 +294,7 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setMuestra($_REQUEST["muestra"]=='true'?TRUE:FALSE);
       $declaracion_jurada->setNombre_tecnico(strtoupper ($_REQUEST["nombre_tecnico"]));
       $declaracion_jurada->setAplicacion(strtoupper ($_REQUEST["aplicacion"]));
-      $declaracion_jurada->setProduccion_mensual(str_replace(',', '.',$_REQUEST["produccion_mensual_mercancia"]));
+      if($_REQUEST["produccion_mensual_mercancia"]!='') $declaracion_jurada->setProduccion_mensual(str_replace(',', '.',$_REQUEST["produccion_mensual_mercancia"]));
       if($_REQUEST["combo_fabricas"]!='')$declaracion_jurada->setId_direccion($_REQUEST["combo_fabricas"]);
       $declaracion_jurada->setValor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["valor_total_insumosnacional"]));
       $declaracion_jurada->setSobrevalor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_total_insumosnacional"]));
@@ -337,20 +337,13 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setAprobado_uco(0);
 
 
-      echo '1';
       if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
-        echo '1s';
         if($_REQUEST['observacion_general']) $functions->saveObservacion($_REQUEST['observacion_general']);
         //print_r($_REQUEST["tabla_insumosnacionales"]);
-        echo '2';
         $functions->guardarInsumosNacionales($_REQUEST["tabla_insumosnacionales"], $declaracion_jurada->getId_ddjj());
-        echo '3';
         $functions->guardarInsumosImportados($_REQUEST["tabla_insumosimportados"], $declaracion_jurada->getId_ddjj());
-        echo '4';
         if($_REQUEST["esComercializador"]=='true') $functions->guardarComercializadores($_REQUEST["tabla_comercializadores"], $declaracion_jurada->getId_ddjj());
-        echo '5';
         $functions->saveZonasEspeciales($_REQUEST["lista_elaboracion"], $declaracion_jurada->getId_ddjj());
-        echo '6';
         $uploader->saveDocuments($_REQUEST['ddjj_documents'],$declaracion_jurada->getId_ddjj());
 
         $asist_senavex = AdmSistemaColas::generarColaParaDdjj($servicio_exportador->getId_servicio_exportador(),$regional_id);
