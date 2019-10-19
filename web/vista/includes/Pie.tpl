@@ -348,4 +348,4 @@ function ayuda(controlador)
 <script src="styles/js-personales/papaparse.min.js"></script>
 <script src="styles/js-personales/jquery.auto-complete.min.js"></script>
 <script src="styles/js-personales/verificacion.js"></script>
-<script src="styles/js-personales/infracciones.js"></script
+<script src="styles/js-personales/infracciones.js"></script>
