@@ -12,7 +12,7 @@
         $hoy = new DateTime(date("Y-m-d"));
         $empresa =new Empresa();
         $sqlempresa =new SQLEmpresa();
-        $empresa->setEstado('15');
+        $empresa->setEstado('2');
         $empresas=$sqlempresa->getEmpresaPorEstado($empresa);
 
         foreach ($empresas as $emp) {

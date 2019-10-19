@@ -129,7 +129,7 @@
                                             validationMessage="Ingrese el Número de Testimonio o Poder"  />
                                     </div>
                                     <div class="span4" >
-                                        <input  style="width:100%;" placeholder="Fecha de Vencimiento de Carnet de Identidad del Representante "  name="f_ci_rl" id="f_ci_rl" onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Fecha de vencimiento de su Carnet de Identidad" onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese la fecha de vencimiento de su Carnet de Identidad" />
+                                        <input  style="width:100%;" placeholder="(*)Fecha de Vencimiento de Carnet de Identidad del Representante "  name="f_ci_rl" id="f_ci_rl" onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Fecha de vencimiento de su Carnet de Identidad" onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese la fecha de vencimiento de su Carnet de Identidad" />
                                     </div>
 
                                 </div>
@@ -141,7 +141,7 @@
                                         
                                     </div>
                                     <div class="span4" >
-                                        <div class="notas" >En caso de ser Indefinido colocar 01/01/2099</div>
+                                        <div class="notas" >(*)En caso de ser Indefinido colocar 01/01/2099</div>
                                     </div>
 
                                 </div>
@@ -210,7 +210,7 @@
                                 </div>
                                 <div class="row-fluid form" >
                                     <div class="span4" >
-                                        <input  style="width:100%;" placeholder="Fecha de Vencimiento de su Carnet de Identidad"  name="f_ci_ap" id="f_ci_ap" onkeyup="javascript:this.value=this.value.toUpperCase();"  validationMessage="Fecha de vencimiento de su Carnet de Identidad" onkeyup="javascript:this.value=this.value.toUpperCase();"  />
+                                        <input  style="width:100%;" placeholder="(*)Fecha de Vencimiento de su Carnet de Identidad"  name="f_ci_ap" id="f_ci_ap" onkeyup="javascript:this.value=this.value.toUpperCase();"  validationMessage="Fecha de vencimiento de su Carnet de Identidad" onkeyup="javascript:this.value=this.value.toUpperCase();"  />
                                     </div>
                                     <div class="span4" >
                                         <input  style="width:100%;" placeholder="Fecha de Vencimiento del Testimonio o Poder"  name="f_tes_fin" id="f_tes_fin" onkeyup="javascript:this.value=this.value.toUpperCase();"  validationMessage="Fecha de vencimiento  Testimonio o Poder" onkeyup="javascript:this.value=this.value.toUpperCase();" />
@@ -218,7 +218,7 @@
                                 </div>
                                 <div class="row-fluid form" >
                                     <div class="span4" >
-                                        <div class="notas" >En caso de ser Indefinido colocar 01/01/2099 </div>
+                                        <div class="notas" >(*)En caso de ser Indefinido colocar 01/01/2099 </div>
                                         
                                         
                                     </div>
@@ -376,7 +376,7 @@ var idpais = $("#idpais").data("kendoComboBox");
 //------------------------------------esto es para los combobox del representante legal---------------------------
 
 $("#tipodocumento").kendoComboBox({   
-    placeholder:"Documento de Identidad",
+    placeholder:"Seleccione Tipo Documento de Identidad",
     dataTextField: "tipodocumento",
     dataValueField: "Id",
     dataSource: [
@@ -487,7 +487,7 @@ $("#idpaisApoderado").kendoComboBox({   placeholder:"País de Origen",
 var idpaisApoderado = $("#idpaisApoderado").data("kendoComboBox");
 //------------------------------------esto es para los combobox del representante legal---------------------------
 $("#tipodocumentoApoderado").kendoComboBox({   
-        placeholder:"Documento de Identidad",
+        placeholder:"Seleccione Tipo Documento de Identidad",
         dataTextField: "tipodocumento",
         dataValueField: "Id",
         dataSource: [
@@ -799,7 +799,7 @@ function fcustomers(id_persona)
         //$('#emailrp').removeAttr('required');
         //$('#genero').removeAttr('required');
         
-        //ocultar('div_datos_privados');
+        ocultar('div_datos_privados');
         setDisable_direccion2(true);
         
         ocultar('div_dpto_exp');
@@ -810,7 +810,7 @@ function fcustomers(id_persona)
         $('#emailrp').val(persona[0].email);
         $('input[name=genero]').val([persona[0].genero]);
         // para validar nuevamente el formulario
-        //validator.validate();
+        validator.validate();
         
         //deshabilitlamos los campos para que no pueda cambiarlos
         tipodocumento.enable(false);
@@ -849,8 +849,9 @@ function fcustomersApoderado(id_persona)
         $('input[name=generoApoderado]').val([persona[0].genero]);
         $('#dpto_expApoderado').removeAttr('required');
         setDisable_direccion3(true);
+        ocultar('div_datos_privados');
         ocultar('div_dpto_expApoderado');
-        //validator.validate();        
+        validator.validate();        
         //deshabilitlamos los campos para que no pueda cambiarlos
         tipodocumentoApoderado.enable(false);
         idpaisApoderado.enable(false);

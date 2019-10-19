@@ -9,7 +9,7 @@
 class SQLEmpresaPersona {
     
     public function getListarPersonaPorEmpresa(EmpresaPersona $empresa_persona) {
-        return $empresa_persona->finder()->with_persona()->with_perfil()->findAll('id_empresa = ? and (activo=1 or activo=2)', $empresa_persona->getId_Empresa());
+        return $empresa_persona->finder()->with_persona()->with_perfil()->findAll('id_empresa = ? and (activo=1 or activo=2) and id_perfil!=23', $empresa_persona->getId_Empresa());
         //return $empresa_persona->finder()->with_perfil()->findAll('id_empresa = ?', $empresa_persona->getId_Empresa());
     }
     public function getListarPersonaExportadores(EmpresaPersona $empresa_persona) {
@@ -23,10 +23,28 @@ class SQLEmpresaPersona {
         return $empresa_persona->finder()->find('id_persona = ? and id_empresa=0  and activo=2', $empresa_persona->getId_persona());
     }  
     public function getListarEmpresaPorPersona(EmpresaPersona $empresa_persona) {
-        return $empresa_persona->finder()->findAll('id_persona = ? and activo=1', $empresa_persona->getId_Persona());
+        return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil!=23', $empresa_persona->getId_Persona());
     }
-    public function getListarEmpresaPorPersonaApi(EmpresaPersona $empresa_persona) {
-        return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil=23', $empresa_persona->getId_Persona());
+    public function getListarEmpresaPorPersonaApi(EmpresaPersona $empresa_persona, $nit) {
+
+        if ($nit == 346117026){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8064');
+        } else if ($nit == 168184027){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8277');
+        } else if ($nit == 6374040012){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8312');
+        } else if ($nit == 228952022){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8232');
+        } else if ($nit == 280940022){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8237');
+        } elseif ($nit == 290072021){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8264');
+        } else if ($nit == 265628026){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8227');
+        } else {
+            return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil=23', $empresa_persona->getId_Persona());
+        }
+        die;
     }
     public function getEmpresaPorPersonaEmpresa(EmpresaPersona $empresa_persona) {
         return $empresa_persona->finder()->find('id_persona = ? and id_empresa= ? and activo=1', $empresa_persona->getId_Persona(),$empresa_persona->getId_Empresa());

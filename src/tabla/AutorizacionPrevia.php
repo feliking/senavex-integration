@@ -32,6 +32,8 @@ private $id_usuario_aprob;
 private $cantidad_total;
 private $peso_total;
 private $valor_total;
+private $nro_serie;
+
 
 
 
@@ -75,6 +77,8 @@ function setPeso_total($peso_total) { $this->peso_total = $peso_total; }
 function getPeso_total() { return $this->peso_total; }
 function setValor_total($valor_total) { $this->valor_total = $valor_total; }
 function getValor_total() { return $this->valor_total; }
+function setNro_serie($nro_serie) { $this->nro_serie = $nro_serie; }
+function getNro_serie() { return $this->nro_serie; }
 
     
 }
