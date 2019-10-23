@@ -936,7 +936,8 @@
                 autoBind: true,
                 dataTextField: "descripcion",
                 dataValueField: "descripcion",
-                dataSource: dstieneco
+                dataSource: dstieneco,
+                open: solveDropdowns
             });
     };
     {**************************Acuerdo*********************************}

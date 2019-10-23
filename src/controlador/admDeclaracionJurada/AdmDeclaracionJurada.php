@@ -295,7 +295,6 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setNombre_tecnico(strtoupper ($_REQUEST["nombre_tecnico"]));
       $declaracion_jurada->setAplicacion(strtoupper ($_REQUEST["aplicacion"]));
       if($_REQUEST["produccion_mensual_mercancia"]!='') $declaracion_jurada->setProduccion_mensual(str_replace(',', '.',$_REQUEST["produccion_mensual_mercancia"]));
-      if($_REQUEST["combo_fabricas"]!='')$declaracion_jurada->setId_direccion($_REQUEST["combo_fabricas"]);
       $declaracion_jurada->setValor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["valor_total_insumosnacional"]));
       $declaracion_jurada->setSobrevalor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_total_insumosnacional"]));
       $declaracion_jurada->setValor_total_insumosimportados($funcionesGenerales->setNumeric($_REQUEST["valor_total_insumosimportados"]));
@@ -325,6 +324,8 @@ class AdmDeclaracionJurada extends Principal {
       $regional_id=$regional->getId_regional();
       $declaracion_jurada->setId_regional($regional_id);
 
+      if($_REQUEST["combo_fabricas"]!='') $declaracion_jurada->setId_direccion($_REQUEST["combo_fabricas"]);
+      else $declaracion_jurada->setId_direccion($empresa->getDireccion());
       $declaracion_jurada->setDetalle_otros(strtoupper ($_REQUEST['elaboracion_detalle']));
       $declaracion_jurada->setId_acuerdo($_REQUEST['acuerdo']);
 //            $declaracion_jurada->setId_criterios( implode (",", json_decode($_REQUEST['criterios_origen'])));
