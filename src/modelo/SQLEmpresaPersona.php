@@ -68,7 +68,7 @@ class SQLEmpresaPersona {
         return $empresa_persona->finder()->count('id_persona = ? and activo=1', array($empresa_persona->getId_Persona()));
     }
     public function getListarCertificadoresSenavexParaDDJJ(EmpresaPersona $empresa_persona){
-        return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9))AND activo=1', $empresa_persona->getId_empresa_persona());
+        return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9)) AND activo=1', $empresa_persona->getId_empresa_persona());
     }
   public function getListarCertificadoresSenavexParaDDJJRegional(EmpresaPersona $empresa_persona){
     return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9)OR(id_perfil=19))AND activo=1 AND id_regional=?', $empresa_persona->getId_regional());

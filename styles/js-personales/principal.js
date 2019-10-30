@@ -449,7 +449,9 @@ function getTableData(GridData) {
     for (var i = 0; i < numrows; i++) {
         var row={}
         $.each(columns,function (index,column) {
-            row[column.field]=values[i][column.field];
+            if(values[i][column.field]){
+                row[column.field]=values[i][column.field];
+            }
         });
         array_data.push(row);
     }

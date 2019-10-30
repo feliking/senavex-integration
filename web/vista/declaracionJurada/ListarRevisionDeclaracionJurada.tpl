@@ -42,7 +42,7 @@
         change: cambiarceldasddjj,
         columns: [
             { field: "descripcion_comercial", title: "Descripción Comercial"},
-            { field: "detalle_arancel", title: "Clasificación Arancelaria"},
+            { field: "denominacion", title: "Clasificación Arancelaria"},
             { field: "caracteristicas", title: "Características"},
             { field: "fecha_registro", title: "Fecha de Registro"},
             { field: "estadoddjj", title: "Estado"}
@@ -59,7 +59,7 @@ function cambiarceldasddjj()
     var data = gridddjj.dataItem(row);
     if(registroddjj==data.id_ddjj)
     {  
-        anadir('Revisar DD.JJ.','admDeclaracionJurada','revisarDeclaracionJurada&id_declaracion_jurada='+data.id_ddjj);
+        anadir('Revisar DD.JJ.','admDeclaracionJurada','reviewDeclaracion&id_declaracion_jurada='+data.id_ddjj);
     }
     else
     {

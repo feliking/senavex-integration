@@ -458,7 +458,8 @@ class AdmDeclaracionJurada extends Principal {
           '","descripcion_comercial":"' . $resultado[$i]["denominacion_comercial"] .
           '","denominacion":"' . ($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
           '","caracteristicas":"' . $resultado[$i]["caracteristicas"] .
-          '","fecha_limite_revision":"' . substr($resultado[$i]["fecha_limite_revision"], 0, 11) .
+//          '","fecha_limite_revision":"' . substr($resultado[$i]["fecha_limite_revision"], 0, 11) .
+          '","fecha_registro":"' . substr($resultado[$i]["fecha_registro"], 0, 11) .
           '","estadoddjj":"' . $resultado[$i]["estadoddjj"] . '"},';
 
         $selected='';
@@ -487,14 +488,14 @@ class AdmDeclaracionJurada extends Principal {
       $acuerdo->setId_Acuerdo($declaracion_jurada->getId_acuerdo());
       $acuerdo=$sqlAcuerdo->getByIdArguments($acuerdo);
 
-//            //--------------FUNCION DE ANALISIS DE RIESGO: Esta funcion devuelve la formula prearmada, las variables utilizadas con sus valores-----
+      //--------------FUNCION DE ANALISIS DE RIESGO: Esta funcion devuelve la formula prearmada, las variables utilizadas con sus valores-----
       $analisisRiesgo = new AdmAnalisisFormula();
       $objetoAnalisiRiesgo = $analisisRiesgo->getAnalisisRiesgo($declaracion_jurada);
       $vista->assign('objectoAnalisiRiesgo', $objetoAnalisiRiesgo);
       $verificacion = new AdmVerificaciones();
       $verificacion->verificacionesAntiguasPorEmpresa($vista,$declaracion_jurada->getId_empresa());
 
-      //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
       $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
       $vista->assign('observaciones_ddjj',$functions->getObservaciones($_REQUEST["id_declaracion_jurada"]));

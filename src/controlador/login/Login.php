@@ -257,7 +257,7 @@ class Login extends Principal {
                             $SQLPOpciones = new SQLPerfilOpciones();
                             $POpciones->setOpcion($opcion_x[$index]);
                             $lista = $SQLPOpciones->getPerfilOpcionesByOpcion($POpciones);
-                            if($lista[0]->getHabilitado()=='1'){
+                            if($lista[0] AND $lista[0]->getHabilitado()=='1'){
                                 $str.=$lista[0]->getOpcion();
                             }
 
@@ -277,8 +277,8 @@ class Login extends Principal {
                 $vista->assign('empresa', $_SESSION["empresa"]);//declaramos en ola vista la variable empresa
                 $vista->assign('id_perfil', $_SESSION["id_perfil"]);//declaramos el perfil del usuario  
                 $vista->assign('perfil', $_SESSION["perfil"]);//declaramos el perfil del usuario  
-                $vista->assign('opciones_persona',$_SESSION["opciones_persona"]);//declaramos las opciones que tiene la persona  
-            }  
+                $vista->assign('opciones_persona',$_SESSION["opciones_persona"]);//declaramos las opciones que tiene la persona
+            }
             if($_SESSION["tipo_usuario"] =='2')//es para un usuario externo
             {
                 $persona->setId_persona($datos_usuario->getId_persona());
@@ -431,7 +431,7 @@ class Login extends Principal {
                 $vista->assign('id_usuario', $_SESSION["id_usuario"]);
                 $vista->assign('usuario',$_SESSION["usuario"]);
                 $vista->assign('clave', $_SESSION["clave"]);
-                $vista->assign('tipo_usuario', $_SESSION["tipo_usuario"]);   
+                $vista->assign('tipo_usuario', $_SESSION["tipo_usuario"]);
                 $vista->assign('opciones_persona',$_SESSION["opciones_persona"]);//declaramos las opciones que tiene la persona         
                 $vista->assign('estado_empresa',$_SESSION["opciones_persona"]);
                 

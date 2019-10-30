@@ -16,6 +16,7 @@ class Departamento extends Db {
     private $id_departamento;
     private $nombre;
     private $sigla;
+    private $criterio_valor;
     
     public function setId_departamento($id_departamento) {
         $this->id_departamento = $id_departamento;
@@ -36,6 +37,12 @@ class Departamento extends Db {
     }
     public function getSigla() {
         return $this->sigla;
+    }
+    public function getCriterio_valor(){
+        return $this->criterio_valor;
+    }
+    function setCriterio_valor($criterio_valor){
+        $this->criterio_valor=$criterio_valor;
     }
     
 }

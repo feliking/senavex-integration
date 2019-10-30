@@ -7,7 +7,7 @@ defined('_ACCESO') or die('Acceso restringido');
 
 class CriterioOrigen extends Db implements JsonSerializable {
         
-    const TABLE = 'planilla_criterio_origen';
+    const TABLE = 'criterio_origen';
 
     public static function finder($className=__CLASS__) {
         return parent::finder($className);
@@ -17,8 +17,12 @@ class CriterioOrigen extends Db implements JsonSerializable {
     private $id_acuerdo;
     private $descripcion;
     private $literal;
-    private $obligatorio;
-    
+    private $parrafo;
+    private $orden;
+    private $activo;
+    private $criterio_valor;
+
+
     public function setId_criterio_origen($id_criterio_origen) {
         $this->id_criterio_origen = $id_criterio_origen;
     }
@@ -46,12 +50,30 @@ class CriterioOrigen extends Db implements JsonSerializable {
     public function getLiteral() {
         return $this->literal;
     }
-    function getObligatorio() {
-        return $this->obligatorio;
-    }
 
-    function setObligatorio($obligatorio) {
-        $this->obligatorio = $obligatorio;
+    public function setParrafo($parrafo) {
+        $this->parrafo = $parrafo;
+    }
+    public function getParrafo() {
+        return $this->parrafo;
+    }
+    public function setOrden($orden) {
+        $this->orden = $orden;
+    }
+    public function getOrden() {
+        return $this->orden;
+    }
+    public function setActivo($activo) {
+        $this->activo = $activo;
+    }
+    public function getActivo() {
+        return $this->activo;
+    }
+    public function getCriterio_Valor(){
+        return $this->criterio_valor;
+    }
+    function setCriterio_Valor($criterio_valor){
+        $this->criterio_valor=$criterio_valor;
     }
 
     public function jsonSerialize() {
@@ -60,7 +82,8 @@ class CriterioOrigen extends Db implements JsonSerializable {
           'id_acuerdo' => $this->id_criterio_origen,
           'descripcion' => $this->descripcion,
           'literal' => $this->literal,
-          'obligatorios' => $this->obligatorio
+          'parrafo' => $this->parrafo,
+          'orden' => $this->orden,
         ];
     }
 }

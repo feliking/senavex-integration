@@ -15,4 +15,17 @@ class SQLTipoValorInternacional {
     public function getBuscarDescripcionPorId(TipoValorInternacional $tipo_valor_internacional) {
         return $tipo_valor_internacional->finder()->find('id_tipo_valor_internacional = ?', $tipo_valor_internacional->getId_tipo_valor_internacional());
     }
+  public function getIdsTipoValorInternacional(TipoValorInternacional $tipoValorInternacional){
+    $sql='SELECT id_tipo_valor_internacional FROM tipo_valor_internacional';
+    $connection = $tipoValorInternacional->getDbConnection();
+    $connection->Active = true;
+    $command = $connection->createCommand($sql);
+    $dataReader = $command->query();
+    $rows = $dataReader->readAll();
+    $array = [];
+    foreach ($rows as $key=>$val){
+      array_push($array, $val['id_tipo_valor_internacional']);
+    }
+    return $array;
+  }
 }

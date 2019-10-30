@@ -25,6 +25,8 @@ class Municipio extends Db {
     private $id_municipio;
     private $descripcion;
     private $id_departamento;
+    private $criterio_valor;
+
     function getId_municipio() {
         return $this->id_municipio;
     }
@@ -49,6 +51,11 @@ class Municipio extends Db {
         $this->id_departamento = $id_departamento;
     }
 
-
+    function getCriterio_valor(){
+        return $this->criterio_valor;
+    }
+    function setCriterio_valor($criterio_valor){
+        $this->criterio_valor=$criterio_valor;
+    }
 }
 ?>
