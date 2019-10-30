@@ -24,6 +24,7 @@ class EmpresaAfiliacion extends Db {
     
     public $id_empresa_afiliacion;
     public $descripcion;
+    public $criterio_valor;
     
     function getId_empresa_afiliacion() {
         return $this->id_empresa_afiliacion;
@@ -42,6 +43,12 @@ class EmpresaAfiliacion extends Db {
     }
 
 
+    function getCriterio_valor(){
+        return $this->criterio_valor;
+    }
+    function setCriterio_valor($criterio_valor){
+        $this->criterio_valor=$criterio_valor;
+    }
 
 }
 ?>
