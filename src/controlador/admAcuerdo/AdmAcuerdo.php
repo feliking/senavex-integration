@@ -69,8 +69,9 @@ class AdmAcuerdo extends Principal {
 
     if($_REQUEST['tarea'] == 'saveAcuerdo'){
             $today = date("Y-m-d h:m:s");
+            $esUsado = $this->checkAcuerdo($_REQUEST['id_acuerdo']);
 
-            if($_REQUEST['id_acuerdo'] && $this->checkAcuerdo($_REQUEST['id_acuerdo'])){
+            if($_REQUEST['id_acuerdo'] && !$esUsado){
                 $acuerdo->setId_Acuerdo($_REQUEST['id_acuerdo']);
                 $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
             }
@@ -124,7 +125,7 @@ class AdmAcuerdo extends Principal {
                     }
                 }
                 //anular acuerdo si es edicion
-                if($_REQUEST['id_acuerdo']) $this->anularAcuerdo($_REQUEST['id_acuerdo']);
+                if($_REQUEST['id_acuerdo'] && $esUsado) $this->anularAcuerdo($_REQUEST['id_acuerdo']);
 
                 echo '{"status":"1","message":"El acuerdo se cuardo satisfactoriamente."}';
             }
