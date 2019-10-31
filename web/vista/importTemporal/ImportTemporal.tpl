@@ -796,17 +796,12 @@ function fcustomers(id_persona)
         $('#apellidom').val(persona[0].materno);
         
         $('#dpto_exp').removeAttr('required');
-        //$('#emailrp').removeAttr('required');
-        //$('#genero').removeAttr('required');
         
         ocultar('div_datos_privados');
         setDisable_direccion2(true);
         
         ocultar('div_dpto_exp');
         
-        //$('#numerocontacto').val(persona[0].numero_contacto);
-        //$('#numerocontacto2').val(persona[0].numero_contacto2);
-        //$('#poder').val(persona[0].poder);
         $('#emailrp').val(persona[0].email);
         $('input[name=genero]').val([persona[0].genero]);
         // para validar nuevamente el formulario
@@ -848,8 +843,8 @@ function fcustomersApoderado(id_persona)
         $('#emailrpApoderado').val(persona[0].email);
         $('input[name=generoApoderado]').val([persona[0].genero]);
         $('#dpto_expApoderado').removeAttr('required');
+        ocultar('div_datos_privadosApoderado');
         setDisable_direccion3(true);
-        ocultar('div_datos_privados');
         ocultar('div_dpto_expApoderado');
         validator.validate();        
         //deshabilitlamos los campos para que no pueda cambiarlos
