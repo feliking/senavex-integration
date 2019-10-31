@@ -214,7 +214,7 @@ class AdmEmpresa extends Principal {
             $vista->assign('empresad', $empresad);
             $vista->assign('empresa', $empresa);
             $vista->assign("renovacion_editar", ($empresa->getEstado()==6 || $empresa->getEstado()==14)? 1:0);
-            $vista->assign('valido', ($empresa->getEstado()==2)? 1:0 );
+            $vista->assign('valido', ($empresa->getEstado()==2 || $empresa->getEstado()==10 )? 1:0 );
              $vista->assign("rep_legal", $empresaPersona->getId_Perfil()==3? 1:0);
             $vista->display("ruex/RuexModificacionTodo.tpl");
             exit;
