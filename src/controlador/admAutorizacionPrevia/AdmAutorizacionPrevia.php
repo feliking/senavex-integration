@@ -219,11 +219,19 @@ class AdmAutorizacionPrevia extends Principal {
             exit;
 
         }
+
         if($_REQUEST['tarea']=='altaNuevaApi'){
             $vista->display("admEmpresaApi/SolicitudApi.tpl");
             exit;
         }
-        
+
+        // listar solicitudes
+        if($_REQUEST['tarea']=='ListarApiPendientes'){
+            $vista->display("admSolicitudApi/ListaSolicitudApi.tpl");
+            exit;
+        }
+
+
     }
 
 }
