@@ -231,6 +231,55 @@ class AdmAutorizacionPrevia extends Principal {
             exit;
         }
 
+         // listar solicitudes AP 
+        if($_REQUEST['tarea']=='ListaSolicitudApi'){
+
+            $autorizacionPrevia = new AutorizacionPrevia();
+            // $autorizacionPrevia->setEstado($_REQUEST['id_estado']);
+            $sqlAutorizacionPrevia = new SQLAutorizacionPrevia();
+
+            $autorizacionPrevia=$sqlAutorizacionPrevia->getListarAPsinDetalle($autorizacionPrevia);
+            $strJson = '';
+            echo '[';
+            foreach ($autorizacionPrevia as $datos){
+
+                if($datos->getId_autorizacion_previa() > 291 or $datos->getEstado() == 1 ){
+                    $pais = new Pais();
+                    $sqlPais = new SQLPais();
+                    $persona = new Persona();
+                    $sqlPersona = new SQLPersona();
+                    $pais->setId_pais($datos->getId_pais_procedencia());
+                    $pais = $sqlPais->getBuscarDescripcionPorId($pais);
+                    $id_autorizado = $datos->getPersona_autorizada();
+                    $persona->setId_persona($id_autorizado);
+                    $persona = $sqlPersona->getDatosPersonaPorId($persona);
+                    $nro = 10000 + $datos->getId_autorizacion_previa();
+                    if ($datos->getEstado() == 1){
+                        $estado1 = 'APROBADO';
+                    } else if ( $datos->getEstado() == 2){
+                        $estado1 = 'RECHAZADO';
+                    } else if ( $datos->getEstado() == 3){
+                        $estado1 = 'CON REGISTRO';
+                    }
+
+
+                    $strJson .= '{"id_autorizacion":"' . $datos->getId_autorizacion_previa() .
+                '","correlativo":"'.$nro .
+                            '","fecha_registro":"'.$datos->getFecha_registro().'"
+                            ,"recursos":"'.$datos->getOrigen_recursos().'"
+                            ,"estado":"'.$estado1.'"
+                            ,"pais_procedencia":"'.$pais->getNombre().'"},';
+                            // ,"persona":"'.$persona->getNombres().'"},';
+                    $selected='';
+                }
+            }
+            $strJson = substr($strJson, 0, strlen($strJson) - 1);
+            echo $strJson;
+            echo ']';
+            exit;
+
+        }
+
 
     }
 

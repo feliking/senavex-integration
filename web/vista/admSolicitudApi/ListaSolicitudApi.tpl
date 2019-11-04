@@ -46,7 +46,7 @@ var grid3 =  $("#sol_admision").kendoGrid({
     dataSource: {
         transport: {
             read: {
-               url: "index.php?opcion=admAutorizacionPrevia&tarea=ListarApiPorEstado&id_estado=1",
+               url: "index.php?opcion=admAutorizacionPrevia&tarea=ListaSolicitudApi",
                dataType: "json"
             }
         },
@@ -70,7 +70,7 @@ var grid3 =  $("#sol_admision").kendoGrid({
     pageable: {
         refresh: true,
         pageSizes: true,
-        buttonCount: 10
+        buttonCount: 50
     },
     //change: cambiarceldasadmision,
     columns: [

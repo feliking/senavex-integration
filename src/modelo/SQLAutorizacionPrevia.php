@@ -27,4 +27,8 @@ class SQLAutorizacionPrevia {
     public function getListarAprobadas(AutorizacionPrevia $autorizacionPrevia) {
         return $autorizacionPrevia->findAll('estado = 1 order by id_autorizacion_previa asc ');
     }
+
+    public function getListarAPsinDetalle(AutorizacionPrevia $autorizacionPrevia) {
+        return $autorizacionPrevia->findAll(' estado = 1 and id_autorizacion_previa > 293 and id_autorizacion_previa < 729 order by id_autorizacion_previa desc ');
+    }
 }
