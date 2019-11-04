@@ -72,16 +72,30 @@ var grid3 =  $("#sol_admision").kendoGrid({
         pageSizes: true,
         buttonCount: 50
     },
-    //change: cambiarceldasadmision,
+    change: cambiarvistarevisa,
     columns: [
         { field: "correlativo", title: "Nro. Solicitud", width: '10%', },
         { field: "fecha_registro", title: "Fecha de registro",filterable: false, width: '12%', },
         { field: "pais_procedencia", title: "Pais de Procedencia", width: '15%', },
         { field: "recursos", title: "Origen de recursos para la adquisicion", width: '30%',},
-        { field: "estado", title: "Estado", width: '20%',},
-        { field: "Opciones", template: '<a target="_blank" href="index.php?opcion=ImpresionApi&tarea=ImpresionApi&id_autorizacion=#= id_autorizacion #" class="k-button link">Imprimir</a>' }
+        { field: "estado", title: "Estado", width: '20%',}
     ]
 });
+var registrosol=0;
+function cambiarvistarevisa()
+{  
+    var gridsol = $("#sol_admision").data("kendoGrid");
+    var row = gridsol.select();
+    var data = gridsol.dataItem(row);
+    if(registrosol==data.id_autorizacion)
+    {   
+        cerraractualizartab({/literal}data.correlativo{literal},'admAutorizacionPrevia','revisa&id_autorizacion='+data.id_autorizacion+'&revisar=1');
+    }
+    else
+    {
+        registrosol=data.id_autorizacion;
+    }
+}
 
 {/literal}      
 </script>

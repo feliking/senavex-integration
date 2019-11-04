@@ -343,7 +343,7 @@ cancelar.bind("click", function(e){
     aceptar.bind("click", function(e){  
 
 	 $("#aceptar").data("kendoButton").enable(false);
-        var file_data = $("#archivoex").prop("files")[0];   
+        var file_data = $("#archivoex").prop("files")[0];
         var paisp = $("#pais_proc").data("kendoDropDownList");
         var tipoc = $("#tipo_cuenta").data("kendoDropDownList");
         var persa = $("#pers_autorizada").data("kendoDropDownList");

@@ -8,7 +8,7 @@
 class SQLAutorizacionPreviaDetalle {
     
     
-    public function Save(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
+    public function SaveAutDetalle(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
         return $autorizacionPreviaDetalle->save();
     }
 

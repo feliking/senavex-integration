@@ -3,6 +3,10 @@
 /* Registrar solicitudes api*/
 defined('_ACCESO') or die('Acceso restringido');
 
+include_once(PATH_LIB . DS . 'PHPExcel' . DS . 'IOFactory.php');
+include_once(PATH_LIB . DS . 'PHPExcel' . DS . 'PHPExcel.php');
+include_once(PATH_LIB . DS . 'PHPExcel' . DS . 'Writer'. DS . 'Excel2007.php');
+
 include_once(PATH_TABLA . DS . 'AutorizacionPrevia.php');
 include_once(PATH_TABLA . DS . 'AutorizacionPreviaDetalle.php');
 include_once(PATH_TABLA . DS . 'Persona.php');
@@ -26,6 +30,7 @@ include_once(PATH_TABLA . DS . 'EmpresaImportadorObservacion.php');
 
 
 include_once(PATH_MODELO . DS . 'SQLAutorizacionPrevia.php');
+include_once(PATH_MODELO . DS . 'sqlAutorizacionPreviaDetalle.php');
 include_once(PATH_MODELO . DS . 'SQLPersona.php');
 include_once(PATH_MODELO . DS . 'SQLEmpresaImportador.php');
 include_once(PATH_MODELO . DS . 'SQLUsuario.php');
@@ -106,7 +111,7 @@ class AdmAutorizacionPrevia extends Principal {
                     $autorizacionPrevia->setId_empresa_importador($_SESSION['id_empresa']);
                     
                     $autorizacion = $sqlAutorizacionPrevia->save($autorizacionPrevia);
-		    $corr = 10000 + $autorizacionPrevia->getId_autorizacion_previa();
+		            $corr = 10000 + $autorizacionPrevia->getId_autorizacion_previa();
 
                     $dest_path = $uploadFileDir . $corr.'_'.$_SESSION['id_empresa'].'_'.$fech.'.'.$fileExtension;
                      
@@ -278,6 +283,222 @@ class AdmAutorizacionPrevia extends Principal {
             echo ']';
             exit;
 
+        }
+
+        if($_REQUEST['tarea']=='revisa'){
+
+            $autorizacionPrevia = new AutorizacionPrevia();
+            $sqlAutorizacionPrevia = new sqlAutorizacionPrevia();
+            $id_autorizacion=$_REQUEST['id_autorizacion'];
+            $autorizacionPrevia->setId_autorizacion_previa($id_autorizacion);
+            $autorizacionPrevia = $sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
+            $empresaImportador = new EmpresaImportador();
+            $sqlEmpresaImportador = new SQLEmpresaImportador();
+            $empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
+            $empresaImportador=$sqlEmpresaImportador->getEmpresaApiPorID($empresaImportador);
+            //aca verificamos si es una persona o es un representante legal
+            $vista->assign('autorizacionPrevia', $autorizacionPrevia);
+            $vista->assign('empresaRevision', $empresaImportador);
+            $vista->assign('id_autorizacion', $id_autorizacion);
+
+            $vista->display("admSolicitudApi/RevisaApi.tpl"); 
+            exit;
+
+        }
+
+        if($_REQUEST['tarea']=='guardaDeatallex'){
+
+            $allowedfileExtensions = array('xls', 'xlsx');
+            if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+                $fileName = $_FILES['file']['name'];
+                $fileNameCm = explode(".", $fileName);
+                $fileExtension = strtolower(end($fileNameCm));
+                $fileTmpPath = $_FILES['file']['tmp_name'];
+
+                if (in_array($fileExtension, $allowedfileExtensions)) {
+
+                    $i = $_REQUEST['id_autorizacion'];
+
+                    $inputFileType = PHPExcel_IOFactory::identify($fileTmpPath);
+                    $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+                    $objPHPExcel = $objReader->load($fileTmpPath);
+                    $sheet = $objPHPExcel->getSheet(0); 
+                    $highestRow = $sheet->getHighestRow();
+                    $highestColumn = $sheet->getHighestColumn();
+
+                    for ($row = 11; $highestRow; $row++){
+                        $autorizacionPreviaDetalle = new AutorizacionPreviaDetalle();
+                        $sqlAutorizacionPreviaDetalle = new sqlAutorizacionPreviaDetalle();
+                        $desc_comercial = $sheet->getCell("E".$row)->getCalculatedValue();
+                        $desc_comercial = str_replace("'", " ", $desc_comercial);
+                        if ($desc_comercial == '') break; //
+                        $subpartida = $sheet->getCell("C".$row)->getCalculatedValue();
+                        $desc_arancelaria = $sheet->getCell("D".$row)->getCalculatedValue();
+
+                        $cantidad = $sheet->getCell("F".$row)->getCalculatedValue();
+                        $unidad_medida = $sheet->getCell("G".$row)->getCalculatedValue();
+                        $peso_bruto = $sheet->getCell("H".$row)->getCalculatedValue();
+
+                        $precio_unitario = $sheet->getCell("I".$row)->getCalculatedValue();
+                        $valor_total = $sheet->getCell("J".$row)->getCalculatedValue();
+
+                       $precio_unitario_fob_divisa = $sheet->getCell("L".$row)->getCalculatedValue();
+                       
+                       $valor_fob_total_divisa = $sheet->getCell("M".$row)->getCalculatedValue();
+
+                       if($unidad_medida == 'u') $unidad_medida = 1;
+                       else $unidad_medida = 2;
+                        //    $valor_fob_total_divisa = $sheet->getCell("M".$row)->getCalculatedValue();
+                        if(!$precio_unitario_fob_divisa && !$valor_fob_total_divisa && $peso_bruto) {
+                            $autorizacionPreviaDetalle->setCodigo_nandina($subpartida);
+                            $autorizacionPreviaDetalle->setDescripcion_arancelaria($desc_arancelaria);
+                            $autorizacionPreviaDetalle->setDescripcion_comercial($desc_comercial);
+                            $autorizacionPreviaDetalle->setCantidad($cantidad);
+                            $autorizacionPreviaDetalle->setUnidad_medida($unidad_medida);
+                            $autorizacionPreviaDetalle->setPeso($peso_bruto);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob($precio_unitario);
+                            $autorizacionPreviaDetalle->setFob($valor_total);
+                            $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
+
+                        } else if (!$precio_unitario_fob_divisa && !$valor_fob_total_divisa && !$peso_bruto) {
+                            $autorizacionPreviaDetalle->setCodigo_nandina($subpartida);
+                            $autorizacionPreviaDetalle->setDescripcion_arancelaria($desc_arancelaria);
+                            $autorizacionPreviaDetalle->setDescripcion_comercial($desc_comercial);
+                            $autorizacionPreviaDetalle->setCantidad($cantidad);
+                            $autorizacionPreviaDetalle->setUnidad_medida($unidad_medida);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob($precio_unitario);
+                            $autorizacionPreviaDetalle->setFob($valor_total);
+                            $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
+
+                        } else if ($precio_unitario_fob_divisa && $valor_fob_total_divisa && !$peso_bruto) {
+                            $autorizacionPreviaDetalle->setCodigo_nandina($subpartida);
+                            $autorizacionPreviaDetalle->setDescripcion_arancelaria($desc_arancelaria);
+                            $autorizacionPreviaDetalle->setDescripcion_comercial($desc_comercial);
+                            $autorizacionPreviaDetalle->setCantidad($cantidad);
+                            $autorizacionPreviaDetalle->setUnidad_medida($unidad_medida);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob($precio_unitario);
+                            $autorizacionPreviaDetalle->setFob($valor_total);
+                            $autorizacionPreviaDetalle->setValor_fob_total_divisa($precio_unitario_fob_divisa);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob_divisa($valor_fob_total_divisa);
+                            $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
+
+                        } else if (!$precio_unitario_fob_divisa && $valor_fob_total_divisa) {
+                            $sql = "
+                            INSERT INTO public.autorizacion_previa_detalle(
+                                codigo_nandina, 
+                                descripcion_arancelaria, 
+                                descripcion_comercial, 
+                                cantidad, 
+                                unidad_medida, 
+                                peso, 
+                                precio_unitario_fob, 
+                                fob, 
+                                valor_fob_total_divisa, 
+                                id_autorizacion_previa)
+                                VALUES (
+                                    '$subpartida', 
+                                    '$desc_arancelaria', 
+                                    '$desc_comercial',
+                                    ".$cantidad.", 
+                                    ".$unidad_medida.", 
+                                    ".$peso_bruto.", 
+                                    ".$precio_unitario.", 
+                                    ".$valor_total.",
+                                    ".$valor_fob_total_divisa.", 
+                                    ".$i.");
+                                    ";
+                                    pg_query($conexion, $sql);
+                                    $count++;
+                        } else if ($precio_unitario_fob_divisa && !$valor_fob_total_divisa) {
+                            $sql = "
+                            INSERT INTO public.autorizacion_previa_detalle(
+                                codigo_nandina, 
+                                descripcion_arancelaria, 
+                                descripcion_comercial, 
+                                cantidad, 
+                                unidad_medida, 
+                                peso, 
+                                precio_unitario_fob, 
+                                fob,
+                                precio_unitario_fob_divisa, 
+                                id_autorizacion_previa)
+                                VALUES (
+                                    '$subpartida', 
+                                    '$desc_arancelaria', 
+                                    '$desc_comercial',
+                                    ".$cantidad.", 
+                                    ".$unidad_medida.", 
+                                    ".$peso_bruto.", 
+                                    ".$precio_unitario.", 
+                                    ".$valor_total.",
+                                    ".$precio_unitario_fob_divisa.",
+                                    ".$i.");
+                                    ";
+                                    pg_query($conexion, $sql);
+                                    $count++;
+                        } else if ($precio_unitario_fob_divisa && $valor_fob_total_divisa) {
+                            $sql = "
+                            INSERT INTO public.autorizacion_previa_detalle(
+                                codigo_nandina, 
+                                descripcion_arancelaria, 
+                                descripcion_comercial, 
+                                cantidad, 
+                                unidad_medida, 
+                                peso, 
+                                precio_unitario_fob, 
+                                fob, 
+                                valor_fob_total_divisa, 
+                                precio_unitario_fob_divisa, 
+                                id_autorizacion_previa)
+                                VALUES (
+                                    '$subpartida', 
+                                    '$desc_arancelaria', 
+                                    '$desc_comercial',
+                                    ".$cantidad.", 
+                                    ".$unidad_medida.", 
+                                    ".$peso_bruto.", 
+                                    ".$precio_unitario.", 
+                                    ".$valor_total.",
+                                    ".$precio_unitario_fob_divisa.", 
+                                    ".$valor_fob_total_divisa.", 
+                                    ".$i.");
+                                    ";
+                                    pg_query($conexion, $sql);
+                                    $count++;
+                        }
+
+                        $autorizaciond = $sqlAutorizacionPreviaDetalle->SaveAutDetalle($autorizacionPreviaDetalle);
+
+                    }//enf for excel
+
+
+                    // $autorizacionPrevia = new AutorizacionPrevia();
+                    // $sqlAutorizacionPrevia = new sqlAutorizacionPrevia();
+                    // $id_autorizacion=$_REQUEST['id_autorizacion'];
+                    // $autorizacionPrevia->setId_autorizacion_previa($id_autorizacion);
+                    // $autorizacionPrevia = $sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
+                    // $empresaImportador = new EmpresaImportador();
+                    // $sqlEmpresaImportador = new SQLEmpresaImportador();
+                    // $empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
+                    // $empresaImportador=$sqlEmpresaImportador->getEmpresaApiPorID($empresaImportador);
+                    // //aca verificamos si es una persona o es un representante legal
+                    // $vista->assign('autorizacionPrevia', $autorizacionPrevia);
+                    // $vista->assign('empresaRevision', $empresaImportador);
+                    // $vista->assign('id_autorizacion', $id_autorizacion);
+
+                    // $vista->display("admSolicitudApi/RevisaApi.tpl"); 
+                    echo 1;
+                    exit;
+
+                } else {
+                    echo 2;
+                }
+                
+            } else {
+                echo 2;
+            }
+        
+            exit;
         }
 
 
