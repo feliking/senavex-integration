@@ -390,7 +390,7 @@ $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Fecha de emisión   '),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
-$date = '10/07/2019';
+$date = '11/05/2019';
 //$date = $autorizacionPrevia->getFecha_registro();
 $date_registro = strtotime($date);
 $pdf->MultiCell(140,6,date("d/m/y",$date_registro),'','L');
