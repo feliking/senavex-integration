@@ -483,9 +483,12 @@ class AdmRegistroApi extends Principal {
             foreach ($autorizacionPrevia as $admision){
                 $empresaImportador1->setId_empresa_importador($admision->getId_empresa_importador());
                 $empresa=$sqlEmpresaImportador1->getEmpresaPorId($empresaImportador1);
+                $nro = 10000 + $admision->getId_autorizacion_previa();
 
                 $razon_social = str_replace('"','\"',$empresa->getRazon_social());
                 $strJson .='{"id_api":"'.$admision->getId_autorizacion_previa().
+                    '","correlativo":"'.$nro .
+                    '","fecha_registro":"'.$admision->getFecha_registro().
                     '","razonsocial":"' . (strlen($admision->getRazon_social())>30 ? (substr($razon_social,0,25).' ...'): $razon_social) .
                     '","nit" : "'.$empresa->getNit().
                     '","cantidad":"' .$admision->getCantidad_total().

@@ -16,7 +16,7 @@ var grid3 =  $("#listadoapis").kendoGrid({
                dataType: "json"
             }
         },
-        pageSize: 10
+        pageSize: 30
     },
     filterable: {
         extra: false,
@@ -40,7 +40,9 @@ var grid3 =  $("#listadoapis").kendoGrid({
     },
     change: cambiarceldasadmision,
     columns: [
-        { field: "razonsocial", title: "Razon Social", width: '35%', },
+        { field: "correlativo", title: "Nro. Solicitud", width: '8%', },
+        { field: "fecha_registro", title: "Fecha de registro",filterable: false, width: '10%', },
+        { field: "razonsocial", title: "Razon Social", width: '25%', },
         { field: "nit", title: "Nit", width: '14%',},
         { field: "cantidad", title: "Cantidad Total", width: '14%',},
         { field: "peso", title: "Peso Total", width: '14%',},
