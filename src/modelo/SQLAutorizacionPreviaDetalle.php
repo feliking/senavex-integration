@@ -8,7 +8,7 @@
 class SQLAutorizacionPreviaDetalle {
     
     
-    public function Save(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
+    public function SaveAutDetalle(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
         return $autorizacionPreviaDetalle->save();
     }
 
@@ -26,5 +26,9 @@ class SQLAutorizacionPreviaDetalle {
 
     public function getAutorizacionPreviaDetallexIDAutorizacionPrevia(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
         return $autorizacionPreviaDetalle->finder()->findAll('id_autorizacion_previa = ?', $autorizacionPreviaDetalle->getId_autorizacion_previa());
+    }
+
+    public function DeletAutDetalle(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
+        return $autorizacionPreviaDetalle->deleteAll('id_autorizacion_previa = ?', $autorizacionPreviaDetalle->getId_autorizacion_previa());
     }
 }
