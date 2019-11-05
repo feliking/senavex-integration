@@ -30,7 +30,7 @@ include_once(PATH_TABLA . DS . 'EmpresaImportadorObservacion.php');
 
 
 include_once(PATH_MODELO . DS . 'SQLAutorizacionPrevia.php');
-include_once(PATH_MODELO . DS . 'sqlAutorizacionPreviaDetalle.php');
+include_once(PATH_MODELO . DS . 'SQLAutorizacionPreviaDetalle.php');
 include_once(PATH_MODELO . DS . 'SQLPersona.php');
 include_once(PATH_MODELO . DS . 'SQLEmpresaImportador.php');
 include_once(PATH_MODELO . DS . 'SQLUsuario.php');
@@ -288,7 +288,7 @@ class AdmAutorizacionPrevia extends Principal {
         if($_REQUEST['tarea']=='revisa'){
 
             $autorizacionPrevia = new AutorizacionPrevia();
-            $sqlAutorizacionPrevia = new sqlAutorizacionPrevia();
+            $sqlAutorizacionPrevia = new SQLAutorizacionPrevia();
             $id_autorizacion=$_REQUEST['id_autorizacion'];
             $autorizacionPrevia->setId_autorizacion_previa($id_autorizacion);
             $autorizacionPrevia = $sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
@@ -296,10 +296,14 @@ class AdmAutorizacionPrevia extends Principal {
             $sqlEmpresaImportador = new SQLEmpresaImportador();
             $empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
             $empresaImportador=$sqlEmpresaImportador->getEmpresaApiPorID($empresaImportador);
-            //aca verificamos si es una persona o es un representante legal
+            $autorizacionPreviaDetalle = new AutorizacionPreviaDetalle();
+            $sqlAutorizacionPreviaDetalle = new SQLAutorizacionPreviaDetalle();
+            $autorizacionPreviaDetalle->setId_autorizacion_previa($id_autorizacion);
+            $autorizacionPreviaDetalle = $sqlAutorizacionPreviaDetalle->getAutorizacionDetallePorId($autorizacionPreviaDetalle);
             $vista->assign('autorizacionPrevia', $autorizacionPrevia);
             $vista->assign('empresaRevision', $empresaImportador);
             $vista->assign('id_autorizacion', $id_autorizacion);
+            $vista->assign('autorizacionPreviaDetalle', $autorizacionPreviaDetalle);
 
             $vista->display("admSolicitudApi/RevisaApi.tpl"); 
             exit;
@@ -318,6 +322,10 @@ class AdmAutorizacionPrevia extends Principal {
                 if (in_array($fileExtension, $allowedfileExtensions)) {
 
                     $i = $_REQUEST['id_autorizacion'];
+                    $autorizacionPreviaDetalle = new AutorizacionPreviaDetalle();
+                    $sqlAutorizacionPreviaDetalle = new sqlAutorizacionPreviaDetalle();
+                    $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
+                    $autdel = $sqlAutorizacionPreviaDetalle->DeletAutDetalle($autorizacionPreviaDetalle);
 
                     $inputFileType = PHPExcel_IOFactory::identify($fileTmpPath);
                     $objReader = PHPExcel_IOFactory::createReader($inputFileType);
@@ -383,110 +391,45 @@ class AdmAutorizacionPrevia extends Principal {
                             $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
 
                         } else if (!$precio_unitario_fob_divisa && $valor_fob_total_divisa) {
-                            $sql = "
-                            INSERT INTO public.autorizacion_previa_detalle(
-                                codigo_nandina, 
-                                descripcion_arancelaria, 
-                                descripcion_comercial, 
-                                cantidad, 
-                                unidad_medida, 
-                                peso, 
-                                precio_unitario_fob, 
-                                fob, 
-                                valor_fob_total_divisa, 
-                                id_autorizacion_previa)
-                                VALUES (
-                                    '$subpartida', 
-                                    '$desc_arancelaria', 
-                                    '$desc_comercial',
-                                    ".$cantidad.", 
-                                    ".$unidad_medida.", 
-                                    ".$peso_bruto.", 
-                                    ".$precio_unitario.", 
-                                    ".$valor_total.",
-                                    ".$valor_fob_total_divisa.", 
-                                    ".$i.");
-                                    ";
-                                    pg_query($conexion, $sql);
-                                    $count++;
+                            $autorizacionPreviaDetalle->setCodigo_nandina($subpartida);
+                            $autorizacionPreviaDetalle->setDescripcion_arancelaria($desc_arancelaria);
+                            $autorizacionPreviaDetalle->setDescripcion_comercial($desc_comercial);
+                            $autorizacionPreviaDetalle->setCantidad($cantidad);
+                            $autorizacionPreviaDetalle->setUnidad_medida($unidad_medida);
+                            $autorizacionPreviaDetalle->setPeso($peso_bruto);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob($precio_unitario);
+                            $autorizacionPreviaDetalle->setFob($valor_total);
+                            $autorizacionPreviaDetalle->setValor_fob_total_divisa($precio_unitario_fob_divisa);
+                            $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
                         } else if ($precio_unitario_fob_divisa && !$valor_fob_total_divisa) {
-                            $sql = "
-                            INSERT INTO public.autorizacion_previa_detalle(
-                                codigo_nandina, 
-                                descripcion_arancelaria, 
-                                descripcion_comercial, 
-                                cantidad, 
-                                unidad_medida, 
-                                peso, 
-                                precio_unitario_fob, 
-                                fob,
-                                precio_unitario_fob_divisa, 
-                                id_autorizacion_previa)
-                                VALUES (
-                                    '$subpartida', 
-                                    '$desc_arancelaria', 
-                                    '$desc_comercial',
-                                    ".$cantidad.", 
-                                    ".$unidad_medida.", 
-                                    ".$peso_bruto.", 
-                                    ".$precio_unitario.", 
-                                    ".$valor_total.",
-                                    ".$precio_unitario_fob_divisa.",
-                                    ".$i.");
-                                    ";
-                                    pg_query($conexion, $sql);
-                                    $count++;
+                            $autorizacionPreviaDetalle->setCodigo_nandina($subpartida);
+                            $autorizacionPreviaDetalle->setDescripcion_arancelaria($desc_arancelaria);
+                            $autorizacionPreviaDetalle->setDescripcion_comercial($desc_comercial);
+                            $autorizacionPreviaDetalle->setCantidad($cantidad);
+                            $autorizacionPreviaDetalle->setUnidad_medida($unidad_medida);
+                            $autorizacionPreviaDetalle->setPeso($peso_bruto);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob($precio_unitario);
+                            $autorizacionPreviaDetalle->setFob($valor_total);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob_divisa($valor_fob_total_divisa);
+                            $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
                         } else if ($precio_unitario_fob_divisa && $valor_fob_total_divisa) {
-                            $sql = "
-                            INSERT INTO public.autorizacion_previa_detalle(
-                                codigo_nandina, 
-                                descripcion_arancelaria, 
-                                descripcion_comercial, 
-                                cantidad, 
-                                unidad_medida, 
-                                peso, 
-                                precio_unitario_fob, 
-                                fob, 
-                                valor_fob_total_divisa, 
-                                precio_unitario_fob_divisa, 
-                                id_autorizacion_previa)
-                                VALUES (
-                                    '$subpartida', 
-                                    '$desc_arancelaria', 
-                                    '$desc_comercial',
-                                    ".$cantidad.", 
-                                    ".$unidad_medida.", 
-                                    ".$peso_bruto.", 
-                                    ".$precio_unitario.", 
-                                    ".$valor_total.",
-                                    ".$precio_unitario_fob_divisa.", 
-                                    ".$valor_fob_total_divisa.", 
-                                    ".$i.");
-                                    ";
-                                    pg_query($conexion, $sql);
-                                    $count++;
+                            $autorizacionPreviaDetalle->setCodigo_nandina($subpartida);
+                            $autorizacionPreviaDetalle->setDescripcion_arancelaria($desc_arancelaria);
+                            $autorizacionPreviaDetalle->setDescripcion_comercial($desc_comercial);
+                            $autorizacionPreviaDetalle->setCantidad($cantidad);
+                            $autorizacionPreviaDetalle->setUnidad_medida($unidad_medida);
+                            $autorizacionPreviaDetalle->setPeso($peso_bruto);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob($precio_unitario);
+                            $autorizacionPreviaDetalle->setFob($valor_total);
+                            $autorizacionPreviaDetalle->setValor_fob_total_divisa($precio_unitario_fob_divisa);
+                            $autorizacionPreviaDetalle->setPrecio_unitario_fob_divisa($valor_fob_total_divisa);
+                            $autorizacionPreviaDetalle->setId_autorizacion_previa($i);
                         }
 
                         $autorizaciond = $sqlAutorizacionPreviaDetalle->SaveAutDetalle($autorizacionPreviaDetalle);
 
                     }//enf for excel
 
-
-                    // $autorizacionPrevia = new AutorizacionPrevia();
-                    // $sqlAutorizacionPrevia = new sqlAutorizacionPrevia();
-                    // $id_autorizacion=$_REQUEST['id_autorizacion'];
-                    // $autorizacionPrevia->setId_autorizacion_previa($id_autorizacion);
-                    // $autorizacionPrevia = $sqlAutorizacionPrevia->getAutorizacionPorId($autorizacionPrevia);
-                    // $empresaImportador = new EmpresaImportador();
-                    // $sqlEmpresaImportador = new SQLEmpresaImportador();
-                    // $empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
-                    // $empresaImportador=$sqlEmpresaImportador->getEmpresaApiPorID($empresaImportador);
-                    // //aca verificamos si es una persona o es un representante legal
-                    // $vista->assign('autorizacionPrevia', $autorizacionPrevia);
-                    // $vista->assign('empresaRevision', $empresaImportador);
-                    // $vista->assign('id_autorizacion', $id_autorizacion);
-
-                    // $vista->display("admSolicitudApi/RevisaApi.tpl"); 
                     echo 1;
                     exit;
 

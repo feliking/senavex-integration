@@ -86,13 +86,13 @@
                 </div>
                 <div class="row-fluid " >
                     <div class="span3" >
-                        Nº de Identificación Tributaria:
+                        Valor total:
                     </div>     
                     <div class="span3 campo" >
                         {$autorizacionPrevia->valor_total}
                     </div> 
                     <div class="span3 " >
-                        Nº Testimonio de Constitución:
+                        Origen de los Recursos:
                     </div>     
                     <div class="span3 campo" >
                         {$autorizacionPrevia->origen_recursos} 
@@ -100,13 +100,13 @@
                 </div>
                 <div class="row-fluid " >
                     <div class="span3" >
-                        Nº Licencia de Funcionamiento:
+                        Entidad Bancaria:
                     </div>     
                     <div class="span3 campo" >
                         {$autorizacionPrevia->entidad_bancaria}
                     </div> 
                     <div class="span3" >
-                        Nº Matricula de Comercio:
+                        Numero Cuenta:
                     </div>     
                     <div class="span3 campo" >
                         {$autorizacionPrevia->numero_cuenta} 
@@ -114,34 +114,65 @@
                 </div>
                 <div class="row-fluid " >
                     <div class="span3" >
-                        Fecha de Vencimiento de la Matricula de Comercio:
+                        Fecha de Registro:
                     </div>     
                     <div class="span3 campo" >
-                        {$autorizacionPrevia->fecha_registro}
+                        {$autorizacionPrevia->fecha_registro|date_format:"%d/%m/%Y"}
                     </div> 
                     <div class="span3" >
-                        La empresa es Unipersonal:
+                        Tipo de Cuenta:
                     </div>     
                     <div class="span3 campo" >
-                        {$autorizacionPrevia->tipo_cuenta}
+                        {if $autorizacionPrevia->tipo_cuenta eq 1}
+                            M/N
+                        {else}
+                            M/E
+                        {/if} 
                     </div>  
 
             </fieldset>
             <fieldset >
                 <legend>3. DETALLE DE LA SOLICITUD</legend>
                 <div class="row-fluid " >
+                    <div class="span12"  >
+                        <table border="1">
+                        <tr><th>Nro</th><th>Subpartida</th><th>DESCRIPCIÓN ARANCELARIA</th><th>DESCRIPCIÓN COMERCIAL</th><th>CANTIDAD</th><th>UNIDAD DE MEDIDA</th><th>PESO BRUTO (KG.)</th><th>PRECIO UNITARIO </th><th>VALOR TOTAL</th><th>PRECIO UNITARIO (DIVISA)</th><th>VALOR TOTAL (DIVISA)</th>    
+                        </tr>
+                        {$turns = 1}
+                        {foreach from=$autorizacionPreviaDetalle item=auto}
+                            <tr><td>{$turns}</td>  
+                                <td>{$auto->codigo_nandina}</td>    
+                                <td>{$auto->descripcion_arancelaria}</td> 
+                                <td>{$auto->descripcion_comercial}</td>
+                                <td>{$auto->cantidad|string_format:"%.2f"}</td>
+                                <td>{$auto->unidad_medida}</td> 
+                                <td>{$auto->peso|string_format:"%.2f"}</td> 
+                                <td>{$auto->precio_unitario_fob|string_format:"%.2f"}</td> 
+                                <td>{$auto->fob|string_format:"%.2f"}</td> 
+                                <td>{$auto->valor_fob_total_divisa}</td>
+                                <td>{$auto->precio_unitario_fob_divisa}</td>  
+                            </tr>
+                            {$turns = $turns+1}
+                        {/foreach}
+                        </table>
+                    </div>
+                </div>
+                <br><br>
+                <div class="row-fluid " >
                     <div class="span3"  >
                         (*) SUBIR EL ARCHIVO CON LOS ITEMS LLENADOS:
                     </div>     
-                    <div class="span3 campo" >
+                    <div class="span6 campo" >
                         <input id="archivodetalle" type="file" name="archivo" required="required" />Excel
                     </div> 
-                    <div class="span6" >
+                    <div class="span3" >
                          <input type="hidden" name="id_autorizacion" id="id_autorizacion" value="{$id_autorizacion}" />
                         <input id="aceptarex" type="button"  value="Subir" class="k-primary" style="width:100%"/>
                     </div>
 
                 </div>
+                
+
             </fieldset>
 
      
@@ -158,12 +189,12 @@
                         <center>OBSERVACIONES</center>
                 </div> 
             </div>       
-            <div class="row-fluid  form" >
+            <!-- <div class="row-fluid  form" >
                 <div class="span12 " > 
                     <textarea id="editorr_soporte"  >
                     </textarea> 
                 </div>
-            </div>
+            </div> -->
             <div class="row-fluid" id="notificacionobservacionr{$id}">
                 <div class="span4 " >
                 </div>
@@ -173,7 +204,7 @@
                 <div class="span4 " > 
                 </div>
                 <div class="span3" >
-                    <input id="cancelarr{$id}" type="{if $revisar=='2'}hidden{else}button{/if}" value="Cancelar" class="k-primary" style="width:100%"/> <br><br>
+                    <input id="cancelarr{$id}" type="{if $revisar=='2'}hidden{else}button{/if}" value="Atras" class="k-primary" style="width:100%"/> <br><br>
                 </div>
                 <div class="span3" >
                     <input id="rechazarr{$id}" type="{if $revisar=='2'}hidden{else}button{/if}" value="Rechazar" class="k-primary" style="width:100%"/> <br><br>
@@ -209,15 +240,7 @@
     //     }); 
     // });
     rechazarr.bind("click", function(e){ 
-            // Grabar formulario
-            $.ajax({
-            type: 'post',
-            url: 'index.php',
-            data: 'id_empresa_importador={$empresaRevision->id_empresa_importador}&motivo='+$("#editorr_soporte").val()+'=&opcion=admRegistroApi&tarea=RechazarRuiEmpresa',
-            success: function (data) {
-                cerraractualizartab('RECHAZO API','admAutorizacionPrevia','revisionApi');
-            }
-        }); 
+         cerraractualizartab('SOLICITUDES API','admAutorizacionPrevia','ListarApiPendientes');
     });
     cancelarr.bind("click", function(e){    
         cerraractualizartab('SOLICITUDES API','admAutorizacionPrevia','ListarApiPendientes');       

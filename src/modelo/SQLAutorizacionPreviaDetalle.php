@@ -27,4 +27,8 @@ class SQLAutorizacionPreviaDetalle {
     public function getAutorizacionPreviaDetallexIDAutorizacionPrevia(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
         return $autorizacionPreviaDetalle->finder()->findAll('id_autorizacion_previa = ?', $autorizacionPreviaDetalle->getId_autorizacion_previa());
     }
+
+    public function DeletAutDetalle(AutorizacionPreviaDetalle $autorizacionPreviaDetalle){
+        return $autorizacionPreviaDetalle->deleteAll('id_autorizacion_previa = ?', $autorizacionPreviaDetalle->getId_autorizacion_previa());
+    }
 }
