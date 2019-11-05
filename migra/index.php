@@ -16,11 +16,17 @@ if(isset($_POST['SubmitButton'])){ //check if form was submitted
 	require_once 'PHPExcel/Classes/PHPExcel.php';
 
 
+	// $user = "postgres";
+	// $password = "123456";
+	// $dbname = "vortex_02";
+	// $port = "5432";
+	// $host = "localhost";
+
 	$user = "postgres";
-	$password = "123456";
-	$dbname = "vortex_02";
+	$password = "enex.2015";
+	$dbname = "vortex_final";
 	$port = "5432";
-	$host = "localhost";
+	$host = "107.178.208.220";
 
 	$cadenaConexion = "host=$host port=$port dbname=$dbname user=$user password=$password";
 
