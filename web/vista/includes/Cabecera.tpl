@@ -303,7 +303,7 @@
                                         </div>
                                     {/if}
                                     {if $opcion=='P'}
-                                        <div id="i" class="widget menucf" onclick="anadir('listas API','admRegistroApi','listaApis')" >
+                                        <div id="i" class="widget menucf" onclick="anadir('LISTAS API','admRegistroApi','listaApis')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_EmpRuex_B.png"  /> </a>
                                             <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_EmpRuex.png" /> </a>
                                             <span>LISTAS API</span>
