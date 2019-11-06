@@ -102,7 +102,10 @@ var acuerdoForm = $("#acuerdoForm").kendoValidator({
             return true;
         },
         vacuerdoarancel: function(input){
-            if (typeof input.data('vacuerdoarancel') !== 'undefined'){
+            if (typeof input.data('vacuerdoarancel') !== 'undefined' &&
+                $('#acuerdoTipo').val() === '1'
+            ){
+
                 return $("#acuerdoArancel").data('kendoMultiSelect').value().length!==0;
             }
             return true;

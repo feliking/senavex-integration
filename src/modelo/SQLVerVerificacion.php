@@ -19,12 +19,19 @@ class SQLVerVerificacion{
             ->with_ddjj()
             ->findAll($rule.'id_ver_estado_verificacion = ?',$verificacion->getId_ver_estado_verificacion());
     }
-    public function getVerificacionesAntiguasPorEmpresa(VerVerificacion $verificacion) {
-        return $verificacion->finder()
-            ->with_estado()
-            ->with_regional()
-            ->with_ddjj()
-            ->with_empresa()
-            ->findAll('id_ver_estado_verificacion != 4 AND id_empresa=?', $verificacion->getId_empresa());// restringimos solo para asignar
+
+  public function getVerificacionesAntiguasPorEmpresa(VerVerificacion $verificacion, $except_id = null)
+  {
+    $exclude_id = '';
+    if($except_id !== null){
+      $exclude_id = 'id_ver_verificacion != ' . $except_id . ' AND ';
     }
+
+    return $verificacion->finder()
+      ->with_estado()
+      ->with_regional()
+      ->with_ddjj()
+      ->with_empresa()
+      ->findAll($exclude_id.'id_ver_estado_verificacion != 4 AND id_empresa=?', $verificacion->getId_empresa());// restringimos solo para asignar
+  }
 }

@@ -221,40 +221,29 @@ function rechazarVerificacionDdjj(id_ver_verificacion){
     global.confirmMessage=confirmMessage.display;
 })(window,jQuery);
 //////////-----------------------confirm data message---------------------------
-   
-
 (function(global,$) {
     $('body').append('<div class="confirm-data-message-container">' +
-    '<div class="confirm-data-message-content"><p></p>' +
-    '<input type="radio" name="motivo" id="motivo" value="1" required="true"> Modificación de información o dato de la DDJJ habilitada<br>' +
-    '<input type="radio" name="motivo" id="motivo" value="2"required="true"> Ya no requiero usar la DDJJ habilitada<br>'+
-    '<input type="radio" name="motivo" id="motivo" value="3"required="true"> Cierre de la empresa exportadora<br> '+
-    '<span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden fadein" id="confirmDataMessageValidator1"><span class="k-icon k-warning"> </span>Seleccione un motivo</span>'+
-    '<textarea class="k-textbox"></textarea><span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden fadein" id="confirmDataMessageValidator"><span class="k-icon k-warning"> </span> El texto es requerido</span>' +
-    '<ul><li><button class="si-button k-button">Si</button></li><li><button class="no-button k-button">No</button></li></ul>' +
-    '</div></div>');
+        '<div class="confirm-data-message-content"><p></p>' +
+        '<textarea class="k-textbox"></textarea><span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden fadein" id="confirmDataMessageValidator"><span class="k-icon k-warning"> </span> El texto es requerido</span>' +
+        '<ul><li><button class="si-button k-button">Si</button></li><li><button class="no-button k-button">No</button></li></ul>' +
+        '</div></div>');
 
     var confirmDataMessage={
         confirmDataMessageContainer:$('.confirm-data-message-container'),
         confirmDataMessageContent:$('.confirm-data-message-content'),
         confirmDataMessageText:$('.confirm-data-message-content textarea'),
-        confirmDataMessageInput:$('.confirm-data-message-content input:radio:checked'),
         confirmDataMessageValidation:$('.confirm-data-message-content #confirmDataMessageValidator'),
-        confirmDataMessageValidation1:$('.confirm-data-message-content #confirmDataMessageValidator1'),
         si:function(){},
         no:function(){},
         init:function (){
             confirmDataMessage.confirmDataMessageContent.find('.si-button').click(function(){
                 confirmDataMessage.confirmDataMessageValidation.addClass('hidden');
-                confirmDataMessage.confirmDataMessageValidation1.addClass('hidden');
                 if(confirmDataMessage.confirmDataMessageText.val().trim() !=''){
                     confirmDataMessage.confirmDataMessageContainer.removeClass('displayed');
-                    confirmDataMessage.si(confirmDataMessage.confirmDataMessageText.val().confirmDataMessageInput.val());
-                    confirmDataMessage.si(confirmDataMessage.confirmDataMessageInput.val());
+                    confirmDataMessage.si(confirmDataMessage.confirmDataMessageText.val());
                     confirmDataMessage.confirmDataMessageText.val('');
                 }else{
                     confirmDataMessage.confirmDataMessageValidation.removeClass('hidden');
-                    confirmDataMessage.confirmDataMessageValidation1.removeClass('hidden');
                 }
             });
             confirmDataMessage.confirmDataMessageContent.find('.no-button').click(function(){
@@ -276,6 +265,9 @@ function rechazarVerificacionDdjj(id_ver_verificacion){
     confirmDataMessage.init();
     global.confirmDataMessage=confirmDataMessage.display;
 })(window,jQuery);
+
+
+
 ////////------------------setting a slider------------------------------
 (function ( $ ) {
     var object ={

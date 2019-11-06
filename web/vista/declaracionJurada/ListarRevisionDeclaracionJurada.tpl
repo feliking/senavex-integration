@@ -1,5 +1,10 @@
 <div class="row-fluid" class="fadein" >
     <div class="row-fluid  form" >
+        <div class="span12 fadein form-options">
+            <input id="revisarmenuddjj" value="1" class="form-small" />
+        </div>
+    </div>
+    <div class="row-fluid  form" >
         <div id="revisardeclaracionesjuradas" class="fadein">
             
         </div>
@@ -48,6 +53,37 @@
             { field: "estadoddjj", title: "Estado"}
         ]
     });
+    {/literal}
+     var data = [
+         {foreach $estados as $estado}
+         { text: "{$estado->descripcion}", value: "{$estado->id_estado_ddjj}" },
+         {/foreach}
+     ];
+     {literal}
+     // create DropDownList from input HTML element
+     $("#revisarmenuddjj").kendoDropDownList({
+         dataTextField: "text",
+         dataValueField: "value",
+         dataSource: data,
+         index: 1,
+         change: onChange
+     });
+
+     function onChange() {
+         var grid = $("#revisardeclaracionesjuradas").data("kendoGrid");
+         var dataddjj = new kendo.data.DataSource({
+             transport: {
+                 read: {
+                     url: "index.php?opcion=admDeclaracionJurada&tarea=listarRevisionDeclaraciones&estado_ddjj="+this.value(),
+                     dataType: "json"
+                 }
+             }
+             ,
+             pageSize: 10
+         });
+         grid.setDataSource(dataddjj);
+         grid.refresh();
+     };
 }); 
 
 var registroddjj=0;
@@ -58,8 +94,12 @@ function cambiarceldasddjj()
     var row = gridddjj.select();
     var data = gridddjj.dataItem(row);
     if(registroddjj==data.id_ddjj)
-    {  
-        anadir('Revisar DD.JJ.','admDeclaracionJurada','reviewDeclaracion&id_declaracion_jurada='+data.id_ddjj);
+    {
+        if(data.estadoddjj== 'Para cancelar') {
+            anadir('Revisar Documentos DD.JJ.','admDeclaracionJurada','reviewDocumentsDeclaracion&id_declaracion_jurada='+data.id_ddjj);
+        } else {
+            anadir('Revisar DD.JJ.','admDeclaracionJurada','reviewDeclaracion&id_declaracion_jurada='+data.id_ddjj);
+        }
     }
     else
     {

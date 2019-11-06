@@ -91,6 +91,18 @@ class SQLDeclaracionJurada {
     return $rows;
   }
 
+  public function getListarDeclaracionesEstado(DeclaracionJurada $declaracion_jurada, $estado){
+    $sql = "SELECT dj.*,ed.descripcion as estadoddjj
+                FROM declaracion_jurada dj JOIN estado_ddjj ed on(dj.id_estado_ddjj=ed.id_estado_ddjj)
+                WHERE  dj.id_estado_ddjj = ".$estado;
+    $connection = $declaracion_jurada->getDbConnection();
+    $connection->Active = true;
+    $command = $connection->createCommand($sql);
+    $dataReader = $command->query();
+    $rows = $dataReader->readAll();
+    return $rows;
+  }
+
   public function getDeclaracionJuradaPorServicioExportador(DeclaracionJurada $declaracion_jurada){
     return $declaracion_jurada->finder()->find('id_servicio_exportador = ?',$declaracion_jurada->getId_Servicio_Exportador());
   }

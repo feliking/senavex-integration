@@ -15,6 +15,9 @@
             <td id="criterio_origen_container">
                 <select id="criterio_origen" multiple="multiple" data-placeholder="Seleccione el criterio de origen">
                 </select>
+                <span id="criterio_origen-validation" class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden" >
+                    <span class="k-icon k-warning"> </span> Selecciones al menos un criterio.
+                </span>
             </td>
 
         </tr>
@@ -78,32 +81,32 @@
             <span id="obervacion-validation" class="m5 k-widget k-tooltip k-tooltip-validation k-invalid-msg none fadein" ><span class="k-icon k-warning"> </span> Ingrese las observaciones</span>
         </div>
     </div>
-    <div class="row-fluid  form">
-        <label class="span3 ddjj-section-label">
-            Observaciones:
-        </label>
-        <div class="span9 ddjj-input">
-            <textarea id="observacion_ddjj" name="observacion_ddjj" class="k-textbox form-textarea" rows="6">{$ddjj->observacion_ddjj}</textarea>
-        </div>
-    </div>
+{*    <div class="row-fluid  form">*}
+{*        <label class="span3 ddjj-section-label">*}
+{*            Observaciones:*}
+{*        </label>*}
+{*        <div class="span9 ddjj-input">*}
+{*            <textarea id="observacion_ddjj" name="observacion_ddjj" class="k-textbox form-textarea" rows="6">{$ddjj->observacion_ddjj}</textarea>*}
+{*        </div>*}
+{*    </div>*}
 </section>
-<h2>CRITERIO DE RIEGO</h2>
+<h2>VISITA DE VERIFICACION</h2>
 <section class="ddjj-section">
     <script src="styles/js-personales/Math.min.js"></script>
-    <div class="row-fluid  form">
-        <label class="span3 ddjj-section-label">
-            Criterio de Riesgo:
-        </label>
-        <div id='criterio-riesgo' class="span3 ddjj-section-field">
-        </div>
-        <label id='tendra-visita' class="span6 ddjj-section-label">
-        </label>
-    </div>
-    <div class="row-fluid  form">
-        <label class="span12 ddjj-section-label">
-            * El criterio de Riesgo es el resultado de una operacion interna la cual determina si la siguiente declaración jurada, necesita una visita de verificación para continuar con su tramite.
-        </label>
-    <div>
+{*    <div class="row-fluid  form">*}
+{*        <label class="span3 ddjj-section-label">*}
+{*            Criterio de Riesgo:*}
+{*        </label>*}
+{*        <div id='criterio-riesgo' class="span3 ddjj-section-field">*}
+{*        </div>*}
+{*        <label id='tendra-visita' class="span6 ddjj-section-label">*}
+{*        </label>*}
+{*    </div>*}
+{*    <div class="row-fluid  form">*}
+{*        <label class="span12 ddjj-section-label">*}
+{*            * El criterio de Riesgo es el resultado de una operacion interna la cual determina si la siguiente declaración jurada, necesita una visita de verificación para continuar con su tramite.*}
+{*        </label>*}
+{*    <div>*}
     <div class="row-fluid  form">
         <label class="span12 ddjj-section-label">
             Si usted considera que esta declaración Jurada necesita o no una visita de verificación, por favor incluya una justificación y marque la opción si.
@@ -132,18 +135,18 @@
         </div>
     </div>
 </section>
-{if $verificaciones_antiguas} {* // verificaciones antiguas que se ralizaron a la misma empresa*}
-    <section class="accordion close">
-        <div class="accordion-item"  >
-            <strong> Ver Verificaciones Antiguas</strong>
-        </div>
-        {include file=$verificaciones_antiguas}
-    </section>
-{/if}
+{*{if $verificaciones_antiguas} *}{* // verificaciones antiguas que se ralizaron a la misma empresa*}
+{*    <section class="accordion close">*}
+{*        <div class="accordion-item"  >*}
+{*            <strong> Ver Verificaciones Antiguas</strong>*}
+{*        </div>*}
+{*        {include file=$verificaciones_antiguas}*}
+{*    </section>*}
+{*{/if}*}
 <script>
     $('#obervacion-validation').hide();
     //------------------------------------------------
-    math.sqrt(-4); // 2i
+    // math.sqrt(-4); // 2i
     var scope = { {foreach from=$objectoAnalisiRiesgo->variables key=k item=v} {$k}:{$v},{/foreach} };
     var admisiones =[
         {foreach from=$objectoAnalisiRiesgo->admisiones item=admision}
@@ -224,7 +227,7 @@
     });
 
     setVerificacion();
-    console.log(scope,verificacion.resultado);
+    // console.log(scope,verificacion.resultado);
 
 
     //----------------incluyendo el criterio de origen

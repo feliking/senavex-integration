@@ -268,14 +268,7 @@ class AdmSistemaColas extends Principal {
     $sistema_colas->setId_Servicio_Exportador($serv_export);
     $arrayofcolas=$sqlSistemaColas->getBuscarColaPorServicioExportadorAll($sistema_colas);
     if(empty($arrayofcolas)){
-      if ($regional==1)
-      {
-        $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJRegionalLPEA($empresa_persona);
-      }
-      else
-      {
-        $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJRegional($empresa_persona);
-      }
+      $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJRegional($empresa_persona);
       if(count($certificadoresddjj)==0) $certificadoresddjj = $sqlEmpresaPersona->getListarCertificadoresSenavexParaDDJJ($empresa_persona);
       shuffle($certificadoresddjj);
       //Crear dos variables para almacenar el Certificador($certif) y quien tiene la menor carga laboral($suma_certif)

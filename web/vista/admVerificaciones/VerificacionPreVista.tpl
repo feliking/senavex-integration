@@ -1,4 +1,3 @@
-hola
 <div class="k-block">
     <div class="k-header">
         <div class="row-fluid form">

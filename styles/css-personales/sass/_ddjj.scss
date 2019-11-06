@@ -173,6 +173,9 @@
   td{
     color:$ddjj-secondary;
     text-transform: uppercase;
+    .k-tooltip {
+      text-transform: none;
+    }
   }
   tfoot{
     td{

@@ -414,17 +414,15 @@
                     </section>
                 </div>
             {/if}
-            {if $ddjj && $ddjj->id_estado_ddjj==1 && !$clon}
-                <section class="ddjj-section">
-                    <div class="menucf float-r">
-                        <a href="index.php?opcion=impresionDdjj&tarea=ImpresionDdjj&id_ddjj={$ddjj->id_ddjj}" target="_blank"><img src="styles/img/ddjj/imp_b.png" class="menubottom ayuda"></a>
-                        <a href="index.php?opcion=impresionDdjj&tarea=ImpresionDdjj&id_ddjj={$ddjj->id_ddjj}" target="_blank"><img src="styles/img/ddjj/imp.png" class="menutop ayuda"></a>
-                    </div>
-                </section>
-            {/if}
-
-
-            {if $preview}
+{*            {if $ddjj && $ddjj->id_estado_ddjj==1 && !$clon}*}
+{*                <section class="ddjj-section">*}
+{*                    <div class="menucf float-r">*}
+{*                        <a href="index.php?opcion=impresionDdjj&tarea=ImpresionDdjj&id_ddjj={$ddjj->id_ddjj}" target="_blank"><img src="styles/img/ddjj/imp_b.png" class="menubottom ayuda"></a>*}
+{*                        <a href="index.php?opcion=impresionDdjj&tarea=ImpresionDdjj&id_ddjj={$ddjj->id_ddjj}" target="_blank"><img src="styles/img/ddjj/imp.png" class="menutop ayuda"></a>*}
+{*                    </div>*}
+{*                </section>*}
+{*            {/if}*}
+            {if $preview || $documentReview}
                 <h2>DETERMINACIÓN DEL CRITERIO DE ORIGEN</h2>
                 <section class="ddjj-section">
                     <table class="ddjj-table">
@@ -447,62 +445,35 @@
                         </div>
                     </div>
                 </section>
-
-            {else}
-                {if $review}
-                    <div class="row-fluid form" >
-                        <ul class="ul-buttons">
-                            <li>
-                                <button class="k-button btn-lg" id="aceptarDdjj" onclick="aceptarDdjj()" >Aceptar</button>
-                            </li>
-                            {if $ddjj->acuerdo->sigla =="ACE36"}
-                                <li>
-                                    <button class="k-button btn-lg" id="actualizarDdjj" onclick="actualizarDdjj()" >Actualizar MEC</button>
-                                </li>
-                            {/if}
-                            <li>
-                                <button class="k-button btn-lg " onclick="rechazarDdjj()">Rechazar</button>
-                            </li>
-                        </ul>
-                    </div>
-                {else}
-                    <div class="row-fluid form" >
-                        <ul class="ul-buttons">
-                            <li>
-                                <button id="view_ddjj_accept" class="k-button btn-lg button-disabled" onclick="sendDdjjForm()" >Aceptar</button>
-                            </li>
-                            <li>
-                                <input type="button"  value="Cancelar" class="k-button btn-lg " onclick="cambiar('view_ddjj','alta_ddjj_container');if($('#observaciones_ddjj').length) $('#observaciones_ddjj').show()"/>
-                            </li>
-                        </ul>
-                    </div>
-                {/if}
+            {elseif $review}
+                <div class="row-fluid form" >
+                    <ul class="ul-buttons">
+                        <li>
+                            <button class="k-button btn-lg" id="aceptarDdjj" onclick="aceptarDdjj()" >Aceptar</button>
+                        </li>
+{*                        {if $ddjj->acuerdo->sigla =="ACE36"}*}
+{*                            <li>*}
+{*                                <button class="k-button btn-lg" id="actualizarDdjj" onclick="actualizarDdjj()" >Actualizar MEC</button>*}
+{*                            </li>*}
+{*                        {/if}*}
+                        <li>
+                            <button class="k-button btn-lg " onclick="rechazarDdjj()">Rechazar</button>
+                        </li>
+                    </ul>
+                </div>
+            {elseif $edition}
+                <div class="row-fluid form" >
+                    <ul class="ul-buttons">
+                        <li>
+                            <button id="view_ddjj_accept" class="k-button btn-lg button-disabled" onclick="sendDdjjForm()" >Aceptar</button>
+                        </li>
+                        <li>
+                            <input type="button"  value="Cancelar" class="k-button btn-lg " onclick="cambiar('view_ddjj','alta_ddjj_container');if($('#observaciones_ddjj').length) $('#observaciones_ddjj').show()"/>
+                        </li>
+                    </ul>
+                </div>
             {/if}
         </div>
-    </div>
-</div>
-<div id="view_actualizacion" >
-    <div class="row-fluid  form" >
-        <section class="ddjj-section">
-            <div class="row-fluid  form" >
-                <h2>INFORMACION DE LA ACTUALIZACION</h2></div>
-
-            <div class="span12 ddjj-section-area">
-                Indique Numero de actualizacion
-            </div>
-            <div class="span2" >
-                <input id="combo_actualizacionesDDJJ" name="combo_actualizacionesDDJJ" class="form-select" validationMessage="Por favor Introduzca numero de actualizacion"/>
-            </div>
-            <div class="span12 ddjj-section-area">
-                Indique Numero de Declaracion Jurada a Actualizar
-            </div>
-            <div class="span1">
-                <input type="number" id="nro_ddjj_actualizar" class="k-textbox" name="nro_ddjj_actualizar" />
-            </div>
-            <div class="span12 ddjj-section-area">
-                <button class="k-button btn-lg" id="aceptarDdjjAct" onclick="aceptarDdjjAct()" >Aceptar</button>
-            </div>
-        </section>
     </div>
 </div>
 <script>
@@ -754,7 +725,12 @@
         }
         //FUNCION PARA ACEPTAR UNA DDJJ
         function aceptarDdjj() {
+            if(!$('#criterio_origen').data("kendoMultiSelect").value().length){
+                $('#criterio_origen-validation').removeClass('hidden').addClass('fadein');
+                return;
+            }
 
+            $('#criterio_origen-validation').removeClass('fadein').addClass('hidden');
             $('#obervacion-validation').hide();
             $('#justificacionVerificacion').next().addClass('hidden');
 
@@ -764,7 +740,7 @@
                 cambiar('review','{$id}loading_ddjj');
                 var data='opcion=admDeclaracionJurada&tarea=aproveDdjj&id_ddjj={$ddjj->id_ddjj}';
                 data+='&observacion_general='+$('#observacion_general').val();
-                data+='&observacion_ddjj='+$('#observacion_ddjj').val();
+                // data+='&observacion_ddjj='+$('#observacion_ddjj').val();
                 data += '&criterios_origen=' + JSON.stringify($('#criterio_origen').data("kendoMultiSelect").value());
 
                 verificacion.verificacion_personal=cambioVerificacion;
@@ -807,7 +783,7 @@
                 cambiar('review','{$id}loading_ddjj');
                 var data='opcion=admDeclaracionJurada&tarea=denyDdjj&id_ddjj={$ddjj->id_ddjj}';
                 data+='&observacion_general='+$('#observacion_general').val();
-                data+='&observacion_ddjj='+$('#observacion_ddjj').val().trim();
+                // data+='&observacion_ddjj='+$('#observacion_ddjj').val().trim();
                 $.ajax({
                     type: 'post',
                     url: 'index.php',
@@ -835,51 +811,6 @@
                 });
 
             }else   $('#obervacion-validation').show();
-        }
-        function aceptarDdjjAct() {
-
-            $('#obervacion-validation').hide();
-            $('#justificacionVerificacion').next().addClass('hidden');
-
-            var cambioVerificacion=JSON.stringify(verificacion) !== JSON.stringify(verificacion_inicial);
-
-            if(!cambioVerificacion || (cambioVerificacion  && $('#justificacionVerificacion').val().trim()!='')){
-                cambiar('review','{$id}loading_ddjj');//lau
-                var data='opcion=admDeclaracionJurada&tarea=aproveDdjjAct&id_ddjj={$ddjj->id_ddjj}&nro_act='+$('#nro_ddjj_actualizar').val();
-                data+='&observacion_general='+$('#observacion_general').val();
-                data+='&observacion_ddjj='+$('#observacion_ddjj').val();
-                data += '&criterios_origen=' + JSON.stringify($('#criterio_origen').data("kendoMultiSelect").value());
-                verificacion.verificacion_personal=cambioVerificacion;
-                verificacion.justificacion_verificacion=$('#justificacionVerificacion').val();
-                data+='&verificacion='+JSON.stringify(verificacion);
-                $.ajax({
-                    type: 'post',
-                    url: 'index.php',
-                    data: data,
-                    success: function(data) {
-                        data=JSON.parse(data);
-                        if(data.status=1){
-                            cambiar('{$id}loading_ddjj','review_notice_ddjj');
-                        }else{
-                            alert('Se produjo un error Intente nuevamente');
-                            console.log(data);
-                            cambiar('{$id}loading_ddjj','review');
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        alert('Se produjo un error Intente nuevamente');
-                        cambiar('{$id}loading_ddjj','alta_ddjj');
-                        console.log('jqXHR:');
-                        console.log(jqXHR);
-                        console.log('textStatus:');
-                        console.log(textStatus);
-                        console.log('errorThrown:');
-                        console.log(errorThrown);
-                    }
-                });
-            }else{
-                $('#justificacionVerificacion').next().removeClass('hidden');
-            }
         }
     </script>
 {/if}

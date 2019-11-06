@@ -78,8 +78,8 @@ class CriterioOrigen extends Db implements JsonSerializable {
 
     public function jsonSerialize() {
         return [
-          'id_criterio_origen' => $this->id_acuerdo,
-          'id_acuerdo' => $this->id_criterio_origen,
+          'id_criterio_origen' => $this->id_criterio_origen,
+          'id_acuerdo' => $this->id_acuerdo,
           'descripcion' => $this->descripcion,
           'literal' => $this->literal,
           'parrafo' => $this->parrafo,

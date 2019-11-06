@@ -125,7 +125,8 @@
                 case '4': //to correct ddjj
                     cerrarDemas('DDJJ RECHAZADA','');
                     cerrarDemas('Nueva DDJJ','');
-                    anadir("DDJJ RECHAZADA",'admDeclaracionJurada','rechazodeclaracionjurada&id_declaracion_jurada='+data.id_ddjj+'&correction=true');
+                    // anadir("DDJJ RECHAZADA",'admDeclaracionJurada','rechazodeclaracionjurada&id_declaracion_jurada='+data.id_ddjj+'&correction=true');
+                    anadir("Corregir DDJJ",'admDeclaracionJurada','altadeclaracionjurada&id_declaracion_jurada='+data.id_ddjj+'&correction=true');
                     break;
             {/if}
 

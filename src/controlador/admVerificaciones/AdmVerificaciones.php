@@ -7,6 +7,7 @@ include_once(PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGener
 include_once(PATH_CONTROLADOR . DS . 'admDeclaracionJurada' . DS . 'AdmDeclaracionJuradaFunctions.php');
 include_once(PATH_CONTROLADOR . DS . 'admEmpresa' . DS . 'AdmEmpresa.php');
 include_once(PATH_CONTROLADOR . DS . 'admCorreo' . DS . 'AdmCorreo.php');
+include_once(PATH_CONTROLADOR . DS . 'middleware' . DS . 'Condicionales.php');
 
 include_once(PATH_TABLA . DS . 'VerVerificacion.php');
 include_once(PATH_TABLA . DS . 'VerJustificacion.php');
@@ -29,7 +30,8 @@ class AdmVerificaciones extends Principal
     {
         $vista = Principal::getVistaInstance();
         $funcionesGenerales = new FuncionesGenerales();
-        $perfil_uco=($_SESSION['id_perfil']== 20);
+        $condicionales  = new Condicionales();
+        $perfil_uco=$condicionales->esPerfilUco();
         $vista->assign('perfil_uco',$perfil_uco);
 
         if($_REQUEST['tarea']=='verificaciones') {
@@ -74,7 +76,7 @@ class AdmVerificaciones extends Principal
                 $vista->assign('nombre_completo_revision', $persona->getNombreCompleto());
             }
             //trayendo regionales solo si es de perfil de la uco
-            if($_SESSION['id_perfil']==20){
+            if($condicionales->esPerfilUco()){
                 $this->listarRegionales($vista); //administrador UCO\
                 $vista->assign('admin',TRUE);// si puede editar esta variable se muestra
             } else {
@@ -101,7 +103,7 @@ class AdmVerificaciones extends Principal
             $verificacion->setFecha_creacion($funcionesGenerales->formatoFecha($verificacion->getFecha_creacion()));
 
             //Trayendo las verificaciones antiguas ralizadas a esa misma empresa
-            $this->verificacionesAntiguasPorEmpresa($vista,$verificacion->getId_empresa());
+            $this->verificacionesAntiguasPorEmpresa($vista,$verificacion->getId_empresa(),$verificacion->id_ver_verificacion);
 
             ///trayendo el nombre de la persona que asigno la verificacion
             if($verificacion->getVerificacion_personal()){
@@ -193,6 +195,7 @@ class AdmVerificaciones extends Principal
             }else {
                 echo '{"status":0,"message":"fail"}';
             }
+            exit;
         }
         if($_REQUEST['tarea']=='guardarCorreo'){
             if(isset($_REQUEST['correo'])){
@@ -269,14 +272,16 @@ class AdmVerificaciones extends Principal
     public function listarVerificaiones($estado){
         $verficacion= new VerVerificacion();
         $sqlVerficacion = new SQLVerVerificacion();
+        $condicional = new Condicionales();
+        $esUco = $condicional->esPerfilUco();
         if($estado){
             $verficacion->setId_ver_estado_verificacion($estado);
         } else {
-            $verficacion->setId_ver_estado_verificacion($_SESSION['id_perfil']== 20?0:1);
+            $verficacion->setId_ver_estado_verificacion($esUco?0:1);
         }
 
 
-        $id_persona=($_SESSION['id_perfil']== 20?FALSE:$_SESSION['id_persona']);// verificando si es de la UCO
+        $id_persona=($esUco?FALSE:$_SESSION['id_persona']);// verificando si es de la UCO
 
         $verificaciones = $sqlVerficacion->getListarVerificacionesPorEstado($verficacion,$id_persona);
         $strJson = '';
@@ -369,7 +374,7 @@ class AdmVerificaciones extends Principal
 
         return $flag;
     }
-    public function verificacionesAntiguasPorEmpresa($vista,$id_empresa){
+    public function verificacionesAntiguasPorEmpresa($vista,$id_empresa,$except_id = null){
         $verificacion = new VerVerificacion();
         $sqlVerificaciones=new SQLVerVerificacion();
         $empresaVerificacion= new Empresa();
@@ -379,10 +384,13 @@ class AdmVerificaciones extends Principal
         $empresaVerificacion = $sqlEmpresa->getEmpresaPorID($empresaVerificacion);
 
         $verificacion->setId_empresa($id_empresa);
-        $verificaciones= $sqlVerificaciones->getVerificacionesAntiguasPorEmpresa($verificacion);
+        $verificaciones= $sqlVerificaciones->getVerificacionesAntiguasPorEmpresa($verificacion, $except_id);
+
         $vista->assign('verificaciones',$verificaciones);
         $vista->assign('empresaVerificacion',$empresaVerificacion);
-        $vista->assign('verificaciones_antiguas','admVerificaciones/VerificacionesAntiguasa.tpl');
+        if(count($verificaciones)>1){
+          $vista->assign('verificaciones_antiguas','admVerificaciones/VerificacionesAntiguasa.tpl');
+        }
     }
     public function guardarInforme($id_ver_verificacion, $informe){
         $verificacion = new VerVerificacion();
@@ -405,10 +413,11 @@ class AdmVerificaciones extends Principal
             {
                 $declaracion_jurada->setId_estado_ddjj(6);//estado de pause hasta que se realize la visita de verificaicon
             }
-        } elseif($verificacion->verificacion_personal) { // no requiere verificacion pero fue impedida por una persona
-            $verificacion->id_ddjj=$declaracion_jurada->getId_ddjj();
-            $this->setJustificacion($verificacion);
         }
+//        elseif($verificacion->verificacion_personal) { // no requiere verificacion pero fue impedida por una persona
+//            $verificacion->id_ddjj=$declaracion_jurada->getId_ddjj();
+//            $this->setJustificacion($verificacion);
+//        }
 
         return $declaracion_jurada;
     }

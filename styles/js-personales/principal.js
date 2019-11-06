@@ -27,8 +27,20 @@ String.prototype.replaceAt=function(viejo,nuevo) {// para las opcionetes
 
 function cambiar(esconder,mostrar)
 {
-    document.getElementById(esconder).style.display = "none";
-    document.getElementById(mostrar).style.display = "inline";
+    if(typeof  esconder !== 'string') {
+        $.each(esconder, function( index, value ) {
+            document.getElementById(value).style.display = "none";
+        });
+    } else {
+        document.getElementById(esconder).style.display = "none";
+    }
+    if(typeof  mostrar !== 'string') {
+        $.each(mostrar, function( index, value ) {
+            document.getElementById(value).style.display = "inline";
+        });
+    } else {
+        document.getElementById(mostrar).style.display = "inline";
+    }
 }
 function ocultar(ocul)
 {

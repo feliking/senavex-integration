@@ -30,7 +30,7 @@ function acceptAction(){
     remover(tabStrip.select());
     cerraractualizartab('Acuerdos','admAcuerdo','acuerdos');
     {/if}
-    {if $review_ddjj}
+    {if $review_ddjj || $documentReview }
     remover(tabStrip.select());
     cerraractualizartab('Declaración Jurada','admDeclaracionJurada','listarRevisionDeclaracionJurada');
     {/if}

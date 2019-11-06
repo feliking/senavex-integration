@@ -2532,4 +2532,15 @@ class AdmEmpresa extends Principal {
             //echo '  123  ' . $resp .'  lau  ';*/
             curl_close($curl);
     }
+  public function AsignaUltimaVerificacion($id_empresa){
+    $empresa = new Empresa();
+    $sqlEmpresa = new SQLEmpresa();
+
+    $empresa->setId_empresa($id_empresa);
+    $empresa=$sqlEmpresa->getEmpresaPorID($empresa);
+
+    $empresa->setUltima_revision(date("Y-m-d")); // asignamos la fecha de la ultima visita de verificacion realizada  a la empresa
+
+    $empresa->save();
+  }
 }

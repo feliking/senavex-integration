@@ -4,6 +4,7 @@ defined('_ACCESO') or die('Acceso restringido');
 include_once(PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');
 include_once(PATH_CONTROLADOR . DS . 'admSistemaColas' . DS . 'AdmSistemaColas.php');
 include_once(PATH_CONTROLADOR . DS . 'admEstadoEmpresas' . DS . 'AdmEstadoEmpresas.php');
+include_once(PATH_CONTROLADOR . DS .'admDeclaracionJurada'. DS .'AdmDeclaracionJurada.php');
 
 include_once(PATH_TABLA . DS . 'DeclaracionJurada.php');
 include_once(PATH_TABLA . DS . 'DdjjAcuerdo.php');
@@ -300,7 +301,7 @@ class AdmDeclaracionJuradaFunctions {
         $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
 
         //le damos tiempo de vigencia de una DDJJ
-        if($declaracion_jurada->getMuestra===TRUE){
+        if($declaracion_jurada->getMuestra()){
             $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),15));
             $declaracion_jurada->setVigencia(15);
         }
@@ -325,15 +326,12 @@ class AdmDeclaracionJuradaFunctions {
                 }
             }catch(Exception $e){}
 
-/*
 //            del Servicio Exportador a TRUE
             $servicio_exportador->setId_servicio_exportador($declaracion_jurada->getId_Servicio_Exportador());
             $servicio_exportador = $sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
             $servicio_exportador->setEstado(TRUE);
             $sqlServicioExportador->setGuardarServicioExportador($servicio_exportador);
-
-            AdmDeclaracionJuradaFunctions::auditoriaDdjj(1, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
-*/
+          AdmDeclaracionJuradaFunctions::auditoriaDdjj(1, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
            return true;
         }else{
            return false;
@@ -456,6 +454,7 @@ class AdmDeclaracionJuradaFunctions {
         $array = explode(',',$criterios);
         $labels =[];
         $sqlCriterios = new SQLCriterioOrigen();
+
 
         foreach ($array as $id_criterio){
             $criterio =new CriterioOrigen();
@@ -605,22 +604,24 @@ class AdmDeclaracionJuradaFunctions {
             }
         }
     }
-    public function verDdjjResumen($vista,$id){ // devuelve una plantilla solo con los datos imporatantes de la declaracion jurada
-        $ddjj= new DeclaracionJurada();
-        $sqlDdjj = new SQLDeclaracionJurada();
-        $ddjj->setId_ddjj($id);
-        $ddjj=$sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
+    public function verDdjjResumen($vista,$id)
+    { // devuelve una plantilla solo con los datos imporatantes de la declaracion jurada
+      $ddjj = new DeclaracionJurada();
+      $sqlDdjj = new SQLDeclaracionJurada();
+      $ddjj->setId_ddjj($id);
+      $ddjj = $sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
+      $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($ddjj->getId_direccion());
 
-        $vista->assign('representanteEmpresa',$this->getPersonaEmpresa($ddjj->getId_empresa(),$ddjj->getId_persona()));
-        $vista->assign('criterios',$this->getCriterios($ddjj->getId_criterios()));
-        $vista->assign('partidas',$this->getPartidas($ddjj->getId_partidas_acuerdo()));
-        $vista->assign('direccion',$this->getDireccion($ddjj->getId_direccion()));
-        $vista->assign('fabrica',$this->getFabrica($ddjj->getId_direccion()));
-        $vista->assign('ddjj',$ddjj);
+      $vista->assign('representanteEmpresa', $this->getPersonaEmpresa($ddjj->getId_empresa(), $ddjj->getId_persona()));
+      $vista->assign('criterios', $this->getCriterios($ddjj->getId_criterios()));
+      $vista->assign('partidas', $this->getPartidas($ddjj->getId_partidas_acuerdo()));
+      $vista->assign('direccion', $direccionRepresentanteTpl);
+      $vista->assign('fabrica', $this->getFabrica($ddjj->getId_direccion()));
+      $vista->assign('ddjj', $ddjj);
 
-        $vista->assign('ddjj_resumen', 'declaracionJurada/DeclaracionJuradaResumen.tpl');
+      $vista->assign('ddjj_resumen', 'declaracionJurada/DeclaracionJuradaResumen.tpl');
 
-        return 'ddjj_resumen';
+      return 'ddjj_resumen';
     }
     public function getDdjj($id_ddjj){//devuelve el objeto de la declaracion jurada
         $ddjj= new DeclaracionJurada();
@@ -635,11 +636,13 @@ class AdmDeclaracionJuradaFunctions {
     public function aprobarDdjj($id_ddjj){/// aprobar ddjj para cancelacion
         $ddjj= new DeclaracionJurada();
         $sqlDdjj = new SQLDeclaracionJurada();
+        $admDdjj = new AdmDeclaracionJurada();
+
         $ddjj->setId_ddjj($id_ddjj);
         $ddjj = $sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
 
         $ddjj->setFecha_Revision(date('Y-m-d H:i:s'));
-        $ddjj->setId_estado_ddjj(5);/// verificacion aprobada
+        $ddjj->setId_estado_ddjj($admDdjj->DDJJ_CANCELAR);/// verificacion aprobada
         $ddjj->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
         $ddjj->setId_asistente($_SESSION['id_persona']);
 
@@ -660,13 +663,14 @@ class AdmDeclaracionJuradaFunctions {
         }
 
     }
-    public function bajaDdjj($id_ddjj,$justificacion,$motivo){/// dar de baja una ddjj
+    public function bajaDdjj($id_ddjj,$justificacion){/// dar de baja una ddjj
         $ddjj= new DeclaracionJurada();
         $sqlDdjj = new SQLDeclaracionJurada();
+        $admDdjj = new AdmDeclaracionJurada();
         $ddjj->setId_ddjj($id_ddjj);
         $ddjj = $sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
 
-        $ddjj->setId_estado_ddjj(7);/// declaracion jurada Eliminada
+        $ddjj->setId_estado_ddjj($admDdjj->DDJJ_ELIMINADA);/// declaracion jurada Eliminada
 
         if($ddjj->save()){
             $ddjjEliminacion = new DdjjEliminacion();
@@ -695,27 +699,25 @@ class AdmDeclaracionJuradaFunctions {
             $persona->setId_persona($ddjj->getId_asistente());
             $persona = $sqlPersona->getDatosPersonaPorId($persona);        
             AdmCorreo::enviarCorreo($persona->getEmail(),$ddjj->getDenominacion_comercial(),$justificacion,'','',50);        
-            //AdmCorreo::enviarCorreo('laurex123@gmail.com',$ddjj->getDenominacion_comercial(),$justificacion,'','',50);        
         }
     }
-    public function reasignaDdjjRevision($id_ddjj){
-        $ddjj= new DeclaracionJurada();
-        $sqlDdjj = new SQLDeclaracionJurada();
-        $ddjj->setId_ddjj($id_ddjj);
-        $ddjj = $sqlDdjj->getById($ddjj);
+    public function reasignaDdjjRevision($id_ddjj)
+    {
+      $ddjj = new DeclaracionJurada();
+      $sqlDdjj = new SQLDeclaracionJurada();
+      $ddjj->setId_ddjj($id_ddjj);
+      $ddjj = $sqlDdjj->getById($ddjj);
 
-        $ddjj->setId_estado_ddjj(0);//estado de revision
+      $ddjj->setId_estado_ddjj(0);//estado de revision
+      $servicio_exportador = AdmSistemaColas::generarServicioExportadorParaDdjj($ddjj->getId_persona(), 0, $ddjj->getId_empresa());
 
-       
-        //$servicio_exportador=AdmSistemaColas::generarServicioExportadorParaDdjj($ddjj->getId_persona(),0,$ddjj->getId_empresa());
+      $ddjj->setId_Servicio_Exportador($servicio_exportador->getId_servicio_exportador());
+      $ddjj->setFecha_limite_revision($this->addDaysReview(date("Y-m-d")));//3 days for senavex revition;
 
-        //$ddjj->setId_Servicio_Exportador($servicio_exportador->getId_servicio_exportador());
-        $ddjj->setFecha_limite_revision($this->addDaysReview(date("Y-m-d")));//3 days for senavex revition;
-// revisar este metodo  
-        $asist_senavex = AdmSistemaColas::generarColaParaDdjjAsistente($servicio_exportador->getId_servicio_exportador(),$ddjj->getId_asistente());
-        $ddjj->save();
+      $asist_senavex = AdmSistemaColas::generarColaParaDdjjAsistente($servicio_exportador->getId_servicio_exportador(), $ddjj->getId_asistente());
+      $ddjj->save();
 
-        $this->auditoriaDdjj(0, $ddjj->getId_ddjj(), $ddjj->getId_persona());
+      $this->auditoriaDdjj(0, $ddjj->getId_ddjj(), $ddjj->getId_persona());
     }
     ///bloqueo por acuerdo
     public function extraeAcuerdoSiHayBloqueo($id_empresa){

@@ -74,6 +74,11 @@ include_once(PATH_MODELO . DS . 'SQLRegional.php');
 include_once(PATH_MODELO . DS . 'SQLTipoCertificadoOrigen.php');
 
 class AdmDeclaracionJurada extends Principal {
+  public $DDJJ_VIGENTE = 1;
+  public $DDJJ_CANCELAR = 5;
+  public $DDJJ_VISITA = 6;
+  public $DDJJ_CORREGIR = 4;
+  public $DDJJ_ELIMINADA = 7;
   public function AdmDeclaracionJurada()
   {
     $midleware = new Middleware();
@@ -81,8 +86,8 @@ class AdmDeclaracionJurada extends Principal {
 
 
     $vista = Principal::getVistaInstance();
-    $perfil_uco=($_SESSION['id_perfil']==20?TRUE:FALSE);
-    $vista->assign('perfil_uco',$perfil_uco);
+
+
 
     $declaracion_jurada = new DeclaracionJurada();
     $acuerdo = new Acuerdo();
@@ -131,6 +136,10 @@ class AdmDeclaracionJurada extends Principal {
 
     $funcionesGenerales = new FuncionesGenerales();
     $uploader = new AdmUploader();
+    $condicional = new Condicionales();
+
+    $perfil_uco=$condicional->esPerfilUco();
+    $vista->assign('perfil_uco',$perfil_uco);
 
     //***********************declaraciones Juradas vista previa******************
     if($_REQUEST['tarea']=='declaracionesJuradas'){
@@ -393,54 +402,35 @@ class AdmDeclaracionJurada extends Principal {
     }
     //************************ vista de la declaracion jurada *******************////
     if($_REQUEST['tarea']=='previewDeclaracion'){
-      $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-      $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-      $tipo_valor_internacional->setId_tipo_valor_internacional($declaracion_jurada->acuerdo->id_tipo_valor_internacional);
-      $tipo_valor_internacional = $sqlTipoValorInternacional->getBuscarDescripcionPorId($tipo_valor_internacional);
-      $zonas=$functions->getZonasEspeciales($declaracion_jurada->getId_ddjj());
-      $tipo_acuerdos=$sqlTipoAcuerdo->getListarTipoAcuerdo($tipo_acuerdo);
-      $unidad_medida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
-      $pais=$sqlPais->getListarPais($pais);
-      $acuerdos=$sqlAcuerdo->getAcuerdoSinNinguno($acuerdo,true);
-      $direccion=$functions->getDireccion($declaracion_jurada->getId_direccion());
-      $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($declaracion_jurada->getId_direccion());
-      $fabrica=$functions->getFabrica($declaracion_jurada->getId_direccion());
-
-      $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($perfil_uco?$declaracion_jurada->getId_empresa():$_SESSION["id_empresa"],$declaracion_jurada->getId_persona()));
-      $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
-      $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
-      $vista->assign('direccion',$direccion);
-      $vista->assign('direccionTpl',$direccionRepresentanteTpl);
-      $vista->assign('fabrica',$fabrica);
-      $vista->assign('tipo_valor_internacional',$tipo_valor_internacional->abreviatura);
-      $vista->assign('tipoacuerdos', $tipo_acuerdos);
-      $vista->assign('paises', $pais);
-      $vista->assign('acuerdos', $acuerdos);
-      $vista->assign('preview',true);
-      $vista->assign('ddjj', $declaracion_jurada);
-      $vista->assign('unidadmedida', $unidad_medida);
-      $vista->assign('zonas', $zonas);
-      $vista->assign('id', 'preview');
-//            solo para la facturacion
-      if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==5 && $_SESSION["id_empresa"]!=0) $vista->display("declaracionJurada/facturationMessage.tpl");
-//            solo para las de vigencia
-      if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==1) $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
-
-      $vista->display("declaracionJurada/DeclaracionJurada.tpl");
+      if($condicional->esCertificador()){
+        $conf = new stdClass();
+        $conf->documentReview = true;
+      }
+      print $this->getDdjjTpl($_REQUEST["id_declaracion_jurada"],$conf);
       exit;
     }
-
-
+    if($_REQUEST['tarea']=='reviewDocumentsDeclaracion'){
+      $conf = new stdClass();
+      $conf->documentReview = true;
+      print $this->getDdjjTpl($_REQUEST["id_declaracion_jurada"],$conf);
+      exit;
+    }
 
     /********** Asistente SENAVEX***********/
     if($_REQUEST['tarea']=='listarRevisionDeclaracionJurada')
     {
+      $estados = $sqlEstadoDdjj->getListarEstadoDdjjRevisionCertificador($estado_ddjj,[$this->DDJJ_CORREGIR,$this->DDJJ_CANCELAR]);
+      $vista->assign('estados',$estados);
       $vista->display("declaracionJurada/ListarRevisionDeclaracionJurada.tpl");
       exit;
     }
     if($_REQUEST['tarea']=='listarRevisionDeclaraciones')
     {
-      $resultado = $sqlDeclaracionJurada->getListarDeclaracionesParaRevisar($declaracion_jurada,$_SESSION["id_persona"]);
+      if($_REQUEST['estado_ddjj'] && $_REQUEST['estado_ddjj'] == $this->DDJJ_CANCELAR) {
+        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesEstado($declaracion_jurada,$this->DDJJ_CANCELAR);
+      } else {
+        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesParaRevisar($declaracion_jurada,$_SESSION["id_persona"]);
+      }
 
       $strJson = '';
       echo '[';
@@ -561,11 +551,11 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setFecha_Revision($hoy);
       //si la DDJJ es Para ferias o muestras
       if ($declaracion_jurada->getMuestra()=== true){
-        $declaracion_jurada->setId_estado_ddjj(1);/// verificacion aprobada
+        $declaracion_jurada->setId_estado_ddjj($this->DDJJ_VIGENTE);/// verificacion aprobada
       }
       //si no es para ferias o muestras le mandamos a pago
       else{
-        $declaracion_jurada->setId_estado_ddjj(5);/// verificacion aprobada
+        $declaracion_jurada->setId_estado_ddjj($this->DDJJ_CANCELAR);/// verificacion aprobada
       }
       $declaracion_jurada->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
       $declaracion_jurada->setId_asistente($_SESSION['id_persona']);
@@ -585,7 +575,7 @@ class AdmDeclaracionJurada extends Principal {
           $sqlSistemaColas->setGuardarSistemaColas($sistema_colas);
         }
 
-        if($declaracion_jurada->getId_estado_ddjj()!=6){ // si es que no necesita verificacion estricta
+        if($declaracion_jurada->getId_estado_ddjj()!=$this->DDJJ_VISITA){ // si es que no necesita verificacion estricta
           //Envío de Correos
           $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
           $correos=explode(',',$correos);
@@ -602,78 +592,12 @@ class AdmDeclaracionJurada extends Principal {
           $functions->auditoriaDdjj(5, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
         }
 
-        $declaracion_jurada->setId_ddjj($_REQUEST['id_ddjj']);
-        $declaracion_jurada = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        if ($declaracion_jurada->getMuestra()=== true)
+        if ($declaracion_jurada->getMuestra())
         {
           AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador($declaracion_jurada->getId_Servicio_Exportador());
         }
-        else {
-          $servicio_exportador=AdmSistemaColas::generarServicioExportadorParaDdjjPago($_SESSION["id_persona"],0,$declaracion_jurada->getId_Servicio_Exportador());}
-        AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
-        echo '{"status":1,"message":"success"}';
 
-      }else{
-        echo '{"status":0,"message":"fail"}';
-      }
-      exit;
-    }
-    if($_REQUEST['tarea']=='aproveDdjjAct')
-    {
-      echo '1';
-      $hoy = date('Y-m-d H:i:s');
-      $declaracion_jurada->setId_ddjj($_REQUEST["id_ddjj"]);
-      $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-      $declaracion_jurada->setFecha_Revision($hoy);
-      $declaracion_jurada->setCorrelativo_ddjj($_REQUEST["nro_act"]);
-      $declaracion_jurada->setId_estado_ddjj(1);/// verificacion aprobada
-      /*$acuerdo = new Acuerdo();
-      $sqlAcuerdo = new SQLAcuerdo();
-      $acuerdo->setId_Acuerdo($declaracion_jurada->getId_acuerdo());
-      $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);*/
-
-      if ($declaracion_jurada->getId_acuerdo()=== true)
-      {
-        $declaracion_jurada->setId_estado_ddjj(1);/// verificacion aprobada
-      }
-      $declaracion_jurada->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
-      $declaracion_jurada->setId_asistente($_SESSION['id_persona']);
-      $declaracion_jurada->setId_criterios( implode (",", json_decode($_REQUEST['criterios_origen'])));
-
-      //---------creacion de la verificacon y asignacion de revision estricta si es necesario--------
-      $admVerificaciones= new AdmVerificaciones();
-      $declaracion_jurada=$admVerificaciones->procesaVerificacion($_REQUEST['verificacion'], $declaracion_jurada);
-      //----------------------------------------------------------------
-
-      if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
-
-        $sistema_colas->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $sistema_colas=$sqlSistemaColas->getBuscarColaPorServicioExportador($sistema_colas);
-        if($sistema_colas){
-          $sistema_colas->setAtendido(1);
-          $sqlSistemaColas->setGuardarSistemaColas($sistema_colas);
-        }
-
-        if($declaracion_jurada->getId_estado_ddjj()!=6){ // si es que no zxnecesita verificacion estricta
-          //Envío de Correos
-          $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
-          $correos=explode(',',$correos);
-          if(trim($correos[0])==trim($correos[1]))
-          {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-          }
-          else
-          {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-            AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-          }
-
-          $functions->auditoriaDdjj(5, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
-        }
-
-        $declaracion_jurada->setId_ddjj($_REQUEST['id_ddjj']);
-        $declaracion_jurada = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador($declaracion_jurada->getId_Servicio_Exportador());
+//        AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
         echo '{"status":1,"message":"success"}';
 
       }else{
@@ -750,5 +674,67 @@ class AdmDeclaracionJurada extends Principal {
     }
 
   }
+  public function getDdjjTpl($id_ddjj, $conf = null){
+    if($conf == null) $conf = new stdClass();
+    if(!isset($conf->preview)) $conf->preview = false;
+    if(!isset($conf->documentReview)) $conf->documentReview = false;
+
+    $vista = Principal::getVistaInstance();
+    $declaracion_jurada = new DeclaracionJurada();
+    $acuerdo = new Acuerdo();
+    $unidad_medida = new UnidadMedida();
+    $pais = new Pais();
+    $tipo_acuerdo = new TipoAcuerdo();
+    $tipo_valor_internacional = new TipoValorInternacional();
+    $functions = new AdmDeclaracionJuradaFunctions();
+
+    $sqlDeclaracionJurada = new SQLDeclaracionJurada();
+    $sqlAcuerdo = new SQLAcuerdo();
+    $sqlUnidadMedida = new SQLUnidadMedida();
+    $sqlPais = new SQLPais();
+    $sqlTipoAcuerdo = new SQLTipoAcuerdo();
+    $sqlTipoValorInternacional = new SQLTipoValorInternacional();
+
+
+
+    $declaracion_jurada->setId_ddjj($id_ddjj);
+    $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+    $tipo_valor_internacional->setId_tipo_valor_internacional($declaracion_jurada->acuerdo->id_tipo_valor_internacional);
+    $tipo_valor_internacional = $sqlTipoValorInternacional->getBuscarDescripcionPorId($tipo_valor_internacional);
+    $zonas=$functions->getZonasEspeciales($declaracion_jurada->getId_ddjj());
+    $tipo_acuerdos=$sqlTipoAcuerdo->getListarTipoAcuerdo($tipo_acuerdo);
+    $unidad_medida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
+    $pais=$sqlPais->getListarPais($pais);
+    $acuerdos=$sqlAcuerdo->getAcuerdoSinNinguno($acuerdo,true);
+    $direccion=$functions->getDireccion($declaracion_jurada->getId_direccion());
+    $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($declaracion_jurada->getId_direccion());
+    $fabrica=$functions->getFabrica($declaracion_jurada->getId_direccion());
+
+    $id = $conf->documentReview? 'documentReview' : 'preview';
+
+    $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
+    $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
+    $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
+    $vista->assign('direccion',$direccion);
+    $vista->assign('direccionTpl',$direccionRepresentanteTpl);
+    $vista->assign('fabrica',$fabrica);
+    $vista->assign('tipo_valor_internacional',$tipo_valor_internacional->abreviatura);
+    $vista->assign('tipoacuerdos', $tipo_acuerdos);
+    $vista->assign('paises', $pais);
+    $vista->assign('acuerdos', $acuerdos);
+    $vista->assign('preview',$conf->preview);
+    $vista->assign('documentReview',$conf->documentReview);
+    $vista->assign('ddjj', $declaracion_jurada);
+    $vista->assign('unidadmedida', $unidad_medida);
+    $vista->assign('zonas', $zonas);
+    $vista->assign('id', $id);
+    $vista->assign("facturacion",$declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==$this->DDJJ_CANCELAR && $_SESSION["id_empresa"]!=0);
+
+    //solo para las de vigencia
+    if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==$this->DDJJ_VIGENTE) $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
+
+    return $vista->fetch("declaracionJurada/DeclaracionJuradaWrapper.tpl");
+  }
+
 }
 
