@@ -317,12 +317,12 @@ class AdmDeclaracionJuradaFunctions {
             try{
                 if(trim($correos[0])==trim($correos[1]))
                 {
-                    AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social,'','','',37);
+                    AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social,'','','',52);
                 }
                 else
                 {
-                    AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',37);
-                    AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',37);
+                    AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',52);
+                    AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',52);
                 }
             }catch(Exception $e){}
 
@@ -636,13 +636,12 @@ class AdmDeclaracionJuradaFunctions {
     public function aprobarDdjj($id_ddjj){/// aprobar ddjj para cancelacion
         $ddjj= new DeclaracionJurada();
         $sqlDdjj = new SQLDeclaracionJurada();
-        $admDdjj = new AdmDeclaracionJurada();
 
         $ddjj->setId_ddjj($id_ddjj);
         $ddjj = $sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
 
         $ddjj->setFecha_Revision(date('Y-m-d H:i:s'));
-        $ddjj->setId_estado_ddjj($admDdjj->DDJJ_CANCELAR);/// verificacion aprobada
+        $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);/// verificacion aprobada
         $ddjj->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
         $ddjj->setId_asistente($_SESSION['id_persona']);
 
@@ -666,11 +665,10 @@ class AdmDeclaracionJuradaFunctions {
     public function bajaDdjj($id_ddjj,$justificacion){/// dar de baja una ddjj
         $ddjj= new DeclaracionJurada();
         $sqlDdjj = new SQLDeclaracionJurada();
-        $admDdjj = new AdmDeclaracionJurada();
         $ddjj->setId_ddjj($id_ddjj);
         $ddjj = $sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
 
-        $ddjj->setId_estado_ddjj($admDdjj->DDJJ_ELIMINADA);/// declaracion jurada Eliminada
+        $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_ELIMINADA);/// declaracion jurada Eliminada
 
         if($ddjj->save()){
             $ddjjEliminacion = new DdjjEliminacion();

@@ -355,40 +355,29 @@ function alerta()
 }
 ////------------------eliminar ddjj -----------------------------
 function eliminarDdjj(id_ddjj){
-    
-    var data='opcion=admDeclaracionJurada&tarea=BajasCausas';
-    $.ajax({
+    confirmDataMessage("¿Esta seguro que quiere dar de baja la Declaración Jurada de Origen? Ingrese la justificación.", function (text) {
+        $("#declaracionesjuradas").addClass('loading-block');
+        $.ajax({
             type: 'post',
             url: 'index.php',
-            data:data,
-            success: function (data) {              
-                    confirmDataMessage("¿Esta seguro que quiere dar de baja la Declaración Jurada de Origen?, seleccione un motivo de Baja y justifique la misma.",function (text,input){
-                        alert (text);
-                    $.ajax({
-                        type: 'post',
-                        url: 'index.php',
-                        data:{
-                            opcion:'admDeclaracionJurada',
-                            tarea:'eliminarDeclaracion',
-                            id_ddjj:id_ddjj,
-                            justificacion:text,
-                            motivo: input
-                        },
-                        success: function(data) {
-                            var data = JSON.parse(data);
-                            if(!+data.status) fadeMessage('ocurrio un error',data.message);
-                            else{
-                                remover(tabStrip.select());
-                                cerraractualizartab('Declaración Jurada','admDeclaracionJurada','declaracionesJuradas');
-                                fadeMessage('Se elimino la declaración Jurada Exitosamente.');
-                            }
-                        }
-                    })
-                });
-                
+            data: {
+                opcion: 'admDeclaracionJurada',
+                tarea: 'eliminarDeclaracion',
+                id_ddjj: id_ddjj,
+                justificacion: text
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if (!+data.status) fadeMessage('ocurrio un error', data.message);
+                else {
+                    remover(tabStrip.select());
+                    cerraractualizartab('Declaración Jurada', 'admDeclaracionJurada', 'declaracionesJuradas');
+                    fadeMessage('Se elimino la declaración Jurada Exitosamente.');
+                }
+                $("#declaracionesjuradas").removeClass('loading-block');
             }
+        });
     });
-
 }
 
 function guardarCorreoVerificacion() {

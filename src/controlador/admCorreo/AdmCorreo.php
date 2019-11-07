@@ -1121,6 +1121,38 @@ class AdmCorreo extends Principal {
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
                  </p>';
                 break;
+          case 50:
+            $para = $parametro1;
+            $mensaje .=
+              '<p style=\"height:100px;color:black;\">
+                <b>Estimado Usuario </b>
+                <br/> Le informamos que la declaracion jurada para el producto "'.$parametro2.'" a sido rechazada , por el siguiente motivo:
+                <br/>'.$parametro3.'
+                <br/> Por favor registre la Declaracion Jurada nuevamente con las correcciones pertinentes.
+                <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>
+                 </p><br/>';
+            break;
+          case 51:
+            $para = $parametro1;
+            $mensaje .=
+              '<p style=\"height:100px;color:black;\">
+                <b>Estimado Administrador</b>
+                <br/> Te informamos que el sistema a creado la visita de verificación Nro. "'.$parametro2.'" asegurate de que este asignada a algun personal.<br>
+                <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>
+                 </p><br/>';
+            break;
+          case 52:
+            $para = $parametro1;//correo
+            $mensaje .=
+              '<p style=\"height:100px;color:black;\">
+                <b>'.$parametro2.', te damos la bienvenida a nuestra plataforma virtual </b>
+                <br/><br/>
+                    Te informamos que entro en VIGENCIA una Declaraci&oacute;n Jurada para mas detalles dirigirse a la plataforma del SENAVEX.
+                    <br/>
+                    Saludos<br/>
+                <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>
+                 </p>';
+            break;
         }
         
         $mensaje .='<a href="http://vortex.senavex.gob.bo/index.php">http://vortex.senavex.gob.bo</a>';

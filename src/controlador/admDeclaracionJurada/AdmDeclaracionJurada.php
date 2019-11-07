@@ -42,9 +42,7 @@ include_once(PATH_TABLA . DS . 'TipoCertificadoOrigen.php');
 include_once(PATH_TABLA . DS . 'Direccion.php');
 include_once(PATH_TABLA . DS . 'SGCDdjj.php');
 include_once(PATH_TABLA . DS . 'Regional.php');
-include_once(PATH_TABLA . DS . 'DdjjBajas.php');
 
-include_once(PATH_MODELO . DS . 'SQLDdjjBajas.php');
 include_once(PATH_MODELO . DS . 'SQLDeclaracionJurada.php');
 include_once(PATH_MODELO . DS . 'SQLDdjjAcuerdo.php');
 include_once(PATH_MODELO . DS . 'SQLAcuerdo.php');
@@ -74,11 +72,11 @@ include_once(PATH_MODELO . DS . 'SQLRegional.php');
 include_once(PATH_MODELO . DS . 'SQLTipoCertificadoOrigen.php');
 
 class AdmDeclaracionJurada extends Principal {
-  public $DDJJ_VIGENTE = 1;
-  public $DDJJ_CANCELAR = 5;
-  public $DDJJ_VISITA = 6;
-  public $DDJJ_CORREGIR = 4;
-  public $DDJJ_ELIMINADA = 7;
+  const DDJJ_VIGENTE = 1;
+  const DDJJ_CANCELAR = 5;
+  const DDJJ_VISITA = 6;
+  const DDJJ_CORREGIR = 4;
+  const DDJJ_ELIMINADA = 7;
   public function AdmDeclaracionJurada()
   {
     $midleware = new Middleware();
@@ -419,15 +417,15 @@ class AdmDeclaracionJurada extends Principal {
     /********** Asistente SENAVEX***********/
     if($_REQUEST['tarea']=='listarRevisionDeclaracionJurada')
     {
-      $estados = $sqlEstadoDdjj->getListarEstadoDdjjRevisionCertificador($estado_ddjj,[$this->DDJJ_CORREGIR,$this->DDJJ_CANCELAR]);
+      $estados = $sqlEstadoDdjj->getListarEstadoDdjjRevisionCertificador($estado_ddjj,[AdmDeclaracionJurada::DDJJ_CORREGIR,AdmDeclaracionJurada::DDJJ_CANCELAR]);
       $vista->assign('estados',$estados);
       $vista->display("declaracionJurada/ListarRevisionDeclaracionJurada.tpl");
       exit;
     }
     if($_REQUEST['tarea']=='listarRevisionDeclaraciones')
     {
-      if($_REQUEST['estado_ddjj'] && $_REQUEST['estado_ddjj'] == $this->DDJJ_CANCELAR) {
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesEstado($declaracion_jurada,$this->DDJJ_CANCELAR);
+      if($_REQUEST['estado_ddjj'] && $_REQUEST['estado_ddjj'] == AdmDeclaracionJurada::DDJJ_CANCELAR) {
+        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesEstado($declaracion_jurada,AdmDeclaracionJurada::DDJJ_CANCELAR);
       } else {
         $resultado = $sqlDeclaracionJurada->getListarDeclaracionesParaRevisar($declaracion_jurada,$_SESSION["id_persona"]);
       }
@@ -551,11 +549,11 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setFecha_Revision($hoy);
       //si la DDJJ es Para ferias o muestras
       if ($declaracion_jurada->getMuestra()=== true){
-        $declaracion_jurada->setId_estado_ddjj($this->DDJJ_VIGENTE);/// verificacion aprobada
+        $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VIGENTE);/// verificacion aprobada
       }
       //si no es para ferias o muestras le mandamos a pago
       else{
-        $declaracion_jurada->setId_estado_ddjj($this->DDJJ_CANCELAR);/// verificacion aprobada
+        $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);/// verificacion aprobada
       }
       $declaracion_jurada->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
       $declaracion_jurada->setId_asistente($_SESSION['id_persona']);
@@ -575,7 +573,7 @@ class AdmDeclaracionJurada extends Principal {
           $sqlSistemaColas->setGuardarSistemaColas($sistema_colas);
         }
 
-        if($declaracion_jurada->getId_estado_ddjj()!=$this->DDJJ_VISITA){ // si es que no necesita verificacion estricta
+        if($declaracion_jurada->getId_estado_ddjj()!=AdmDeclaracionJurada::DDJJ_VISITA){ // si es que no necesita verificacion estricta
           //Envío de Correos
           $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
           $correos=explode(',',$correos);
@@ -648,9 +646,9 @@ class AdmDeclaracionJurada extends Principal {
     }
 
     if($_REQUEST['tarea']=='eliminarDeclaracion'){
-      if(isset($_REQUEST['id_ddjj']) AND isset($_REQUEST['justificacion'])AND isset($_REQUEST['motivo'])){
+      if(isset($_REQUEST['id_ddjj']) AND isset($_REQUEST['justificacion'])){
 
-        $functions->bajaDdjj($_REQUEST['id_ddjj'],$_REQUEST['justificacion'],$_REQUEST['motivo']);
+        $functions->bajaDdjj($_REQUEST['id_ddjj'],$_REQUEST['justificacion']);
         echo '{"status":1,"message":"success"}';
       }else{
         echo '{"status":0,"message":"fail"}';
@@ -728,13 +726,12 @@ class AdmDeclaracionJurada extends Principal {
     $vista->assign('unidadmedida', $unidad_medida);
     $vista->assign('zonas', $zonas);
     $vista->assign('id', $id);
-    $vista->assign("facturacion",$declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==$this->DDJJ_CANCELAR && $_SESSION["id_empresa"]!=0);
+    $vista->assign("facturacion",$declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_CANCELAR && $_SESSION["id_empresa"]!=0);
 
     //solo para las de vigencia
-    if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==$this->DDJJ_VIGENTE) $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
+    if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_VIGENTE) $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
 
     return $vista->fetch("declaracionJurada/DeclaracionJuradaWrapper.tpl");
   }
-
 }
 

@@ -112,7 +112,7 @@
 
     var registroddjj=0;
 
-    function cambiarceldasddjj()
+    function cambiarceldasddjj(e)
     {
         var gridddjj = $("#declaracionesjuradas").data("kendoGrid");
         var row = gridddjj.select();
