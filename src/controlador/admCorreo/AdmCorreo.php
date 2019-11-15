@@ -1002,7 +1002,7 @@ class AdmCorreo extends Principal {
                 '<p style=\"height:100px;color:black;\">
                 <b>'.$parametro2.',</b>
                 <br/><br/>
-                    Te informamos que a sido RECHAZADA una Declaraci&oacute;n Jurada en la plataforma del SENAVEX. Se le insinúa revisar y realizar las correcciones requeridas.
+                    Le informamos que su DDJJ ha sido rechazada en la plataforma virtual del SENAVEX. Por lo que, debe revisar y analizar dichas observaciones.
                     <br/>
                     Saludos<br/>
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    

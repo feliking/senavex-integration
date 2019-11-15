@@ -10,8 +10,8 @@
                             {if $ddjj->correlativo_ddjj}
                                 <p>N° DDJJ: {$representanteEmpresa[1]->ruex}-{$ddjj->correlativo_ddjj}</p>
                             {/if}
-                            {if $fecha_vigencia}
-                                <p>Vigencia: {$fecha_vigencia}</p>
+                            {if $fecha_vencimiento}
+                                <p>Vencimiento: {$fecha_vencimiento}</p>
                             {/if}
                             {if $estado}
                                 <p>{$estado}</p>
@@ -128,7 +128,7 @@
                         {$ddjj->nombre_tecnico}
                     </div>
                 </div>
-
+                {if $ddjj->caracteristicas}
                 <div class="row-fluid form">
                     <label class="span4 ddjj-section-label" >
                         3.4 Especificaciones de la mercancia:
@@ -137,6 +137,7 @@
                         {$ddjj->caracteristicas}
                     </div>
                 </div>
+                {/if}
                 <div class="row-fluid form">
                     <label class="span2 ddjj-section-label">3.5 Subpartida Arancelaria:</label>
                     <div class="span4 ddjj-section-field" id="view_ddjj_arancel">

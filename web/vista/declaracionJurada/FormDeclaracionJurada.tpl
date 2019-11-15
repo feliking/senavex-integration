@@ -108,7 +108,8 @@
                             </label>
                             <div class="span8 ddjj-input" >
                                 <input type="text" class="k-textbox" name="caracteristicas" id="caracteristicas"
-                                       required validationMessage="Por favor las caracteristicas técnicas del producto" {if $ddjj && $ddjj->caracteristicas}value="{$ddjj->caracteristicas}"{/if}/>
+{*                                       required validationMessage="Por favor las caracteristicas técnicas del producto"*}
+                                       {if $ddjj && $ddjj->caracteristicas}value="{$ddjj->caracteristicas}"{/if}/>
                             </div>
                         </div>
                         <div class="row-fluid form">
@@ -172,6 +173,7 @@
                                                        data-acuerdo-descripcion="{$acuerdo->descripcion}"
                                                        data-acuerdo-sigla="{$acuerdo->sigla}"
                                                        data-tipoacuerdo-descripcion="{$tipoacuerdo->descripcion}"
+                                                       data-idtipo-acuerdo="{$tipoacuerdo->id_tipo_acuerdo}"
                                                        data-valor-descripcion="{$acuerdo->tipo_valor_internacional->abreviatura}"
                                                        data-arancel="{foreach $acuerdo->acuerdo_arancel as $acuerdo_arancel}{$acuerdo_arancel->id_arancel}{if not $acuerdo_arancel@last},{/if}{/foreach}"
                                                         {if $ddjj && $ddjj->id_acuerdo == $acuerdo->id_acuerdo} checked{/if}
@@ -185,7 +187,7 @@
                         {/foreach}
                         <div class="row-fluid fadein"><input type="hidden" name="hiddenvalidator" data-checkvalidator=""></div>
 
-                        <span class="ddjj-section-alert_1">Nota Aclaratoria En caso que la mercancía a exportar no figure en la lista de productos beneficiados, significa que la misma no se beneficia de las preferencias arancelarias del SGP solicitado. Consigueintemente, se sugiere seleccione en el campo 5.1 Terceros Paises, con la finalidad de poder acceder a la emisión del Certificado de Origen tipo Terceros Paises</span>
+                        <span id="nota_aclaratoria_sgp" class="ddjj-section-alert_1 fadein hidden">Nota Aclaratoria En caso que la mercancía a exportar no figure en la lista de productos beneficiados, significa que la misma no se beneficia de las preferencias arancelarias del SGP solicitado. Consigueintemente, se sugiere seleccione en el campo 5.1 Terceros Paises, con la finalidad de poder acceder a la emisión del Certificado de Origen tipo Terceros Paises</span>
                         {foreach $aranceles as $arancel}
                             <div id="ddjj_arancel_{$arancel->id_arancel}" class="none">
                                 <div class="row-fluid form">

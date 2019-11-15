@@ -65,7 +65,7 @@
                         {$ddjj->nombre_tecnico}
                     </div>
                 </div>
-
+                {if $ddjj->caracteristicas}
                 <div class="row-fluid form">
                     <label class="span4 ddjj-section-label" >
                         Caracteristicas Técnicas del Producto:
@@ -74,6 +74,7 @@
                         {$ddjj->caracteristicas}
                     </div>
                 </div>
+                {/if}
                 <div class="row-fluid form">
                     <label class="span2 ddjj-section-label">Subpartida Arancelaria:</label>
                     <div class="span4 ddjj-section-field">

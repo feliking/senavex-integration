@@ -373,7 +373,6 @@ class AdmDeclaracionJuradaFunctions {
 
   }
     public static function setVigenciaDdjjxServicioexportador_APROVE($id_servicio_exportador) {
-        
         $hoy=date("Y-m-d H:i:s");
         $declaracion_jurada = new DeclaracionJurada();
         $declaracion_juradab = new DeclaracionJurada();
@@ -384,7 +383,6 @@ class AdmDeclaracionJuradaFunctions {
 
         $declaracion_juradab = $sqlDeclaracionJurada->getByIdServicioExportador($declaracion_juradab,$id_servicio_exportador);
 
-        //print_r($declaracion_juradab);
         $correlativo_ddjj = $sqlDeclaracionJurada->getDesignarCorrelativoDDJJ($declaracion_juradab[0]);
         $declaracion_jurada->setId_ddjj($declaracion_juradab[0]->getId_ddjj());
         $declaracion_jurada = $sqlDeclaracionJurada->getById($declaracion_jurada);
@@ -395,17 +393,21 @@ class AdmDeclaracionJuradaFunctions {
         {
           $declaracion_jurada->setCorrelativo_ddjj($correlativo_ddjj[0]['max']+1);
         }
-        
-        $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),$acuerdo->getVigencia_ddjj()));
+
+        if($declaracion_jurada->getMuestra()) {
+          // si es muestra es 3 dias
+          $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),30));
+        } else {
+          $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),$acuerdo->getVigencia_ddjj()));
+        }
         $declaracion_jurada->setVigencia($acuerdo->getVigencia_ddjj());
+
         if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)) {
             AdmDeclaracionJuradaFunctions::auditoriaDdjj(1, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
-
            return true;
         }else{
            return false;
         }
-
     }
     public static function setVigenciaDdjjxServicioexportador($id_servicio_exportador) {
         

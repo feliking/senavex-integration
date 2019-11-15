@@ -382,6 +382,7 @@
     {*var multiselect = $("#criterio_origen").data("kendoMultiSelect");*}
 
     {*********************************acuerdos*****************************}
+
     var ddjj_id_acuerdo=0;
     $('input:radio[name="acuerdo"]').change(function(){
         if ($(this).is(':checked')) {
@@ -403,7 +404,13 @@
 
             $('#ddjj_acuerdo_copy').html($(this).attr('data-acuerdo-descripcion'));
         }
+        if($(this).attr('data-idtipo-acuerdo') === '2') {
+            $('#nota_aclaratoria_sgp').removeClass('hidden');
+        } else {
+            $('#nota_aclaratoria_sgp').addClass('hidden');
+        }
     });
+
     function refreshNormas(id_acuerdo) {
         $.ajax({
             type: 'post',

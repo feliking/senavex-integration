@@ -47,8 +47,8 @@ class AdmUploader extends Principal {
                 $upload = 0;//error
             }
 
-            if ($_FILES["file"]["size"] > 3000000) {
-                $message.= "Lo sentimos el documento es muy pesado";
+            if ($_FILES["file"]["size"] > 5000000) {
+                $message.= "Lo sentimos el documento es muy pesado".$_FILES["file"]["size"] ;
                 $upload = 0;//error
             }
             $validExtensions = array('jpg', 'jpeg', 'png','pdf');

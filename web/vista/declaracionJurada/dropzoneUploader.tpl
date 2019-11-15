@@ -36,7 +36,7 @@
     {
         {literal}
         dictInvalidFileType:'Solo se permite imagenes o pdf.',
-        dictFileTooBig:'El archivo pesa {{filesize}} MB,el peso permitido es de {{maxFilesize}}MB',
+        dictFileTooBig:'El archivo pesa {{filesize}} MB, el peso permitido es de {{maxFilesize}}MB',
         dictFallbackMessage:'Su navegador no soporta la subida de acrchivos por favor intente con chrome.',
         dictResponseError:'Error de servidor: {{statusCode}}',
         dictCancelUpload:'Cancelar',
@@ -44,7 +44,7 @@
         dictRemoveFile:'Eliminar',
         acceptedFiles:'image/jpg,image/jpeg,image/png,application/pdf',
         dictMaxFilesExceeded:'No se permite mas de 5 archivos por declaración jurada.',
-        maxFilesize: 2, // MBz
+        maxFilesize: 5, // MBz
         maxFiles:5,
         addRemoveLinks:true,
         {/literal}

@@ -118,10 +118,6 @@
             grid.showColumn(8);
         }
 
-
-
-        console.log(this.value());
-
         grid.setDataSource(dataddjj);
         grid.refresh();
     };
@@ -141,6 +137,7 @@
         var row = gridddjj.select();
         var data = gridddjj.dataItem(row);
         var comboddjj = $("#menuddjj").val();
+        console.log(comboddjj);
         if(registroddjj==data.id_ddjj)
         {
             switch(comboddjj){
@@ -160,6 +157,7 @@
 //                anadir("Ver DDJJ",'admDeclaracionJurada','corregirDeclaracionJurada&id_declaracion_jurada='+data.id_ddjj);
 //                break;
                 default:
+                    cerrarDemas('Ver DDJJ','');
                     anadir('Ver DDJJ','admDeclaracionJurada','previewDeclaracion&id_declaracion_jurada='+data.id_ddjj);
                     break;
             }

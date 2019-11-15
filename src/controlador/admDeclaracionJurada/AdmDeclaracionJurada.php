@@ -300,7 +300,7 @@ class AdmDeclaracionJurada extends Principal {
       echo 'Laurex';*/
       $declaracion_jurada->setId_Servicio_Exportador($servicio_exportador->getId_servicio_exportador());
       $declaracion_jurada->setDenominacion_Comercial(strtoupper ($_REQUEST["denominacion_comercial"]));
-      $declaracion_jurada->setCaracteristicas(strtoupper ($_REQUEST["caracteristicas"]));
+      if(isset($_REQUEST["caracteristicas"]) && $_REQUEST["caracteristicas"] !='') $declaracion_jurada->setCaracteristicas(strtoupper ($_REQUEST["caracteristicas"]));
       $declaracion_jurada->setId_Unidad_Medida(strtoupper ($_REQUEST["unidadmedida"]));
       $declaracion_jurada->setProceso_Productivo(strtoupper ($_REQUEST["procesoproductivo"]));
       $declaracion_jurada->setComplemento(strtoupper ($_REQUEST["complemento"]));
@@ -732,8 +732,8 @@ class AdmDeclaracionJurada extends Principal {
     $id = $conf->documentReview? 'documentReview' : 'preview';
     if($conf->reasignarDeclaracion) $id = 'reasignarDatos';
 
-    if($declaracion_jurada->getFecha_vigencia()){
-      $vista->assign('fecha_vigencia', date('d/m/y',strtotime($declaracion_jurada->getFecha_vigencia())));
+    if($declaracion_jurada->getFecha_vencimiento()){
+      $vista->assign('fecha_vencimiento', date('d/m/y',strtotime($declaracion_jurada->getFecha_vencimiento())));
     }
 
     $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
