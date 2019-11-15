@@ -474,9 +474,9 @@ class AdmDeclaracionJurada extends Principal {
       if(isset($_REQUEST['id_partida']) AND $_REQUEST['id_partida'] != ''){
         $declaracion_jurada->setId_partida( $_REQUEST['id_partida']);
       }
-      if(isset($_REQUEST['fecha_vigencia']) AND $_REQUEST['fecha_vigencia'] != ''){
-        $fecha_vigencia = $funcionesGenerales->setFechaToBd($_REQUEST['fecha_vigencia']);
-        $declaracion_jurada->setFecha_vigencia($fecha_vigencia);
+      if(isset($_REQUEST['fecha_vencimiento']) AND $_REQUEST['fecha_vencimiento'] != ''){
+        $fecha_vencimiento = $funcionesGenerales->setFechaToBd($_REQUEST['fecha_vencimiento']);
+        $declaracion_jurada->setFecha_vencimiento($fecha_vencimiento);
       }
       if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
         $PersonaEmpresa=$functions->getPersonaEmpresa($declaracion_jurada->getId_Empresa(),$declaracion_jurada->getId_Persona());

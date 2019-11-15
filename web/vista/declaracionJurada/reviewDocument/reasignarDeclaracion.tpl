@@ -4,7 +4,7 @@
             <section class="ddjj-section">
                 <div class="row-fluid form">
                     <label class="span3 ddjj-section-label" >
-                        <span class="tooltip" title="Puede reasignar la fecha de vigencia">?</span>Fecha de Vigencia:
+                        <span class="tooltip" title="Puede reasignar la fecha de vigencia">?</span>Fecha de Vencimiento:
                     </label>
                     <div class="span9 ddjj-input">
                         <input type="text" id="r_fechaVigencia"/>
@@ -108,7 +108,7 @@
                         opcion:'admDeclaracionJurada',
                         tarea:'saveReasignarDatos',
                         id_ddjj: '{$ddjj->id_ddjj}',
-                        fecha_vigencia: $("#r_fechaVigencia").val(),
+                        fecha_vencimiento: $("#r_fechaVigencia").val(),
                         id_partida: $('#r_arancel_description').attr('id_partida')
                     },
                     success: function(data) {

@@ -36,7 +36,7 @@ function acceptAction(){
     {/if}
     {if $reasignarDeclaracion}
     remover(tabStrip.select());
-    cerraractualizartab('Declaración Jurada','admDeclaracionJurada','listarRevisionDeclaracionJurada');
+    cerraractualizartab('Declaración Jurada','admDeclaracionJurada','declaracionesJuradas');
     {/if}
 }
 </script>
