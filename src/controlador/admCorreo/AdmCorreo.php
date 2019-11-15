@@ -988,9 +988,9 @@ class AdmCorreo extends Principal {
                 $para = $parametro1;//correo
                 $mensaje .=
                 '<p style=\"height:100px;color:black;\">
-                <b>'.$parametro2.', te damos la bienvenida a nuestra plataforma virtual </b>
+                <b>'.$parametro2.', </b>
                 <br/><br/>
-                    Te informamos que ha sido revisada una Declaraci&oacute;n Jurada para que pueda aprobarla en la plataforma del SENAVEX.
+                    Te informamos que ha sido revisada una Declaraci&oacute;n Jurada la cual entro en vigencia, por favor cancelar la Declaración en un plazo de 15 dias.
                     <br/>
                     Saludos<br/>
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
@@ -1000,9 +1000,9 @@ class AdmCorreo extends Principal {
                 $para = $parametro1;//correo
                 $mensaje .=
                 '<p style=\"height:100px;color:black;\">
-                <b>'.$parametro2.', te damos la bienvenida a nuestra plataforma virtual </b>
+                <b>'.$parametro2.',</b>
                 <br/><br/>
-                    Te informamos que sido RECHAZADA una Declaraci&oacute;n Jurada en la plataforma del SENAVEX. Se le insinúa revisar y realizar las correcciones si en caso se requiere.
+                    Te informamos que a sido RECHAZADA una Declaraci&oacute;n Jurada en la plataforma del SENAVEX. Se le insinúa revisar y realizar las correcciones requeridas.
                     <br/>
                     Saludos<br/>
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
@@ -1145,13 +1145,28 @@ class AdmCorreo extends Principal {
             $para = $parametro1;//correo
             $mensaje .=
               '<p style=\"height:100px;color:black;\">
-                <b>'.$parametro2.', te damos la bienvenida a nuestra plataforma virtual </b>
+                <b>'.$parametro2.', </b>
                 <br/><br/>
-                    Te informamos que entro en VIGENCIA una Declaraci&oacute;n Jurada para mas detalles dirigirse a la plataforma del SENAVEX.
+                    Te informamos que entro tu Declaraci&oacute;n Jurada fue facturada satisfactoriamente.
                     <br/>
                     Saludos<br/>
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>
                  </p>';
+            break;
+          case 53: // Se modifico la Declaracion Jurada
+            $para = $parametro1;//correo
+            $vista = Principal::getVistaInstance();
+            $vista->assign('nombre',$parametro2);
+            $vista->assign('codigo',$parametro4->getCorrelativo_ddjj());
+            $mensaje .= $vista->fetch("correos/reasignarCorreo.tpl");
+
+            break;
+          case 54: // ddjj a visita de verificacion
+            $para = $parametro1;//correo
+            $vista = Principal::getVistaInstance();
+            $vista->assign('nombre',$parametro2);
+            $mensaje .= $vista->fetch("correos/visitaVerificacionCorreo.tpl");
+
             break;
         }
         

@@ -300,15 +300,6 @@ class AdmDeclaracionJuradaFunctions {
         $acuerdo->setId_Acuerdo($declaracion_jurada->getId_acuerdo());
         $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
 
-        //le damos tiempo de vigencia de una DDJJ
-        if($declaracion_jurada->getMuestra()){
-            $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),15));
-            $declaracion_jurada->setVigencia(15);
-        }
-        else{
-            $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),$acuerdo->getVigencia_ddjj()));
-            $declaracion_jurada->setVigencia($acuerdo->getVigencia_ddjj());
-        }
         //$declaracion_jurada->setVigencia($acuerdo->getVigencia_ddjj());
         if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)) {
 
@@ -338,58 +329,76 @@ class AdmDeclaracionJuradaFunctions {
         }
 
     }
+  public static function validarCancelacion($id_ddjj) {
+    $declaracion_jurada = new DeclaracionJurada();
+    $sqlDeclaracionJurada = new SQLDeclaracionJurada();
+
+
+    $declaracion_jurada->setId_ddjj($id_ddjj);
+    $declaracion_jurada = $sqlDeclaracionJurada->getById($declaracion_jurada);
+    $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VIGENTE);
+
+    if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)) {
+
+      $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
+      $correos=explode(',',$correos);
+      try{
+        if(trim($correos[0])==trim($correos[1]))
+        {
+          AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social,'','','',52);
+        }
+        else
+        {
+          AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',52);
+          AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',52);
+        }
+      }catch(Exception $e){}
+
+      AdmDeclaracionJuradaFunctions::terminarServicioExportador($declaracion_jurada->getId_Servicio_Exportador());
+      AdmDeclaracionJuradaFunctions::auditoriaDdjj(1, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+      return true;
+    }else{
+      return false;
+    }
+
+  }
+  public static function terminarServicioExportador($id_servicio_exportador) {
+    $servicio_exportador = new ServicioExportador();
+    $sqlServicioExportador = new SQLServicioExportador();
+
+    $servicio_exportador->setId_servicio_exportador($id_servicio_exportador);
+    $servicio_exportador = $sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
+    $servicio_exportador->setEstado(TRUE);
+    $sqlServicioExportador->setGuardarServicioExportador($servicio_exportador);
+
+  }
     public static function setVigenciaDdjjxServicioexportador_APROVE($id_servicio_exportador) {
         
         $hoy=date("Y-m-d H:i:s");
         $declaracion_jurada = new DeclaracionJurada();
         $declaracion_juradab = new DeclaracionJurada();
         $sqlDeclaracionJurada = new SQLDeclaracionJurada();
-        $servicio_exportador = new ServicioExportador();
-        $sqlServicioExportador = new SQLServicioExportador();
         $acuerdo = new Acuerdo();
         $sqlAcuerdo = new SQLAcuerdo();
         $funcionesGenerales = new FuncionesGenerales();
-        
+
         $declaracion_juradab = $sqlDeclaracionJurada->getByIdServicioExportador($declaracion_juradab,$id_servicio_exportador);
 
         //print_r($declaracion_juradab);
         $correlativo_ddjj = $sqlDeclaracionJurada->getDesignarCorrelativoDDJJ($declaracion_juradab[0]);
         $declaracion_jurada->setId_ddjj($declaracion_juradab[0]->getId_ddjj());
         $declaracion_jurada = $sqlDeclaracionJurada->getById($declaracion_jurada);
-        $declaracion_jurada->setId_estado_ddjj(5);
         $declaracion_jurada->setFecha_vigencia($hoy);
         $acuerdo->setId_Acuerdo($declaracion_jurada->getId_acuerdo());
         $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
         if($declaracion_jurada->getCorrelativo_ddjj()=='')
         {
-        $declaracion_jurada->setCorrelativo_ddjj($correlativo_ddjj[0]['max']+1);
+          $declaracion_jurada->setCorrelativo_ddjj($correlativo_ddjj[0]['max']+1);
         }
         
-            $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),$acuerdo->getVigencia_ddjj()));
-            $declaracion_jurada->setVigencia($acuerdo->getVigencia_ddjj());
-            if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)) {
-
-            $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
-            $correos=explode(',',$correos);
-            try{
-                if(trim($correos[0])==trim($correos[1]))
-                {
-                    AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social,'','','',37);
-                }
-                else
-                {
-                    AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',37);
-                    AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->razon_social?$declaracion_jurada->empresa->razon_social:'','','','',37);
-                }
-            }catch(Exception $e){}
-/*
-
-//            del Servicio Exportador a TRUE
-            $servicio_exportador->setId_servicio_exportador($declaracion_jurada->getId_Servicio_Exportador());
-            $servicio_exportador = $sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
-            $servicio_exportador->setEstado(TRUE);
-            $sqlServicioExportador->setGuardarServicioExportador($servicio_exportador);
-*/
+        $declaracion_jurada->setFecha_vencimiento($funcionesGenerales->addDate(date("Y-m-d"),$acuerdo->getVigencia_ddjj()));
+        $declaracion_jurada->setVigencia($acuerdo->getVigencia_ddjj());
+        if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)) {
             AdmDeclaracionJuradaFunctions::auditoriaDdjj(1, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
 
            return true;
@@ -494,9 +503,7 @@ class AdmDeclaracionJuradaFunctions {
 
     }
     public static function auditoriaDdjj($id_estado,$id_ddjj,$id_persona){
-        
         $sgc_ddjj = new SGCDdjj();
-        $sqlsgcddjj = new SQLSGCDdjj();
         $sgc_ddjj->setFecha_inicio_revision(date("Y-m-d h:i:sa"));
         $sgc_ddjj->setId_ddjj($id_ddjj);
         $sgc_ddjj->setEstado($id_estado);
@@ -623,7 +630,7 @@ class AdmDeclaracionJuradaFunctions {
 
       return 'ddjj_resumen';
     }
-    public function getDdjj($id_ddjj){//devuelve el objeto de la declaracion jurada
+    public static function getDdjj($id_ddjj){//devuelve el objeto de la declaracion jurada
         $ddjj= new DeclaracionJurada();
         $sqlDdjj = new SQLDeclaracionJurada();
         $ddjj->setId_ddjj($id_ddjj);
@@ -647,7 +654,9 @@ class AdmDeclaracionJuradaFunctions {
 
 
         if($sqlDdjj->setGuardarDdjj($ddjj)) {
-
+          AdmDeclaracionJuradaFunctions::terminarServicioColas($ddjj->getId_Servicio_Exportador());
+          AdmDeclaracionJuradaFunctions::terminarServicioExportador($ddjj->getId_Servicio_Exportador());
+            AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($ddjj->getId_Servicio_Exportador());
             //Envío de Correos
             $correos = AdmCorreo::obtenerCorreosEmpresa($ddjj->getId_Empresa());
             $correos = explode(',', $correos);
@@ -661,6 +670,16 @@ class AdmDeclaracionJuradaFunctions {
             $this->auditoriaDdjj(5, $ddjj->getId_ddjj(), $_SESSION['id_persona']);
         }
 
+    }
+    public static function terminarServicioColas($id_servicio_exportador) {
+      $sistema_colas = new SistemaColas();
+      $sqlSistemaColas = new SQLSistemaColas();
+      $sistema_colas->setId_Servicio_Exportador($id_servicio_exportador);
+      $sistema_colas=$sqlSistemaColas->getBuscarColaPorServicioExportadorAll($sistema_colas);
+      foreach ($sistema_colas as $cola) {
+        $cola->setAtendido(1);
+        $sqlSistemaColas->setGuardarSistemaColas($cola);
+      }
     }
     public function bajaDdjj($id_ddjj,$justificacion){/// dar de baja una ddjj
         $ddjj= new DeclaracionJurada();
@@ -691,12 +710,13 @@ class AdmDeclaracionJuradaFunctions {
                 AdmCorreo::enviarCorreo($correos[0],$ddjj->getDenominacion_comercial(),$justificacion,'','',50);
                 AdmCorreo::enviarCorreo($correos[1],$ddjj->getDenominacion_comercial(),$justificacion,'','',50);
             }
-            
-            $persona = new Persona();
-            $sqlPersona = new SQLPersona();
-            $persona->setId_persona($ddjj->getId_asistente());
-            $persona = $sqlPersona->getDatosPersonaPorId($persona);        
-            AdmCorreo::enviarCorreo($persona->getEmail(),$ddjj->getDenominacion_comercial(),$justificacion,'','',50);        
+
+//            $persona = new Persona();
+//            $sqlPersona = new SQLPersona();
+//            $persona->setId_persona($ddjj->getId_asistente());
+//            $persona = $sqlPersona->getDatosPersonaPorId($persona);
+//
+//            AdmCorreo::enviarCorreo($persona->getEmail(),$ddjj->getDenominacion_comercial(),$justificacion,'','',50);
         }
     }
     public function reasignaDdjjRevision($id_ddjj)
@@ -706,7 +726,7 @@ class AdmDeclaracionJuradaFunctions {
       $ddjj->setId_ddjj($id_ddjj);
       $ddjj = $sqlDdjj->getById($ddjj);
 
-      $ddjj->setId_estado_ddjj(0);//estado de revision
+      $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_REVISAR);//estado de revision
       $servicio_exportador = AdmSistemaColas::generarServicioExportadorParaDdjj($ddjj->getId_persona(), 0, $ddjj->getId_empresa());
 
       $ddjj->setId_Servicio_Exportador($servicio_exportador->getId_servicio_exportador());
@@ -730,6 +750,13 @@ class AdmDeclaracionJuradaFunctions {
             $tieneBloqueo=FALSE;
         }
         return array($acuerdos,$tieneBloqueo);
+    }
+    public static function getEstado($id_estado_ddjj){
+      $estado_ddjj = new EstadoDdjj();
+      $sql_estado_ddjj = new SQLEstadoDdjj();
+      $estado_ddjj->setId_estado_ddjj($id_estado_ddjj);
+      $estado_ddjj = $sql_estado_ddjj->getById($estado_ddjj);
+      return $estado_ddjj->getDescripcion();
     }
 }
 

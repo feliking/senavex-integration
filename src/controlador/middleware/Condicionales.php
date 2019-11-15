@@ -17,6 +17,8 @@ class Condicionales
 
   //-------------------------------variables estaticas de los perfiles
   private $id_unidad_legal=21; // este es el id del perfil de unidad legal...
+  private $id_exportador_2=2; // este es el id del perfil de unidad legal...
+  private $id_exportador_3=3; // este es el id del perfil de unidad legal...
   private $id_analista_ruex=6; // este es el id del perfil de analista ruex
   private $id_analista_ddjj=7; // este es el id del perfil de Analista ddjj
   private $id_analista_co=8;   // este es el id del perfil de analista co
@@ -43,6 +45,10 @@ class Condicionales
   public function esPerfilUco()
   {
     return $_SESSION['id_perfil']==$this->id_administrador_uco;
+  }
+  public function esExportador()
+  {
+    return $_SESSION['id_perfil']==$this->id_exportador_2 || $_SESSION['id_perfil']==$this->id_exportador_3;
   }
   public function esCertificador()
   {

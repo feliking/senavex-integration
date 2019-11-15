@@ -5,9 +5,18 @@
                 <div class="span12">
                     <img class="hidden-phone" src="styles/img/portada/logo.png">
                     <h1>Declaración Jurada de Origen</h1>
-                    {if $ddjj && $ddjj->correlativo_ddjj}
+                    {if $ddjj }
                         <div class="ddjj-codigo">
-                            N° DDJJ: {$representanteEmpresa[1]->ruex}-{$ddjj->correlativo_ddjj}
+                            {if $ddjj->correlativo_ddjj}
+                                <p>N° DDJJ: {$representanteEmpresa[1]->ruex}-{$ddjj->correlativo_ddjj}</p>
+                            {/if}
+                            {if $fecha_vigencia}
+                                <p>Vigencia: {$fecha_vigencia}</p>
+                            {/if}
+                            {if $estado}
+                                <p>{$estado}</p>
+                            {/if}
+
                         </div>
                     {/if}
                 </div>
@@ -729,7 +738,6 @@
                 $('#criterio_origen-validation').removeClass('hidden').addClass('fadein');
                 return;
             }
-
             $('#criterio_origen-validation').removeClass('fadein').addClass('hidden');
             $('#obervacion-validation').hide();
             $('#justificacionVerificacion').next().addClass('hidden');

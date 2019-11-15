@@ -69,9 +69,7 @@ class SQLDeclaracionJurada {
       $id = $declaracion_jurada->save();
       return $id;
     } catch (Exception $e) {
-      echo "<pre>";
-      var_dump($e);
-      echo "</pre>";
+      echo '<br>: '.$e->getMessage();
       echo '<br>Caught exception: ';
     }
 

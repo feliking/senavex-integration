@@ -25,6 +25,8 @@ class SQLEstadoDdjj {
     }
     return $estadoDdjj->finder()->findAll($iterator);
   }
-
+  public function getById(EstadoDdjj $estadoDdjj){
+    return $estadoDdjj->findbyPk($estadoDdjj->getId_estado_ddjj());
+  }
 
 }

@@ -26,7 +26,17 @@ class AdmArancel extends Principal {
     if($_REQUEST['tarea'] == 'searchPartida') {
       $partida = new Partida();
       $sqlPartida = new SQLPartida();
-      $partida->setId_arancel($_REQUEST['id_arancel']);
+
+      if($_REQUEST['id_arancel']){
+        $partida->setId_arancel($_REQUEST['id_arancel']);
+      } else {
+        $sqlArancel = new SQLArancel();
+        $arancel = new Arancel();
+        $arancel = $sqlArancel->getArancelVigente($arancel);
+        $partida->setId_arancel($arancel->getId_arancel());
+      }
+
+
       $resultado = $sqlPartida->searchPartidaByArancel($partida,$_REQUEST['term']);
       echo json_encode($resultado);
     }

@@ -1,4 +1,4 @@
-<div class="row-fluid" class="fadein" >
+<div class="row-fluid" class="fadein" id="revisarDeclaracionesWrapper">
     <div class="row-fluid  form" >
         <div class="span12 fadein form-options">
             <input id="revisarmenuddjj" value="1" class="form-small" />
@@ -14,7 +14,7 @@
 <script>
 {literal}
  $(document).ready(function () {    
-    $("#revisardeclaracionesjuradas").kendoGrid({
+    $("#revisarDeclaracionesWrapper #revisardeclaracionesjuradas").kendoGrid({
         dataSource: {
             transport: {
                 read: {
@@ -61,7 +61,7 @@
      ];
      {literal}
      // create DropDownList from input HTML element
-     $("#revisarmenuddjj").kendoDropDownList({
+     $("#revisarDeclaracionesWrapper #revisarmenuddjj").kendoDropDownList({
          dataTextField: "text",
          dataValueField: "value",
          dataSource: data,
@@ -70,7 +70,7 @@
      });
 
      function onChange() {
-         var grid = $("#revisardeclaracionesjuradas").data("kendoGrid");
+         var grid = $("#revisarDeclaracionesWrapper #revisardeclaracionesjuradas").data("kendoGrid");
          var dataddjj = new kendo.data.DataSource({
              transport: {
                  read: {
@@ -90,7 +90,7 @@ var registroddjj=0;
     
 function cambiarceldasddjj()
 {  
-    var gridddjj = $("#revisardeclaracionesjuradas").data("kendoGrid");
+    var gridddjj = $("#revisarDeclaracionesWrapper #revisardeclaracionesjuradas").data("kendoGrid");
     var row = gridddjj.select();
     var data = gridddjj.dataItem(row);
     if(registroddjj==data.id_ddjj)

@@ -30,9 +30,13 @@ function acceptAction(){
     remover(tabStrip.select());
     cerraractualizartab('Acuerdos','admAcuerdo','acuerdos');
     {/if}
-    {if $review_ddjj || $documentReview }
+    {if $review_ddjj || $documentReview}
     remover(tabStrip.select());
-    cerraractualizartab('Declaración Jurada','admDeclaracionJurada','listarRevisionDeclaracionJurada');
+    cerraractualizartab('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada');
+    {/if}
+    {if $reasignarDeclaracion}
+    // remover(tabStrip.select());
+    // cerraractualizartab('Declaración Jurada','admDeclaracionJurada','listarRevisionDeclaracionJurada');
     {/if}
 }
 </script>

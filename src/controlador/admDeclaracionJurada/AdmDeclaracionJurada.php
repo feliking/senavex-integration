@@ -76,6 +76,7 @@ class AdmDeclaracionJurada extends Principal {
   const DDJJ_CANCELAR = 5;
   const DDJJ_VISITA = 6;
   const DDJJ_CORREGIR = 4;
+  const DDJJ_REVISAR = 0;
   const DDJJ_ELIMINADA = 7;
   public function AdmDeclaracionJurada()
   {
@@ -143,8 +144,8 @@ class AdmDeclaracionJurada extends Principal {
     if($_REQUEST['tarea']=='declaracionesJuradas'){
 
       $estados = $sqlEstadoDdjj->getListarEstadoDdjj($estado_ddjj);
-
       $vista->assign('estados',$estados);
+      $vista->assign('esExportador',$condicional->esExportador());
       $vista->display("declaracionJurada/DeclaracionesJuradas.tpl");
     }
     // ************************envia el formulario de una ddjj*******************************/////
@@ -268,6 +269,14 @@ class AdmDeclaracionJurada extends Principal {
 
       exit;
     }
+    if($_REQUEST['tarea']=='reasignardeclaracionjurada')
+    {
+      $conf = new stdClass();
+      $conf->reasignarDeclaracion = true;
+      print $this->getDdjjTpl($_REQUEST["id_declaracion_jurada"],$conf);
+      exit;
+    }
+
     //************************ guarda la declaracion juradad opcional id_ddjj si no significa que es nueva ************************///
     if($_REQUEST['tarea']=='saveDeclaracionJurada'){
       if($_REQUEST['id_ddjj']){
@@ -373,7 +382,7 @@ class AdmDeclaracionJurada extends Principal {
     if($_REQUEST['tarea']=='listarDeclaraciones'){
       $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
       $declaracion_jurada->setId_estado_ddjj($_REQUEST['estado_ddjj']!=''?$_REQUEST['estado_ddjj']:1);
-      $resultado = $sqlDeclaracionJurada->getListarDdjjObjectsEstado($declaracion_jurada,$perfil_uco);
+      $resultado = $sqlDeclaracionJurada->getListarDdjjObjectsEstado($declaracion_jurada,!$condicional->esExportador());
       $sqlpartida = new SQLPartida();
       $strJson = '';
       echo '[';
@@ -417,7 +426,7 @@ class AdmDeclaracionJurada extends Principal {
     /********** Asistente SENAVEX***********/
     if($_REQUEST['tarea']=='listarRevisionDeclaracionJurada')
     {
-      $estados = $sqlEstadoDdjj->getListarEstadoDdjjRevisionCertificador($estado_ddjj,[AdmDeclaracionJurada::DDJJ_CORREGIR,AdmDeclaracionJurada::DDJJ_CANCELAR]);
+      $estados = $sqlEstadoDdjj->getListarEstadoDdjjRevisionCertificador($estado_ddjj,[AdmDeclaracionJurada::DDJJ_REVISAR,AdmDeclaracionJurada::DDJJ_CANCELAR]);
       $vista->assign('estados',$estados);
       $vista->display("declaracionJurada/ListarRevisionDeclaracionJurada.tpl");
       exit;
@@ -458,6 +467,29 @@ class AdmDeclaracionJurada extends Principal {
       echo ']';
       exit;
     }
+    if($_REQUEST['tarea'] == 'saveReasignarDatos') {
+      $declaracion_jurada->setId_ddjj($_REQUEST['id_ddjj']);
+      $declaracion_jurada = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+
+      if(isset($_REQUEST['id_partida']) AND $_REQUEST['id_partida'] != ''){
+        $declaracion_jurada->setId_partida( $_REQUEST['id_partida']);
+      }
+      if(isset($_REQUEST['fecha_vigencia']) AND $_REQUEST['fecha_vigencia'] != ''){
+        $fecha_vigencia = $funcionesGenerales->setFechaToBd($_REQUEST['fecha_vigencia']);
+        $declaracion_jurada->setFecha_vigencia($fecha_vigencia);
+      }
+      if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
+        $PersonaEmpresa=$functions->getPersonaEmpresa($declaracion_jurada->getId_Empresa(),$declaracion_jurada->getId_Persona());
+        $nombre_persona=$PersonaEmpresa[0]->getNombres().' '.$PersonaEmpresa[0]->getPaterno().' '. $PersonaEmpresa[0]->getMaterno();
+        AdmCorreo::enviarCorreo($PersonaEmpresa[0]->email,$PersonaEmpresa[1]->razon_social,$nombre_persona,$declaracion_jurada,'',53);
+        $functions->auditoriaDdjj(6, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+        echo '{"status":"success"}';
+      }else{
+        echo '{"status":"fail"}';
+      }
+      exit;
+    }
+
     ///---------------------------revision de la declaracion jurada pro pate del analista
     if($_REQUEST['tarea']=='reviewDeclaracion'){
       $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
@@ -509,7 +541,7 @@ class AdmDeclaracionJurada extends Principal {
       $hoy=date("Y-m-d H:i:s");
       $declaracion_jurada->setId_ddjj($_REQUEST["id_ddjj"]);
       $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-      $declaracion_jurada->setId_estado_ddjj(4); //para corregir
+      $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CORREGIR); //para corregir
       $declaracion_jurada->setObservacion_ddjj($_REQUEST['observacion_ddjj']);
       $functions->saveObservacion($_REQUEST['observacion_general']);
       //Envío de Correos
@@ -527,11 +559,7 @@ class AdmDeclaracionJurada extends Principal {
 
       if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
         //Actualizar el Sistema de Colas para eliminar el registro que ya esta revisado
-        $sistema_colas->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $sistema_colas=$sqlSistemaColas->getBuscarColaPorServicioExportador($sistema_colas);
-        $sistema_colas->setAtendido(1);
-        $sqlSistemaColas->setGuardarSistemaColas($sistema_colas);
-
+        AdmDeclaracionJuradaFunctions::terminarServicioColas($declaracion_jurada->getId_Servicio_Exportador());
         $functions->auditoriaDdjj(4, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
 
         echo '{"status":1,"message":"success"}';
@@ -566,47 +594,39 @@ class AdmDeclaracionJurada extends Principal {
 
       if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
 
-        $sistema_colas->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $sistema_colas=$sqlSistemaColas->getBuscarColaPorServicioExportador($sistema_colas);
-        if($sistema_colas){
-          $sistema_colas->setAtendido(1);
-          $sqlSistemaColas->setGuardarSistemaColas($sistema_colas);
-        }
+        AdmDeclaracionJuradaFunctions::terminarServicioColas($declaracion_jurada->getId_Servicio_Exportador());
 
-        if($declaracion_jurada->getId_estado_ddjj()!=AdmDeclaracionJurada::DDJJ_VISITA){ // si es que no necesita verificacion estricta
-          //Envío de Correos
-          $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
-          $correos=explode(',',$correos);
-          if(trim($correos[0])==trim($correos[1]))
-          {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-          }
-          else
-          {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-            AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-          }
-
+        if($declaracion_jurada->getId_estado_ddjj()!=AdmDeclaracionJurada::DDJJ_VISITA) {
           $functions->auditoriaDdjj(5, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+          AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
+          $tipo_correo = 33;
+        } else {
+          $functions->auditoriaDdjj(8, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+          $tipo_correo = 54;
         }
 
-        if ($declaracion_jurada->getMuestra())
+        $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
+        $correos=explode(',',$correos);
+        if(trim($correos[0])==trim($correos[1]))
         {
-          AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador($declaracion_jurada->getId_Servicio_Exportador());
+          AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);
+        }
+        else
+        {
+          AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);
+          AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);
         }
 
-//        AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
         echo '{"status":1,"message":"success"}';
-
       }else{
         echo '{"status":0,"message":"fail"}';
       }
       exit;
     }
     ////METODO especial para poner en vigencia la ddjjj debe ser utiliaado por el modulo de facturacion
-    if($_REQUEST['tarea']=='vigenciaDdjj')
+    if($_REQUEST['tarea']=='validarCancelacion')
     {
-      if($functions->setVigenciaDdjj($_REQUEST['id_ddjj'])){
+      if($functions->validarCancelacion($_REQUEST['id_ddjj'])){
         echo '{"status":1,"message":"success"}';
       }else{
         echo '{"status":0,"message":"fail"}';
@@ -676,6 +696,7 @@ class AdmDeclaracionJurada extends Principal {
     if($conf == null) $conf = new stdClass();
     if(!isset($conf->preview)) $conf->preview = false;
     if(!isset($conf->documentReview)) $conf->documentReview = false;
+    if(!isset($conf->reasignarDeclaracion)) $conf->reasignarDeclaracion = false;
 
     $vista = Principal::getVistaInstance();
     $declaracion_jurada = new DeclaracionJurada();
@@ -709,6 +730,11 @@ class AdmDeclaracionJurada extends Principal {
     $fabrica=$functions->getFabrica($declaracion_jurada->getId_direccion());
 
     $id = $conf->documentReview? 'documentReview' : 'preview';
+    if($conf->reasignarDeclaracion) $id = 'reasignarDatos';
+
+    if($declaracion_jurada->getFecha_vigencia()){
+      $vista->assign('fecha_vigencia', date('d/m/y',strtotime($declaracion_jurada->getFecha_vigencia())));
+    }
 
     $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
     $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
@@ -722,11 +748,13 @@ class AdmDeclaracionJurada extends Principal {
     $vista->assign('acuerdos', $acuerdos);
     $vista->assign('preview',$conf->preview);
     $vista->assign('documentReview',$conf->documentReview);
+    $vista->assign('reasignarDeclaracion',$conf->reasignarDeclaracion);
     $vista->assign('ddjj', $declaracion_jurada);
     $vista->assign('unidadmedida', $unidad_medida);
     $vista->assign('zonas', $zonas);
     $vista->assign('id', $id);
     $vista->assign("facturacion",$declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_CANCELAR && $_SESSION["id_empresa"]!=0);
+    $vista->assign('estado', AdmDeclaracionJuradaFunctions::getEstado($declaracion_jurada->getId_estado_ddjj()));
 
     //solo para las de vigencia
     if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_VIGENTE) $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));

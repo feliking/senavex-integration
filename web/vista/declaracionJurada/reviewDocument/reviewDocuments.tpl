@@ -1,7 +1,7 @@
 <div class="row-fluid form" id="documentReviewActions">
     <ul class="ul-buttons">
         <li>
-            <button id="review_ddjj_setVigencia" class="k-button btn-lg" onclick="sendDdjjVigencia()" >Asignar Vigencia</button>
+            <button id="review_ddjj_setVigencia" class="k-button btn-lg" onclick="sendDdjjVigencia()" >Validar Cancelación</button>
         </li>
         <li>
             <input type="button"  value="Cancelar" class="k-button btn-lg" onclick="remover(tabStrip.select());"/>
@@ -10,14 +10,14 @@
 </div>
 <script>
     function sendDdjjVigencia() {
-        confirmMessage("Esta seguro de asignar la Vigencia?",function(){
+        confirmMessage("Esta seguro de validar la Cancelación?",function(){
             cambiar(['documentReview','documentReviewActions'],'documentReviewloading_ddjj');
             $.ajax({
                 type: 'post',
                 url: 'index.php',
                 data: {
                     opcion:'admDeclaracionJurada',
-                    tarea:'vigenciaDdjj',
+                    tarea:'validarCancelacion',
                     id_ddjj: '{$ddjj->id_ddjj}'
                 },
                 success: function(data) {

@@ -2,7 +2,7 @@
 
     <div class="row-fluid  form" >
         <div class="span12 fadein form-options">
-            {if !$perfil_uco}
+            {if $esExportador}
                 <button name="altaddjj" id="altaddjj" class="k-button form-small" onclick="cerrarDemas('Corregir DDJJ','');cerrarDemas('Nueva DDJJ','');anadir('Nueva DDJJ','admDeclaracionJurada','altadeclaracionjurada')">Nueva DDJJ</button>
             {/if}
             <input id="menuddjj" value="1" class="form-small" />
@@ -54,13 +54,13 @@
                 { field: "denominacion_comercial", title: "Descripción Comercial"},
                 { field: "observaciones", title: "Observacion"},
                 { field: "fecha_registro", title: "Fecha de Registro"},
-                {if !$perfil_uco }
                 { field: 'Clonar',filterable:false ,template:'<a target="_blank" onclick="clonarDeclaracionJurada(#= id_ddjj #)" class="k-button link">Clonar</a>'},
-                { field: 'Revalidar',filterable:false ,template: "# if(acuerdo == 'ACE36'){ # <a target='_blank' onclick='clonarDeclaracionJurada(#= id_ddjj #)' class='k-button link'>Revalidar</a> #  } else { # --- # } #"},
-
-                {/if}
+                { field: 'Reasignar',filterable:false ,template: "<a target=\"_blank\" onclick=\"reAsignarDeclaracionJurada(#= id_ddjj #)\" class=\"k-button link\">Reasignar</a>"},
                 { field: 'Dar de Baja',filterable:false,template:
                         '<a target="_blank" onclick="eliminarDdjj(#= id_ddjj #)" class="k-button link">Dar de Baja</a>'
+                },
+                { field: 'Revisar DDJJ',filterable:false,template:
+                        '<a target="_blank" onclick="revisarDdjjAjena(#= id_ddjj #)" class="k-button link">Revisar</a>'
                 }
             ]
         });
@@ -77,10 +77,17 @@
             index: 1,
             change: onChange
         });
+        var grid = $("#declaracionesjuradas").data("kendoGrid");
+        {if $esExportador}
+            grid.hideColumn(7);
+        {else}
+            grid.hideColumn(6);
+        {/if}
+        grid.hideColumn(9);
     });
 
     function onChange() {
-
+        var esExportador ={if $esExportador}true{else}false{/if};
         var grid = $("#declaracionesjuradas").data("kendoGrid");
         var dataddjj = new kendo.data.DataSource({
             transport: {
@@ -92,22 +99,38 @@
             ,
             pageSize: 10
         });
-        if(this.value()=='1') grid.showColumn(8);
-        else grid.hideColumn(8);
-        if(this.value()=='1') grid.showColumn(7);
-        else grid.hideColumn(7);
-        //if(this.value()=='0' || this.value()=='4' || this.value()=='5') grid.hideColumn(0);
-        //else grid.showColumn(0);
-        //if(this.value()=='1') grid.showColumn(6);
-        //else grid.hideColumn(6);
-        $opcion=this.value();
-        //grid.hideColumn(0)
+        if(!esExportador){
+            if(this.value() == '1') {
+                grid.showColumn(7);
+            } else {
+                grid.hideColumn(7);
+            }
+            if(this.value() == '0' ) {
+                grid.showColumn(9);
+            } else {
+                grid.hideColumn(9);
+            }
+        }
+
+        if(this.value() == '6' || this.value() == '7') {
+            grid.hideColumn(8);
+        } else {
+            grid.showColumn(8);
+        }
+
+
+
+        console.log(this.value());
+
         grid.setDataSource(dataddjj);
         grid.refresh();
     };
 
     function clonarDeclaracionJurada(id_ddjj){
         anadir('Nueva DDJJ','admDeclaracionJurada','altadeclaracionjurada&id_declaracion_jurada='+id_ddjj+'&clonacion=true');
+    }
+    function reAsignarDeclaracionJurada(id_ddjj){
+        anadir('Reasignar Declaracion','admDeclaracionJurada','reasignardeclaracionjurada&id_declaracion_jurada='+id_ddjj);
     }
 
     var registroddjj=0;
@@ -121,7 +144,7 @@
         if(registroddjj==data.id_ddjj)
         {
             switch(comboddjj){
-            {if !$perfil_uco}
+            {if $esExportador}
                 case '4': //to correct ddjj
                     cerrarDemas('DDJJ RECHAZADA','');
                     cerrarDemas('Nueva DDJJ','');
@@ -146,4 +169,10 @@
             registroddjj=data.id_ddjj;
         }
     }
+    function revisarDdjjAjena(id_ddjj){
+        confirmMessage('Revisara una DDJJ no asignada a usted, esta seguro?', function() {
+            anadir('Revisar DD.JJ.','admDeclaracionJurada','reviewDeclaracion&id_declaracion_jurada='+id_ddjj);
+        });
+    }
+
 </script>

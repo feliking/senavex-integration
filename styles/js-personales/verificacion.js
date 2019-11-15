@@ -369,6 +369,7 @@ function eliminarDdjj(id_ddjj){
             success: function (data) {
                 var data = JSON.parse(data);
                 if (!+data.status) fadeMessage('ocurrio un error', data.message);
+
                 else {
                     remover(tabStrip.select());
                     cerraractualizartab('Declaración Jurada', 'admDeclaracionJurada', 'declaracionesJuradas');
@@ -385,6 +386,7 @@ function guardarCorreoVerificacion() {
         type: 'post',
         url: 'index.php',
         data:{
+
             opcion:'admVerificaciones',
             tarea:'guardarCorreo',
             correo:$('#correoverificaciones').val()

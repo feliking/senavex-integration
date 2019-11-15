@@ -120,7 +120,7 @@
                                         </div>
                                     {/if}
                                     {if $opcion=='k'}
-                                        <div id="k" class="widget menucf" onclick="anadir('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada')" >
+                                        <div id="k" class="widget menucf" onclick="anadir('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_ddjj_B.png"  /> </a>
                                             <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_ddjj.png" /> </a>
                                             <span>Declaraciones Juradas {$ddjjporrevisar}</span>

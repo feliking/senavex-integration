@@ -544,7 +544,7 @@ firmarRevisarDJ.bind("click", function(e){
         url: 'index.php',
         data: datos,
         success: function(data) {
-            cerraractualizartab('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada')
+            cerraractualizartab('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada')
         }
     });
 });
@@ -627,7 +627,7 @@ firmarRevisarDJRechazar.bind("click", function(e){
         url: 'index.php',
         data: datos,
         success: function(data) {
-            cerraractualizartab('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada')
+            cerraractualizartab('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada')
         }
     });
 });
@@ -701,7 +701,7 @@ devolverddjj.bind("click", function(e){
         url: 'index.php',
         data: datos,
         success: function(data) {
-            cerraractualizartab('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada')
+            cerraractualizartab('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada')
         }
     });
 });

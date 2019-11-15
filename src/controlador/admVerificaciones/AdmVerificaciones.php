@@ -221,8 +221,7 @@ class AdmVerificaciones extends Principal
             $verificacion = $sqlVerificacion->getVerificacion($verificacion);
         }
 
-        $admFunctions= new AdmDeclaracionJuradaFunctions();
-        $ddjj=$admFunctions->getDdjj($obj->id_ddjj);
+        $ddjj=AdmDeclaracionJuradaFunctions::getDdjj($obj->id_ddjj);
 
         $verificacion->setId_ddjj($obj->id_ddjj);
         $verificacion->setId_regional($obj->id_regional);
@@ -411,7 +410,7 @@ class AdmVerificaciones extends Principal
             $this->verificaSoloUnoEnRegional($verificacionObj);// verificamos si solo hay una persona en la regional
             if($verificacionObj->getVerificacion_estricta())//pausamos el flujo cambiandole de estado
             {
-                $declaracion_jurada->setId_estado_ddjj(6);//estado de pause hasta que se realize la visita de verificaicon
+                $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VISITA);//estado de pause hasta que se realize la visita de verificaicon
             }
         }
 //        elseif($verificacion->verificacion_personal) { // no requiere verificacion pero fue impedida por una persona
@@ -462,6 +461,9 @@ class AdmVerificaciones extends Principal
         $functionsDdjj = new AdmDeclaracionJuradaFunctions();
         $functionsDdjj->bajaDdjj($verificacion->getId_ddjj(),'La visita de Verificación rechazo la declaración jurada.');/// se da de baja la declaracion jurada
         //-----------
+      $ddjj = AdmDeclaracionJuradaFunctions::getDdjj($verificacion->getId_ddjj());
+      AdmDeclaracionJuradaFunctions::terminarServicioExportador($ddjj->getId_Servicio_Exportador());
+      AdmDeclaracionJuradaFunctions::terminarServicioColas($ddjj->getId_Servicio_Exportador());
 
         return ($verificacion->save());
     }

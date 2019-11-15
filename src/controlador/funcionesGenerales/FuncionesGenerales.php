@@ -543,7 +543,7 @@ class FuncionesGenerales extends Principal {
    
     $sqlAcceso->setGuardarAcceso($acceso);
   }
-  
+
   public static function fechaConDiayMesLiteral($fecha){
     $dias = array('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo');
     $array_fecha = explode("-", $fecha);
@@ -609,5 +609,9 @@ class FuncionesGenerales extends Principal {
       $diff= $date->diff($hoy);
       return (int)$diff->days;
 
+  }
+  public static function setFechaToBd($fecha){
+    $fecha_formato=explode("/",$fecha);
+    return $fecha_formato[2].'-'.$fecha_formato[1].'-'.$fecha_formato[0];
   }
 }
