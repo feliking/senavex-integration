@@ -202,7 +202,7 @@ class AdmDeclaracionJurada extends Principal {
         $vista->display('declaracionJurada/Observaciones.tpl');
       } ;
 
-//      $vista->display("declaracionJurada/FormDeclaracionJurada.tpl");
+      $vista->display("declaracionJurada/FormDeclaracionJurada.tpl");
 
       $vista->assign('direccion',$direccionRepresentanteTpl);
       $vista->assign('representanteEmpresa',$representanteEmpresa);

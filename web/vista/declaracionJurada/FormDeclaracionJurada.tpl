@@ -364,9 +364,9 @@
         </div>
     </div>
 </div>
-{include file="declaracionJurada/FormFabrica.tpl"}
-{include file="declaracionJurada/LoadingDeclaracionJurada.tpl" customtitle="Guardando Declaración Jurada de Origen" id='view_ddjj'}
-{include file="declaracionJurada/NoticeDeclaracionJurada.tpl"
-custom_message="Le informamos que su declaración jurada de origen ha sido guardada y será revisada por el SENAVEX en un plazo de tres días, gracias."
-alta_ddjj="true" id="ddjj"}
-{include file="declaracionJurada/FormDeclaracionJuradaScript.tpl"}
+{*{include file="declaracionJurada/FormFabrica.tpl"}*}
+{*{include file="declaracionJurada/LoadingDeclaracionJurada.tpl" customtitle="Guardando Declaración Jurada de Origen" id='view_ddjj'}*}
+{*{include file="declaracionJurada/NoticeDeclaracionJurada.tpl"*}
+{*custom_message="Le informamos que su declaración jurada de origen ha sido guardada y será revisada por el SENAVEX en un plazo de tres días, gracias."*}
+{*alta_ddjj="true" id="ddjj"}*}
+{*{include file="declaracionJurada/FormDeclaracionJuradaScript.tpl"}*}
