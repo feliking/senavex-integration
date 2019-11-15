@@ -35,8 +35,8 @@ function acceptAction(){
     cerraractualizartab('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada');
     {/if}
     {if $reasignarDeclaracion}
-    // remover(tabStrip.select());
-    // cerraractualizartab('Declaración Jurada','admDeclaracionJurada','listarRevisionDeclaracionJurada');
+    remover(tabStrip.select());
+    cerraractualizartab('Declaración Jurada','admDeclaracionJurada','listarRevisionDeclaracionJurada');
     {/if}
 }
 </script>
