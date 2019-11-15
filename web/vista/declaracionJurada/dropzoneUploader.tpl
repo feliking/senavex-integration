@@ -22,7 +22,7 @@
         {
             name:"{$documento->nombre}",
             title:"{$documento->title}",
-            size:{$documento->size},
+            size:"{$documento->size}",
             status:'success',
             edit:{if $edition}1{else}0{/if},
             type:"{$documento->formato}",
