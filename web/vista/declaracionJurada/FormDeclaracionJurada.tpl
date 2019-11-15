@@ -108,7 +108,8 @@
                             </label>
                             <div class="span8 ddjj-input" >
                                 <input type="text" class="k-textbox" name="caracteristicas" id="caracteristicas"
-                                       required validationMessage="Por favor las caracteristicas técnicas del producto" {if $ddjj && $ddjj->caracteristicas}value="{$ddjj->caracteristicas}"{/if}/>
+{*                                       required validationMessage="Por favor las caracteristicas técnicas del producto" *}
+                                       {if $ddjj && $ddjj->caracteristicas}value="{$ddjj->caracteristicas}"{/if}/>
                             </div>
                         </div>
                         <div class="row-fluid form">
