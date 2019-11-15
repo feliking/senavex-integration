@@ -348,7 +348,7 @@
 {*                    </table-->*}
 
 {*                </form>*}
-                {include file="declaracionJurada/dropzoneUploader.tpl"}
+{*                {include file="declaracionJurada/dropzoneUploader.tpl"}*}
 
                 <div class="row-fluid form" >
                     <ul class="ul-buttons">
