@@ -1,8 +1,10 @@
 <div class="row-fluid form" id="documentReviewActions">
     <ul class="ul-buttons">
+        {if $esCancelacion}
         <li>
             <button id="review_ddjj_setVigencia" class="k-button btn-lg" onclick="sendDdjjVigencia()" >Validar Cancelación</button>
         </li>
+        {/if}
         <li>
             <input type="button"  value="Cancelar" class="k-button btn-lg" onclick="remover(tabStrip.select());"/>
         </li>

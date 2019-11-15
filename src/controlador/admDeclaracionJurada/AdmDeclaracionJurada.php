@@ -755,6 +755,7 @@ class AdmDeclaracionJurada extends Principal {
     $vista->assign('id', $id);
     $vista->assign("facturacion",$declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_CANCELAR && $_SESSION["id_empresa"]!=0);
     $vista->assign('estado', AdmDeclaracionJuradaFunctions::getEstado($declaracion_jurada->getId_estado_ddjj()));
+    $vista->assign('esCancelacion', $declaracion_jurada->getId_estado_ddjj() === AdmDeclaracionJurada::DDJJ_CANCELAR);
 
     //solo para las de vigencia
     if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_VIGENTE) $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
