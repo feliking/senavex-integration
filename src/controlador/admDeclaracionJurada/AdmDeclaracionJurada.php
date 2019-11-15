@@ -203,13 +203,13 @@ class AdmDeclaracionJurada extends Principal {
       } ;
 
 //      $vista->display("declaracionJurada/FormDeclaracionJurada.tpl");
-//
-//      $vista->assign('direccion',$direccionRepresentanteTpl);
-//      $vista->assign('representanteEmpresa',$representanteEmpresa);
-//      $vista->assign('edition',true);
-//      $vista->assign('id','view_ddjj');
-//
-//      $vista->display("declaracionJurada/DeclaracionJurada.tpl");
+
+      $vista->assign('direccion',$direccionRepresentanteTpl);
+      $vista->assign('representanteEmpresa',$representanteEmpresa);
+      $vista->assign('edition',true);
+      $vista->assign('id','view_ddjj');
+
+      $vista->display("declaracionJurada/DeclaracionJurada.tpl");
       exit;
     }
     if($_REQUEST['tarea']=='rechazodeclaracionjurada')
