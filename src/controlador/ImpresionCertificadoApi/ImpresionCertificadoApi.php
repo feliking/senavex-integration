@@ -134,7 +134,7 @@ class PDF extends FPDF
         ////////// NRO CERTIFICADO///////////////
         $this->SetFont('Arial','B',12);
         $this->SetXY(162, 52);
-        $this->Cell(45,10,'API-19/009/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
+        $this->Cell(45,10,'API-19/010/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
         $this->SetFont('Arial','B',22);
         $this->SetXY(163, 50);
       
@@ -162,7 +162,7 @@ class PDF extends FPDF
         }
 
 
-        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO ITEMS: '.$nro_fojas.' -FECHA DE EMISION: 07/10/19 -FECHA DE VENCIMIENTO: 06/12/19   ';//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
+        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO ITEMS: '.$nro_fojas.' -FECHA DE EMISION: 05/11/19 -FECHA DE VENCIMIENTO: 04/01/20   ';//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
         //$codigo.=utf8_decode(' Fecha de impresión:').date("Y-m-d");
         //$codigo.=' http://vortex.senavex.gob.bo/ruex.php?datos='.$empresaImportador->getCodigo_seguridad();
         $aleato = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 15);
