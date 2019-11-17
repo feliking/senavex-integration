@@ -89,9 +89,7 @@
         }).change(function() { setUnidades($( this ).val()) });
         $("#r_fechaVigencia").kendoDatePicker({
             min: new Date(),
-            open: function(e){
-                console.log(e);
-            }
+            open: solveCalendar
         });
         function reasignarDatos() {
             $("#r_arancel_validation").addClass('hidden');

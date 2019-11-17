@@ -87,7 +87,14 @@ function cleanDDJJ(){
     $('.autocomplete-suggestions').remove();
     $('.dz-hidden-input').remove();
 }
+function cleanRemoveDDJJ() {
+    $('#criterio_origen-list').parent('.k-animation-container').remove();
+    $('#criterio_origen-list').remove();
 
+}
+function cleanReasignarDDJJ() {
+    $('#r_fechaVigencia_dateview').parent('.k-animation-container').remove();
+}
 //esto es la variable de tabstrip
 function remover(tab)
 {
@@ -105,6 +112,8 @@ function remover(tab)
 function anadir(titulo,opcion,tarea)
 {
     if(titulo=="Nueva DDJJ" || titulo=="Corregir DDJJ") cleanDDJJ();
+    if(titulo=="Revisar DD.JJ.") cleanRemoveDDJJ();
+    if(titulo.startsWith('Reasignar')) cleanReasignarDDJJ();
     var sw=0;
     long=tabStrip.tabGroup.children("li").length - 1;
     for (var i = 1; i <= long; i++)
@@ -334,7 +343,7 @@ else return true;
 };
 
 $(document).on("keypress", 'input[type="text"],textarea', function(e) {
-     
+    if($(e.target).hasClass('skip-restriccion')) return  true;
 	if($(e.target).hasClass('no-restriccion')){
         var regex = new RegExp("^[a-zA-Z0-9_, \b@.áéíóúÁÉÍÓÚ%()*+&/;:'/ñÑ-]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -342,12 +351,10 @@ $(document).on("keypress", 'input[type="text"],textarea', function(e) {
         var regex = new RegExp("^[a-zA-Z0-9_, \b@.áéíóúÁÉÍÓÚ/ñÑ-]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
     }
-    if(e.keyCode == 9) return true;	
-        if (regex.test(str)) {
-            return true;
-        }
-        e.preventDefault();
-        return false;
+    if(e.keyCode == 9) return true;
+    if (regex.test(str)) return true;
+    e.preventDefault();
+    return false;
 });
 
 
@@ -582,6 +589,37 @@ function solveDropdowns(e){
         }
     },1000);
 }
+function solveCalendar(e){
+    var $item =$('#'+e.sender.element[0].id+'_dateview');
+    setTimeout(function () {
+        if($item.length && $item.css('display')=='none'){
+            $item.css('display','block');
+            $item.css('transform','translateY(0)');
+        }
+        var $container = $item.closest('.k-animation-container');
+        if($container.length && $container.css('display')=='none'){
+            $container.css({
+                "display":"block",
+            });
+        }
+    },1000);
+}
 function removeSugegstions(e){
     $(e.sender.input[0]).attr("autocomplete","new-password");
+}
+function tabOnKendoGrid(GridTable){
+    GridTable.table.on("keydown",function(e){
+        if (e.keyCode === kendo.keys.TAB && $($(e.target).closest('.k-edit-cell'))[0]) {
+            var currentCell = GridTable.table.find('.k-edit-cell')
+            var index = currentCell.index();
+            var parentUid = currentCell.parent().attr('data-uid');
+            setTimeout(function(){
+                var td = $('tr[data-uid="'+parentUid+'"]').children('td').eq(index+1);
+                if(td.length){
+                    td.click();
+                }
+            },150);
+        }
+    });
+
 }

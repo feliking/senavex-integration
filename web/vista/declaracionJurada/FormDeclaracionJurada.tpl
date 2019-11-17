@@ -329,7 +329,7 @@
                     <section class="ddjj-section">
                         <div class="row-fluid  form" >
                             <div class="span12 ddjj-input">
-                                <textarea id="procesoproductivo" name="procesoproductivo" class="k-textbox form-textarea" rows="8" value="">{if $ddjj && $ddjj->proceso_productivo}{$ddjj->proceso_productivo}{/if}</textarea>
+                                <textarea id="procesoproductivo" name="procesoproductivo" class="k-textbox form-textarea skip-restriccion" rows="8" value="">{if $ddjj && $ddjj->proceso_productivo}{$ddjj->proceso_productivo}{/if}</textarea>
                                 <input type="hidden" name="hiddenvalidatordpp" data-descripcionproceso="">
                             </div>
                         </div>

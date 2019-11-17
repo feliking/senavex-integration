@@ -2,7 +2,7 @@
 <section class="ddjj-section ddjj-section-initial">
     <ul class="ddjj-ul">
         <li>Subir archivos PDF o imagenes(png, jpg).</li>
-        <li>Los archivos no deben pesar mas de 2 MB.</li>
+        <li>Los archivos no deben pesar mas de 5 MB.</li>
         <li>Podra subir un maximo de 5 archivos.</li>
         <li>El nombre de los archivos debe detallar el documento.(maximo 20 caracteres)</li>
     </ul>
@@ -26,7 +26,8 @@
             status:'success',
             edit:{if $edition}1{else}0{/if},
             type:"{$documento->formato}",
-            id:"{$documento->id_ddjj_documentos}"
+            id:"{$documento->id_ddjj_documentos}",
+            old:true
         },
         {/foreach}
         {/if}
@@ -42,6 +43,7 @@
         dictCancelUpload:'Cancelar',
         dictCancelUploadConfirmation:'Esta seguro de cancelar',
         dictRemoveFile:'Eliminar',
+        dictRemoveFileConfirmation:"Esta seguro de eliminar la imagen?",
         acceptedFiles:'image/jpg,image/jpeg,image/png,application/pdf',
         dictMaxFilesExceeded:'No se permite mas de 5 archivos por declaración jurada.',
         maxFilesize: 5, // MBz
@@ -102,5 +104,17 @@
             type:file.type
         };
         documentos_files.push(document);
+    });
+    $('#filesUploader').on('click','.dz-preview:not(.dz-error)',function(e){
+        var name = $(this).find('.dz-filename span').text();
+        console.log($(this).find('.dz-filename span').text());
+        var file = documentos_files.find(function(item) {
+            return item.name === name;
+        });
+        if(file) {
+            var src = file.old ? "documents/ddjj/"+file.title : 'documents/tmp/'+$('#alta_ddjj_key').val() +'/'+file.name ;
+            var win = window.open(src, '_blank');
+            win.focus();
+        }
     });
 </script>

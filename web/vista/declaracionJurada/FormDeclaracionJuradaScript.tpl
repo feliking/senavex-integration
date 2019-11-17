@@ -280,6 +280,7 @@
     }
 
     var tabla_comercializadores = $("#alta_ddjj #tabla_comercializadores").data("kendoGrid");
+    tabOnKendoGrid(tabla_comercializadores);
     function agregarfilacomercializador(){
         addKendoGridRow(tabla_comercializadores);
     }
@@ -679,7 +680,10 @@
             },100);
         }
     }).data("kendoGrid");
+
+
     var tabla_insumosnacionales = $("#alta_ddjj #tabla_insumosnacionales").data("kendoGrid");
+    tabOnKendoGrid(tabla_insumosnacionales);
     function agregarfilainsumosnacionales() {
         addKendoGridRow(tabla_insumosnacionales);
     }
@@ -859,7 +863,7 @@
     });
 
     var tabla_insumosimportados = $("#alta_ddjj #tabla_insumosimportados").data("kendoGrid");
-
+    tabOnKendoGrid(tabla_insumosimportados);
     function agregarfilainsumosimportados() {
         addKendoGridRow(tabla_insumosimportados);
     }

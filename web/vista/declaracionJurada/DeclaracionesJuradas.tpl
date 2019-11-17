@@ -80,6 +80,7 @@
         var grid = $("#declaracionesjuradas").data("kendoGrid");
         {if $esExportador}
             grid.hideColumn(7);
+            grid.hideColumn(8);
         {else}
             grid.hideColumn(6);
         {/if}
@@ -110,12 +111,11 @@
             } else {
                 grid.hideColumn(9);
             }
-        }
-
-        if(this.value() == '6' || this.value() == '7') {
-            grid.hideColumn(8);
-        } else {
-            grid.showColumn(8);
+            if(this.value() == '6' || this.value() == '7' || this.value() == '2'  ) { //ocultamos dar de baja
+                grid.hideColumn(8);
+            } else {
+                grid.showColumn(8);
+            }
         }
 
         grid.setDataSource(dataddjj);
