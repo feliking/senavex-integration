@@ -35,7 +35,7 @@ var dropDown3 = $("#ApiRegistradas").kendoDropDownList({
                 }
             }
             ,
-        pageSize: 10
+        pageSize: 20
         });
 
         grid.setDataSource(dataadmision);
