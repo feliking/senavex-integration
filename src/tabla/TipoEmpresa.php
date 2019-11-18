@@ -34,7 +34,9 @@ class TipoEmpresa extends Db {
     private $abreviatura;
      /** CP|TXT|Requisitos|0|F|F|-|-|10|F **/
     private $grupo_requisitos;
-    
+
+    private $criterio_valor;
+
     public function setId_tipo_empresa($id_tipo_empresa) {
         $this->id_tipo_empresa = $id_tipo_empresa;
     }
@@ -60,6 +62,12 @@ class TipoEmpresa extends Db {
     }
     public function getGrupo_requisitos() {
         return $this->grupo_requisitos;
+    }
+    public function setCriterio_valor($criterio_valor) {
+        $this->criterio_valor = $criterio_valor;
+    }
+    public function getCriterio_valor() {
+        return $this->criterio_valor;
     }
     
 }
