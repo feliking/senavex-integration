@@ -756,6 +756,8 @@
                 verificacion.justificacion_verificacion=$('#justificacionVerificacion').val();
                 data+='&verificacion='+JSON.stringify(verificacion);
 
+                $("#review_notice_ddjj .ddjj-message").text("Se reviso correctamente la declaración jurada.");
+
                 $.ajax({
                     type: 'post',
                     url: 'index.php',
@@ -792,7 +794,9 @@
                 cambiar('review','{$id}loading_ddjj');
                 var data='opcion=admDeclaracionJurada&tarea=denyDdjj&id_ddjj={$ddjj->id_ddjj}';
                 data+='&observacion_general='+$('#observacion_general').val();
-                // data+='&observacion_ddjj='+$('#observacion_ddjj').val().trim();
+
+                $("#review_notice_ddjj .ddjj-message").text("Se rechazo correctamente la declaración jurada.");
+
                 $.ajax({
                     type: 'post',
                     url: 'index.php',

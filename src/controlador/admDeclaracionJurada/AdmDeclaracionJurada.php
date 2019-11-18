@@ -78,6 +78,7 @@ class AdmDeclaracionJurada extends Principal {
   const DDJJ_CORREGIR = 4;
   const DDJJ_REVISAR = 0;
   const DDJJ_ELIMINADA = 7;
+  const DDJJ_VENCIDA = 2;
   public function AdmDeclaracionJurada()
   {
     $midleware = new Middleware();
@@ -470,14 +471,23 @@ class AdmDeclaracionJurada extends Principal {
     if($_REQUEST['tarea'] == 'saveReasignarDatos') {
       $declaracion_jurada->setId_ddjj($_REQUEST['id_ddjj']);
       $declaracion_jurada = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-
+      $reasignar = new stdClass();
+      $reasignar->ref = $_REQUEST['ref'];
       if(isset($_REQUEST['id_partida']) AND $_REQUEST['id_partida'] != ''){
+        $reasignar->id_partida = $declaracion_jurada->getId_partida();
         $declaracion_jurada->setId_partida( $_REQUEST['id_partida']);
       }
       if(isset($_REQUEST['fecha_vencimiento']) AND $_REQUEST['fecha_vencimiento'] != ''){
         $fecha_vencimiento = $funcionesGenerales->setFechaToBd($_REQUEST['fecha_vencimiento']);
+        $reasignar->fecha_vencimiento = $declaracion_jurada->getFecha_vencimiento();
         $declaracion_jurada->setFecha_vencimiento($fecha_vencimiento);
       }
+
+      $functions->auditoriaDdjjReasignar($reasignar, $_REQUEST['id_ddjj']);
+
+
+
+
       if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
         $PersonaEmpresa=$functions->getPersonaEmpresa($declaracion_jurada->getId_Empresa(),$declaracion_jurada->getId_Persona());
         $nombre_persona=$PersonaEmpresa[0]->getNombres().' '.$PersonaEmpresa[0]->getPaterno().' '. $PersonaEmpresa[0]->getMaterno();
@@ -582,10 +592,12 @@ class AdmDeclaracionJurada extends Principal {
       //si no es para ferias o muestras le mandamos a pago
       else{
         $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);/// verificacion aprobada
+        $declaracion_jurada->setFecha_limite_cancelacion($funcionesGenerales->addDate($hoy,15));
       }
       $declaracion_jurada->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
       $declaracion_jurada->setId_asistente($_SESSION['id_persona']);
       $declaracion_jurada->setId_criterios( implode (",", json_decode($_REQUEST['criterios_origen'])));
+
 
       //---------creacion de la verificacon y asignacion de revision estricta si es necesario--------
       $admVerificaciones= new AdmVerificaciones();
@@ -729,8 +741,20 @@ class AdmDeclaracionJurada extends Principal {
     $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($declaracion_jurada->getId_direccion());
     $fabrica=$functions->getFabrica($declaracion_jurada->getId_direccion());
 
+
+
+
     $id = $conf->documentReview? 'documentReview' : 'preview';
     if($conf->reasignarDeclaracion) $id = 'reasignarDatos';
+
+
+    if($conf->reasignarDeclaracion){
+      $reasignaciones = $functions->reasignacionesAnteriores($id_ddjj);
+      if($reasignaciones){
+        $vista->assign('reasignaciones', $reasignaciones);
+      }
+
+    }
 
     if($declaracion_jurada->getFecha_vencimiento()){
       $vista->assign('fecha_vencimiento', date('d/m/y',strtotime($declaracion_jurada->getFecha_vencimiento())));

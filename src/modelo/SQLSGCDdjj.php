@@ -13,6 +13,9 @@ class SQLSGCDdjj {
     public function getSGCDdjjPorId(SGCDdjj $SGCDdjj) {
         return $SGCDdjj->finder()->find('id_sgc_ddjj = ?', $SGCDdjj->getId_sgc_ddjj());
     }
+  public function getSGCDdjjEstadoyDdjj(SGCDdjj $SGCDdjj) {
+    return $SGCDdjj->finder()->findAll('id_ddjj = ? AND estado = ?', [$SGCDdjj->getId_ddjj(),$SGCDdjj->getEstado()]);
+  }
     public function getSGCDdjjPorEmpresa(SGCDdjj $sgcddjj) {
         return $sgcddjj->finder()->find('id_empresa = ?', $sgcddjj->getId_empresa());
     }

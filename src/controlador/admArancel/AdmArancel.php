@@ -227,5 +227,11 @@ class AdmArancel extends Principal {
         $sqlPartida = new SQLPartida();
         $sqlPartida->deletePartidaByArancel($partida);
     }
+    public static function getPartida($id_partida){
+      $partida = new Partida();
+      $sqlPartida = new SQLPartida();
+      $partida->setId_partida($id_partida);
+      return $sqlPartida->getById($partida);
+    }
 
 }

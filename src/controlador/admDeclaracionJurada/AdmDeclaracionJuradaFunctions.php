@@ -4,6 +4,7 @@ defined('_ACCESO') or die('Acceso restringido');
 include_once(PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');
 include_once(PATH_CONTROLADOR . DS . 'admSistemaColas' . DS . 'AdmSistemaColas.php');
 include_once(PATH_CONTROLADOR . DS . 'admEstadoEmpresas' . DS . 'AdmEstadoEmpresas.php');
+include_once(PATH_CONTROLADOR . DS . 'admArancel' . DS . 'AdmArancel.php');
 include_once(PATH_CONTROLADOR . DS .'admDeclaracionJurada'. DS .'AdmDeclaracionJurada.php');
 
 include_once(PATH_TABLA . DS . 'DeclaracionJurada.php');
@@ -84,6 +85,7 @@ include_once(PATH_MODELO . DS . 'SQLDireccionTipoZona.php');
 include_once(PATH_MODELO . DS . 'SQLDireccionUbicacionEdificio.php');
 
 class AdmDeclaracionJuradaFunctions {
+  const SGCDdjj_reasignar = 10;
     //****** FUNCIONES PARA LAS DDJJ **********************//
     public static function guardarInsumosNacionales($nacionales,$id_ddjj){
         $insumos_nacionales = new InsumosNacionales();
@@ -512,6 +514,44 @@ class AdmDeclaracionJuradaFunctions {
         $sgc_ddjj->setId_certificador($id_persona);// this can be exportador or certificador depending the action
         $sgc_ddjj->save();
     }
+    public static function auditoriaDdjjReasignar($data, $id_ddjj){
+      $sgc_ddjj = new SGCDdjj();
+      $sgc_ddjj->setFecha_inicio_revision(date("Y-m-d h:i:sa"));
+      $sgc_ddjj->setId_ddjj($id_ddjj);
+      $sgc_ddjj->setEstado(AdmDeclaracionJuradaFunctions::SGCDdjj_reasignar); /// estado para seguimiento
+      $sgc_ddjj->setId_certificador($_SESSION['id_persona']);// this can be exportador or certificador depending the action
+      $sgc_ddjj->setObservaciones(json_encode($data));
+      $sgc_ddjj->save();
+    }
+  public static function reasignacionesAnteriores($id_ddjj){
+    try{
+      $sgc_ddjj = new SGCDdjj();
+      $sqlDgc_ddjj = new SQLSGCDdjj();
+      $sgc_ddjj->setId_ddjj($id_ddjj);
+      $sgc_ddjj->setEstado((string)AdmDeclaracionJuradaFunctions::SGCDdjj_reasignar);
+      $reasignaciones = $sqlDgc_ddjj->getSGCDdjjEstadoyDdjj($sgc_ddjj);
+
+
+
+      if(!empty($reasignaciones)) {
+        foreach ($reasignaciones as &$reasignacion) {
+          $reasignacion->observaciones = json_decode($reasignacion->observaciones);
+          if(!empty($reasignacion->observaciones) && $reasignacion->observaciones->id_partida) {
+            $partida = AdmArancel::getPartida($reasignacion->observaciones->id_partida);
+            $reasignacion->observaciones->partida = $partida;
+          }
+        }
+        $vista = Principal::getVistaInstance();
+        $vista->assign('reasignaciones', $reasignaciones);
+        return $vista->fetch("declaracionJurada/reviewDocument/reasignarDeclaracionAnteriores.tpl");
+      } else {
+        return null;
+      }
+    } catch (Exception $e){
+      return null;
+    }
+
+  }
     public static function getDireccion($id_direccion){
         $direccion = new Direccion();
         $sqlDireccion = new SQLDireccion();
@@ -596,19 +636,32 @@ class AdmDeclaracionJuradaFunctions {
             }
         }
     }
+  public static function verificaRevisionParaCancelar() {
+    $declaracion_jurada = new DeclaracionJurada();
+    $sqlDeclaracionJurada = new SQLDeclaracionJurada();
+    $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);
+    $declaraciones = $sqlDeclaracionJurada->getByEstado($declaracion_jurada);
+    foreach($declaraciones as $declaracion){
+      $datecancelacion= date($declaracion->getFecha_limite_cancelacion());
+      $hoy=date("Y-m-d H:i:s");
+      if($datecancelacion && $hoy>$datecancelacion){
+        AdmDeclaracionJuradaFunctions::bajaDdjjporCancelacion($declaracion->getId_ddjj());
+      }
+    }
+  }
     public static function venceDdjj() {
         $declaracion_jurada = new DeclaracionJurada();
         $sqlDeclaracionJurada = new SQLDeclaracionJurada();
-        $declaracion_jurada->setId_estado_ddjj(1);
+        $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VIGENTE);
         $declaraciones = $sqlDeclaracionJurada->getByEstado($declaracion_jurada);
         foreach($declaraciones as $declaracion){
-            $daterevision= date($declaracion->getFecha_vencimiento());
+            $dateVencimiento= date($declaracion->getFecha_vencimiento());
             $hoy=date("Y-m-d H:i:s");
-            if($hoy>$daterevision){
+            if($hoy>$dateVencimiento){
                 $declaracion_jurada = new DeclaracionJurada();
                 $declaracion_jurada->setId_ddjj($declaracion->getId_ddjj());
                 $declaracion_jurada=$sqlDeclaracionJurada->getById($declaracion_jurada);
-                $declaracion_jurada->setId_estado_ddjj(2);
+                $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VENCIDA);
                 $declaracion_jurada->save();
             }
         }
@@ -645,12 +698,15 @@ class AdmDeclaracionJuradaFunctions {
     public function aprobarDdjj($id_ddjj){/// aprobar ddjj para cancelacion
         $ddjj= new DeclaracionJurada();
         $sqlDdjj = new SQLDeclaracionJurada();
+        $funcionesGenerales = new FuncionesGenerales();
+        $hoy = date('Y-m-d H:i:s');
 
         $ddjj->setId_ddjj($id_ddjj);
         $ddjj = $sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
 
         $ddjj->setFecha_Revision(date('Y-m-d H:i:s'));
         $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);/// verificacion aprobada
+        $ddjj->setFecha_limite_cancelacion($funcionesGenerales->addDate($hoy,15));
         $ddjj->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
         $ddjj->setId_asistente($_SESSION['id_persona']);
 
@@ -720,6 +776,27 @@ class AdmDeclaracionJuradaFunctions {
 //
 //            AdmCorreo::enviarCorreo($persona->getEmail(),$ddjj->getDenominacion_comercial(),$justificacion,'','',50);
         }
+    }
+    public static function bajaDdjjporCancelacion($id_ddjj){
+      try{
+        $ddjj= new DeclaracionJurada();
+        $sqlDdjj = new SQLDeclaracionJurada();
+        $ddjj->setId_ddjj($id_ddjj);
+        $ddjj = $sqlDdjj->getById($ddjj);
+        $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_ELIMINADA);/// declaracion jurada Eliminada
+
+        if($ddjj->save()){
+          $ddjjEliminacion = new DdjjEliminacion();
+          $ddjjEliminacion->setId_ddjj($ddjj->getId_ddjj());
+          $ddjjEliminacion->setId_persona(0);
+          $ddjjEliminacion->setFecha_eliminacion(date('Y-m-d H:i:s'));
+          $ddjjEliminacion->setJustificacion('Eliminacion por no Cancelacion');
+          $ddjjEliminacion->setMotivo(1);
+          $ddjjEliminacion->save();
+        }
+      } catch(Exception $e) {
+      }
+
     }
     public function reasignaDdjjRevision($id_ddjj)
     {

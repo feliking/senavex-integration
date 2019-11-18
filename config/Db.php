@@ -18,6 +18,8 @@ class Db extends TActiveRecord {
     private $driver ;
 	
  public function getDbConnection() {
+
+
      $ini = parse_ini_file('config.ini');
      $this->db     = $ini['db_name'];
      $this->user   = $ini['db_user'];

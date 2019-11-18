@@ -1,4 +1,8 @@
+
 <div id="{$id}Wrapper">
+    {if $reasignaciones}
+        {$reasignaciones}
+    {/if}
     <div class="ddjj-container">
         <div class="ddjj-body">
             <section class="ddjj-section">
@@ -24,8 +28,19 @@
                     </div>
                 </div>
                 <div class="row-fluid form">
+                    <label class="span3 ddjj-section-label">
+                        <span class="tooltip" title="Debe ingresar la referencia del documento que respalda la modificación.">?</span>Nota de Ref.:
+                    </label>
+                    <div class="span9 ddjj-input">
+                        <input id="r_ref" type="text" class="k-textbox"/>
+                    </div>
+                </div>
+                <div class="row-fluid form">
                     <span id="r_arancel_validation" class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden">
                         <span class="k-icon k-warning"> </span> Se requiere cambiar almenos la fecha de Vigencia o la partida.
+                    </span>
+                    <span id="r_ref_validation" class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden">
+                        <span class="k-icon k-warning"> </span> La referencia del informe es requerido.
                     </span>
                 </div>
             </section>
@@ -93,8 +108,13 @@
         });
         function reasignarDatos() {
             $("#r_arancel_validation").addClass('hidden');
+            $("#r_ref_validation").addClass('hidden');
             if ($("#r_fechaVigencia").val() == '' &&  $('#r_arancel_description').attr('id_partida') == undefined) {
                 $("#r_arancel_validation").removeClass('hidden').addClass('fadein');
+                return;
+            }
+            if(!$('#r_ref').val().trim()){
+                $("#r_ref_validation").removeClass('hidden').addClass('fadein');
                 return;
             }
             confirmMessage("Esta seguro de cambiar los datos?",function(){
@@ -107,7 +127,8 @@
                         tarea:'saveReasignarDatos',
                         id_ddjj: '{$ddjj->id_ddjj}',
                         fecha_vencimiento: $("#r_fechaVigencia").val(),
-                        id_partida: $('#r_arancel_description').attr('id_partida')
+                        id_partida: $('#r_arancel_description').attr('id_partida'),
+                        ref: $('#r_ref').val()
                     },
                     success: function(data) {
                         data=JSON.parse(data);

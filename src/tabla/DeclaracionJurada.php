@@ -137,6 +137,7 @@ class DeclaracionJurada extends Db {
     private $valor_frontera;
     private $sobrevalor_frontera;
     private $fecha_limite_revision;
+    private $fecha_limite_cancelacion;
     private $id_regional;
     private $complemento;
     private $revisado_uco;
@@ -452,6 +453,12 @@ class DeclaracionJurada extends Db {
     }
     public function getFecha_limite_revision() {
         return $this->fecha_limite_revision;
+    }
+    public function setFecha_limite_cancelacion($fecha_limite_cancelacion) {
+        $this->fecha_limite_cancelacion = $fecha_limite_cancelacion;
+    }
+    public function getFecha_limite_cancelacion() {
+        return $this->fecha_limite_cancelacion;
     }
     public function getId_regional(){
         return $this->id_regional;

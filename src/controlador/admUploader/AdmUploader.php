@@ -140,7 +140,7 @@ class AdmUploader extends Principal {
         }
     }
     public function rrmdir($dir) {
-//        echo 'is dir?'.$dir.'------'.is_dir($dir).;
+//        echo 'is dir?'.$dir.'------'.is_dir($dir);
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
