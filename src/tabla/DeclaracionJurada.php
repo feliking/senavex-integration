@@ -488,7 +488,6 @@ class DeclaracionJurada extends Db {
         $this->aprobado_uco = $aprobado_uco;
     }
 
-
 }
 
 ?>

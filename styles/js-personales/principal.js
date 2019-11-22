@@ -343,7 +343,9 @@ else return true;
 };
 
 $(document).on("keypress", 'input[type="text"],textarea', function(e) {
-    if($(e.target).hasClass('skip-restriccion')) return  true;
+    if($(e.target).hasClass('skip-restriccion') ||
+        $(e.target).parent().hasClass('k-edit-cell')
+    ) return  true;
 	if($(e.target).hasClass('no-restriccion')){
         var regex = new RegExp("^[a-zA-Z0-9_, \b@.áéíóúÁÉÍÓÚ%()*+&/;:'/ñÑ-]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);

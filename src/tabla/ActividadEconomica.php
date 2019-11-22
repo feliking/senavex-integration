@@ -36,6 +36,7 @@ class ActividadEconomica extends Db {
     public function getCriterio_valor() {
         return $this->criterio_valor;
     }
+
     
 }
 
