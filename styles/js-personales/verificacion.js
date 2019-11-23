@@ -1,3 +1,4 @@
+var es_exportador = $('#es_exportador').length;
 //*******************acordion item**********************
 function verVerificacion(id_ver_verificacion){
     anadir("Verificación "+id_ver_verificacion,'admVerificaciones','verVerificacion&id='+id_ver_verificacion);
@@ -223,7 +224,7 @@ function rechazarVerificacionDdjj(id_ver_verificacion){
 //////////-----------------------confirm data message---------------------------
 (function(global,$) {
     $('body').append('<div class="confirm-data-message-container">' +
-        '<div class="confirm-data-message-content"><p></p>' +
+        '<div class="confirm-data-message-content"><p id="confirm_message"></p>' +
         '<textarea class="k-textbox"></textarea><span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden fadein" id="confirmDataMessageValidator"><span class="k-icon k-warning"> </span> El texto es requerido</span>' +
         '<ul><li><button class="si-button k-button">Si</button></li><li><button class="no-button k-button">No</button></li></ul>' +
         '</div></div>');
@@ -252,7 +253,15 @@ function rechazarVerificacionDdjj(id_ver_verificacion){
             });
         },
         display: function(question,yesCallback,noCallback){
-            confirmDataMessage.confirmDataMessageContent.find('p').text(question);
+            confirmDataMessage.confirmDataMessageContent.find('#confirm_message').html('');
+            if(typeof question === 'String'){
+                confirmDataMessage.confirmDataMessageContent.find('#confirm_message').text(question);
+            }
+            else {
+                question.forEach(function(q){
+                    confirmDataMessage.confirmDataMessageContent.find('#confirm_message').append('<p>'+q+'</p>');
+                });
+            }
             confirmDataMessage.confirmDataMessageContainer.addClass('displayed');
 
             confirmDataMessage.si=function(){};
@@ -355,7 +364,13 @@ function alerta()
 }
 ////------------------eliminar ddjj -----------------------------
 function eliminarDdjj(id_ddjj){
-    confirmDataMessage("¿Esta seguro que quiere dar de baja la Declaración Jurada de Origen? Ingrese la justificación.", function (text) {
+    var message = [];
+    if (es_exportador) {
+        message.push( "La baja de su DDJJ es plena responsabilidad del exportador. Aclarar que este proceso es permanente e irreversible.");
+        message.push( "En caso de requerir esta DDJJ debe proceder a un nuevo llenado y costo respectivo.");
+    }
+    message.push("¿Esta seguro que quiere dar de baja la Declaración Jurada de Origen? Ingrese la justificación.");
+    confirmDataMessage(message, function (text) {
         $("#declaracionesjuradas").addClass('loading-block');
         $.ajax({
             type: 'post',

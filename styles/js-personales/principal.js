@@ -577,6 +577,10 @@ function instanciarPopups(id,width,height){
 //--------para resolver el problema de los combos----------
 function solveDropdowns(e){
     var $item =$('#'+e.sender.element[0].id+'-list');
+    if(!$item.length){
+        $item = $(e.sender.list[0]);
+    }
+    if(!$item.length) return;
     setTimeout(function () {
         if($item.length && $item.css('display')=='none'){
             $item.css('display','block');

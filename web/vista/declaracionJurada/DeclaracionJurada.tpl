@@ -49,7 +49,7 @@
                     <div id="view_productor">
                         <section class="ddjj-section" >
                             <table class="ddjj-table">
-                                <thead><tr><th>2.1 Nombre o Razón Social del Productor</th><th>2.2 Domicilio Legal</th><th>2.3 Repr. Legal</th><th>2.4 CI o NIT</th><th>2.5 Teléfono</th><th>2.6 Precio Venta a Exportador</th><th>2.7 Unidad de Medida</th><th>2.8 Cap. Producción Mensual</th><th>2.9 Dirección de Fábrica</th></tr></thead>
+                                <thead><tr><th>2.1 Nombre o Razón Social del Productor</th><th>2.2 Domicilio Legal</th><th>2.3 Repr. Legal</th><th>2.4 CI o NIT</th><th>2.5 Teléfono y/o N° de celular</th><th>2.6 Precio Venta al Exportador en $us</th><th>2.7 Unidad de Medida</th><th>2.8 Cap. Producción Mensual</th><th>2.9 Dirección de Fábrica</th></tr></thead>
                                 <tbody>
                                 {foreach $ddjj->comercializadores as $productor}
                                     <tr>
@@ -309,12 +309,12 @@
                         Total % sobre el valor:<div id="view_totalEnFabricaPercentage" class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_exw}%</div>
                     </div>
                     <div class="ddjj-total">
-                        Total Valor ($us): <div id="view_totalEnFabrica" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_exw}</div>
+                        Total Valor ($us): <div id="view_totalEnFabrica" class="ddjj-total-input ddjj-section-field" valor="{$ddjj->valor_exw_numeric}">{$ddjj->valor_exw_numeric}</div>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
-                <!--div class="row-fluid form">
-                    <label class="span6 ddjj-section-label">5.7 Costos de Logistica hasta Frontera Nacional (flete, seguro, carga, etc.)</label>
+                <div class="row-fluid form">
+                    <label class="span6 ddjj-section-label">6.7 Costos de Logistica hasta Frontera Nacional (flete, seguro, carga, etc.)</label>
                     <div class="ddjj-total">
                         Total % sobre el valor:<div id="view_costoFronterePercentage" class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_frontera}%</div>
                     </div>
@@ -324,7 +324,7 @@
                     <div style="clear: both;"></div>
                 </div>
                 <div class="row-fluid form">
-                    <label class="span6 ddjj-section-label">5.8 Total Valor FOB por Producto: (Campo 5.8)= (Campo 5.6) + (Campo 5.7)</label>
+                    <label class="span6 ddjj-section-label">6.8 Total Valor FOB por Producto: (Campo 6.8)= (Campo 6.6) + (Campo 6.7)</label>
                     <div class="ddjj-total">
                         Total % sobre el valor:<div id="view_fobPercentage" class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_fob}%</div>
                     </div>
@@ -332,7 +332,7 @@
                         Total Valor ($us): <div id="view_fob" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_fob}</div>
                     </div>
                     <div style="clear: both;"></div>
-                </div-->
+                </div>
             </section>
             <h2>VII. LA MERCANCIA ES PRODUCIDA EN ZONA FRANCA</h2>
             <section class="ddjj-section">
@@ -385,14 +385,13 @@
             <h2>IX. DECLARACION JURADA</h2>
             <section class="ddjj-section-fit">
                 <div class="ddjj-declaration">
-                    Yo <span class="ddjj-bold">{$representanteEmpresa[0]->nombres} {$representanteEmpresa[0]->paterno} {$representanteEmpresa[0]->materno}</span>, mayor de edad, habil por ley con documento de indentidad N°
-                    <span class="ddjj-bold">{$representanteEmpresa[0]->numero_documento}</span>
-                    , declaro de mi libre voluntad sin ningun tipo de coacción bajo juramento y asumiendo la responsabilidad legal de lo declarado que la
-                    información contenida en el presente formulario es fiel reflejo de la verdad y que la mercancia declarada
-                    de la empresa <span class="ddjj-bold">{$representanteEmpresa[1]->razon_social}</span>, declaro bajo juramento que la información contenida en el presente formulario es fiel reflejo de al verdad y que la mercancía declarada cumple con las Normas de Origen del <span class="ddjj-bold view_acuerdo_label">{$ddjj->acuerdo->descripcion} ({$ddjj->acuerdo->sigla})</span>
-                    , por lo que se faculta al SENAVEX a solicitar mayor información al respecto y realizar verificaciones en el momento que así lo requiera. Así como, estoy consciente que
-                    en caso de falsedad se podrá iniciar las acciones legales pertinentes y/o establecer las sanciones respectivas a la empresa a la cual represento.<br>
-                    Asimismo, doy mi conformidad que cualquier comunicación efectuada por SENAVEX referente a la presente DDJJ será remitida a mi correo electrónico.
+
+                    Yo <span class="ddjj-bold">{$representanteEmpresa[0]->nombres} {$representanteEmpresa[0]->paterno} {$representanteEmpresa[0]->materno}</span>, mayor de edad, hábil por ley con documento de identidad N° <span class="ddjj-bold">{$representanteEmpresa[0]->numero_documento}</span>,
+                    declaro de mi libre voluntad sin ningún tipo de coacción bajo juramento y asumiendo la responsabilidad legal
+                    de lo declarado que la información contenida en el presente formulario es fiel reflejo de la verdad y que la mercancía declarada cumple con las Normas de Origen del <span class="ddjj-bold view_acuerdo_label">{$ddjj->acuerdo->descripcion} ({$ddjj->acuerdo->sigla})</span>, por lo que se faculta
+                    al SENAVEX a solicitar mayor información al respecto y realizar visitas de verificación en el momento que así lo requiera, teniendo la obligación de presentar lo que proceda y corresponda.
+                    Así como estoy consciente que en caso de falsedad, alteración se proceda iniciar las acciones pertinentes y/o establecer las sanciones respectivas a la unidad productiva y/o comercializadora que represento.
+                    Asimismo, doy mi conformidad que cualquier comunicación efectuada por SENAVEX referente a la presente DDJJ será remitida a mi correo electrónico
 
                     <div class="ddjj-agree">
                         {if $edition }
@@ -573,13 +572,13 @@
         }
         else $('#{$id} #aggrement-validation').show();
     }
-    $('#{$id} #aggrement-validation').hide();
-    $("#{$id} #aggrement-check").change(function () {
+    $('#aggrement-validation').hide();
+    $("#aggrement-check").change(function () {
         if($(this).prop('checked')){
-            $('#{$id} #view_ddjj_accept').removeClass('button-disabled');
-            $('#{$id} #aggrement-validation').hide();
+            $('#view_ddjj_accept').removeClass('button-disabled');
+            $('#aggrement-validation').hide();
         }
-        else $('#{$id} #view_ddjj_accept').addClass('button-disabled');
+        else $('#view_ddjj_accept').addClass('button-disabled');
     });
     function fillForm() {
         $('#{$id} #view_denominacion_comercial').html($('#alta_ddjj #denominacion_comercial').val());
@@ -656,13 +655,13 @@
 
         var values=genericUpdate();
 
-        $('#{$id} #view_totalValorMO').html(values.manoObra);
+        $('#{$id} #view_totalValorMO').html(kendo.toString(values.manoObra, "n").split('.').join(""));
         $('#{$id} #view_totalSobrevalorMO').html(values.manoObraPercentage+'%');
-        $('#{$id} #view_totalEnFabrica').html(values.exw);
+        $('#{$id} #view_totalEnFabrica').html(kendo.toString(values.exw, "n").split('.').join(""));
         $('#{$id} #view_totalEnFabricaPercentage').html(values.exwPercentage+'%');
-        $('#{$id} #view_costoFrontere').html(values.frontera);
+        $('#{$id} #view_costoFrontere').html(kendo.toString(values.frontera, "n").split('.').join(""));
         $('#{$id} #view_costoFronterePercentage').html(values.fronteraPercentage+'%');
-        $('#{$id} #view_fob').html(values.fob);
+        $('#{$id} #view_fob').html(kendo.toString(values.fob, "n").split('.').join(""));
         $('#{$id} #view_fobPercentage').html(values.fobPercentage+'%');
 
 
@@ -679,14 +678,7 @@
         }
 
 
-//    var criterios = '';
-//    var criterios_object=$('#criterio_origen').data("kendoMultiSelect").dataItems();
-//    $.each(criterios_object,function(index,value) {
-//        criterios+=value.descripcion;
-//        if(index+1!=criterios_object.length){ criterios += ', '; }
-//    });
 
-        {*$("#{$id} #view_criterio_origen").html(criterios);*}
         $("#{$id} #view_reo").html($('#alta_ddjj #ddjj_reo').text());
 
         var documents=documentos_files;

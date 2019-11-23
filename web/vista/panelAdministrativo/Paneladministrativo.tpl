@@ -5,6 +5,9 @@
 </head>
 <body>
 {include file="includes/Cabecera.tpl"}
+    {if $es_exportador}
+        <input type="hidden" id="es_exportador" value="es_exportador">
+    {/if}
     <div class="row-fluid " >
         {if $id_empresa_persona=='x'} 
         <div class='mis-empresas'>    

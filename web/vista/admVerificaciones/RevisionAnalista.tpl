@@ -7,7 +7,7 @@
             Resumen:
         </div>
         <div class="span9">
-            <textarea name="" id="verificacionResultado" cols="30" rows="10" class="k-textbox"></textarea>
+            <textarea name="" id="verificacionResultado" cols="30" rows="10" class="k-textbox skip-restriccion"></textarea>
             <span class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden fadein" id="verificacionResultadoValidation">
                 <span class="k-icon k-warning"> </span> Ingrese un resumen de la visita de verificación.
             </span>

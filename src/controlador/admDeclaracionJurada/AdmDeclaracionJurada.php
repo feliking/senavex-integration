@@ -399,7 +399,7 @@ class AdmDeclaracionJurada extends Principal {
           '","acuerdo":"' . $datos->acuerdo->getSigla() .
           '","denominacion":"' . ($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
           '","codigo":"' . $datos->getCorrelativo_ddjj() .
-          '","observaciones":"' . $datos->getObservacion_ddjj() .
+          '","fecha_vencimiento":"' . substr($datos->getFecha_vencimiento(), 0, 11).
           '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .'"},';
       }
 

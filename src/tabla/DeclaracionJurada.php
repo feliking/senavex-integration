@@ -1,7 +1,7 @@
 <?php
 
 include_once(PATH_BASE . DS . 'config' . DS . 'Db.php');
-
+include_once( PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');
 //control de acceso
 defined('_ACCESO') or die('Acceso restringido');
 
@@ -424,11 +424,17 @@ class DeclaracionJurada extends Db {
     public function getSobrevalor_fob() {
         return $this->sobrevalor_fob;
     }
+    public function getSobrevalor_fob_numeric() {
+        return FuncionesGenerales::getNumberFormat($this->sobrevalor_fob);
+    }
     public function setValor_exw($valor_exw) {
         $this->valor_exw = $valor_exw;
     }
     public function getValor_exw() {
         return $this->valor_exw;
+    }
+    public function getValor_exw_numeric() {
+        return FuncionesGenerales::getNumberFormat($this->valor_exw);
     }
     public function setSobrevalor_exw($sobrevalor_exw) {
         $this->sobrevalor_exw = $sobrevalor_exw;

@@ -614,4 +614,8 @@ class FuncionesGenerales extends Principal {
     $fecha_formato=explode("/",$fecha);
     return $fecha_formato[2].'-'.$fecha_formato[1].'-'.$fecha_formato[0];
   }
+
+  public static function getNumberFormat($number){
+    return number_format((float)$number, 4, '.', '');
+  }
 }

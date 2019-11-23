@@ -5,6 +5,7 @@ defined('_ACCESO') or die('Acceso restringido');
 include_once( PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');
 include_once( PATH_CONTROLADOR . DS . 'admSistemaColas' . DS . 'AdmSistemaColas.php');
 include_once( PATH_CONTROLADOR . DS . 'admEmpresa' . DS . 'AdmEmpresa.php');
+include_once(PATH_CONTROLADOR . DS . 'middleware' . DS . 'Condicionales.php');
 include_once(PATH_MODELO . DS . 'SQLEmpresa.php');
 include_once(PATH_MODELO . DS . 'SQLEmpresaPersona.php');
 include_once(PATH_MODELO . DS . 'SQLPerfil.php');
@@ -25,6 +26,7 @@ class AdmPanelPrincipal extends Principal {
     $vista = Principal::getVistaInstance();
     $declaracion_jurada = new DeclaracionJurada();
     $sqlDeclaracionJurada = new SQLDeclaracionJurada();
+    $condicionales = new Condicionales();
     $mensajebienvenida=FuncionesGenerales::MensajeBienvenida();//esto es para la bienvenida
     if($_REQUEST['tarea']=='menuprincipal')//para cuando uno entra a una empresa que tiene una opcion especifica
     {
@@ -214,7 +216,8 @@ class AdmPanelPrincipal extends Principal {
         */
     }
     $vista->assign('id_empresa_persona', $_SESSION["id_empresa_persona"]);
-    $vista->assign("mensajebienvenida",$mensajebienvenida);  
+    $vista->assign("mensajebienvenida",$mensajebienvenida);
+    $vista->assign('es_exportador', $condicionales->esExportador());
     $vista->display("panelAdministrativo/Paneladministrativo.tpl");
     exit;
   }

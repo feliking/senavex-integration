@@ -260,8 +260,8 @@
             { field: "domicilio", title: "2.2 Domicilio Fiscal"},
             { field: "representante_legal", title: "2.3 Repr. Legal"},
             { field: "ci_nit", title: "2.4 CI o NIT"},
-            { field: "telefono", title: "2.5 Teléfono"},
-            { field: "precio_venta", title: "2.6 Precio Venta a Exportador"},
+            { field: "telefono", title: "2.5 Teléfono y/o N° de celular"},
+            { field: "precio_venta", title: "2.6 Precio Venta al Exportador en $us"},
             { field: "unidad_medida", title: "2.7 Unidad de Medida",template:"#=getDescripcionUnidadMedida(unidad_medida)#",editor: UMedidaDropDownEditor},
             { field: "produccion_mensual", title: "2.8 Cap. Producción Mensual"},
             { field: "direccion_fabrica", title: "2.9 Dirección de Fábrica"}
@@ -399,12 +399,10 @@
             $('.total-valor-label').html("Total % Sobrevalor "+$(this).attr('data-valor-descripcion')+':');
             ddjj_id_acuerdo=$(this).attr('value');
             refreshNormas(ddjj_id_acuerdo);
-//        multiselect.destroy();
-//        $('#criterio_origen_container').html('<select id="criterio_origen" multiple="multiple" data-placeholder="Seleccione el criterio de origen"></select>');
-//        setMultiselect();
 
             $('#ddjj_acuerdo_copy').html($(this).attr('data-acuerdo-descripcion'));
         }
+        console.log($(this));
         if($(this).attr('data-idtipo-acuerdo') === '2') {
             $('#nota_aclaratoria_sgp').removeClass('hidden');
         } else {
@@ -1245,16 +1243,16 @@
         total+= +refreshingTotal(tabla_insumosnacionales,'valor');
         total+= +refreshingTotal(tabla_insumosimportados,'valor');
         total+= +$('#totalValorMO').data("kendoNumericTextBox").value();
-        //total+= +$('#costoFrontera').data("kendoNumericTextBox").value();
+        total+= +$('#costoFrontera').data("kendoNumericTextBox").value();
         return total;
 
     }
     function genericUpdate() {
         var total=+totalPercentage(),
-            totalIN=+(refreshingTotal(tabla_insumosnacionales,'valor') || 0.000),
-            totalII=+(refreshingTotal(tabla_insumosimportados,'valor') || 0.000),
-            manoObra=+($('#alta_ddjj #totalValorMO').data("kendoNumericTextBox").value()|| 0.000),
-            frontera=+(0.000),
+            totalIN=+(refreshingTotal(tabla_insumosnacionales,'valor') || 0),
+            totalII=+(refreshingTotal(tabla_insumosimportados,'valor') || 0),
+            manoObra=+($('#alta_ddjj #totalValorMO').data("kendoNumericTextBox").value()|| 0),
+            frontera=+($('#alta_ddjj #costoFrontera').data("kendoNumericTextBox").value()|| 0),
             exw=manoObra+totalII+totalIN,
             fob=exw+frontera;
 
@@ -1266,22 +1264,21 @@
 //    console.log('exw',exw);
 //    console.log('fob',fob);
 
-
         updateSobrevalor(tabla_insumosnacionales,total);
         updateSobrevalor(tabla_insumosimportados,total);
 
-        $('#totalValorIN').html(kendo.toString(totalIN, "n4").split('.').join(""));
+        $('#totalValorIN').html(kendo.toString(totalIN, "n").split('.').join(""));
         $('#totalSobrevalorIN').html(kendo.toString(getPercentage(total,totalIN), "n").split('.').join(""));
-        $('#totalValorII').html(kendo.toString(totalII, "n4").split('.').join(""));
+        $('#totalValorII').html(kendo.toString(totalII, "n").split('.').join(""));
         $('#totalSobrevalorII').html(kendo.toString(getPercentage(total,totalII), "n").split('.').join(""));
 
         $('#totalSobrevalorMO').html(getPercentage(total,manoObra));
-        $('#totalEnFabrica').html(kendo.toString(exw, "n4").split('.').join(""));
+        $('#totalEnFabrica').html(kendo.toString(exw, "n").split('.').join(""));
         $('#totalEnFabricaPercentage').html(getPercentage(total,exw));
 
         $('#costoFronterePercentage').html(getPercentage(total,frontera));
         $('#fobPercentage').html(getPercentage(total,fob));
-        $('#fob').html(fob);
+        $('#fob').html(kendo.toString(fob, "n").split('.').join(""));
 
         return {
             total:total,

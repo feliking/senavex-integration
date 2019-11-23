@@ -126,7 +126,7 @@
         <div class="row-fluid form">
             <ul class="ul-buttons ">
                 <li>
-                    <button class="k-button" onclick="remover(tabStrip.select());">Cancelar</button>
+                    <button class="k-button" onclick="remover(tabStrip.select());">Cerrar</button>
                 </li>
                 {if $verificacion->id_ver_estado_verificacion!=2 AND $verificacion->id_ver_estado_verificacion!=3}
                 <li>

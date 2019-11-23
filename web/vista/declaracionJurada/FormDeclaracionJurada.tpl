@@ -78,10 +78,10 @@
                     <section class="ddjj-section">
                         <div class="row-fluid form">
                             <label class="span3 ddjj-section-label" >
-                                3.1 <span class="tooltip" title="Indicar el nombre comercial de la mercancía o nombre de transacción entre el exportador y el importador, la cual será reflejada en el certificado de origen. Por ejemplo: Camisa de color azul ">?</span>Denominación Comercial:
+                                3.1 <span class=" tooltip" title="Indicar el nombre comercial de la mercancía o nombre de transacción entre el exportador y el importador, la cual será reflejada en el certificado de origen. Por ejemplo: Camisa de color azul ">?</span>Denominación Comercial:
                             </label>
                             <div class="span9 ddjj-input">
-                                <input type="text" class="k-textbox"  name="denominacion_comercial" id="denominacion_comercial"
+                                <input type="text" class="k-textbox skip-restriccion"  name="denominacion_comercial" id="denominacion_comercial"
                                        required validationMessage="Por favor ingrese la Denomincacion Comercial" {if $ddjj && $ddjj->denominacion_comercial}value="{$ddjj->denominacion_comercial}"{/if}/>
                             </div>
                         </div>
@@ -173,6 +173,7 @@
                                                        data-acuerdo-descripcion="{$acuerdo->descripcion}"
                                                        data-acuerdo-sigla="{$acuerdo->sigla}"
                                                        data-tipoacuerdo-descripcion="{$tipoacuerdo->descripcion}"
+                                                       data-idtipo-acuerdo="{$acuerdo->id_tipo_acuerdo}"
                                                        data-valor-descripcion="{$acuerdo->tipo_valor_internacional->abreviatura}"
                                                        data-arancel="{foreach $acuerdo->acuerdo_arancel as $acuerdo_arancel}{$acuerdo_arancel->id_arancel}{if not $acuerdo_arancel@last},{/if}{/foreach}"
                                                         {if $ddjj && $ddjj->id_acuerdo == $acuerdo->id_acuerdo} checked{/if}
@@ -186,7 +187,7 @@
                         {/foreach}
                         <div class="row-fluid fadein"><input type="hidden" name="hiddenvalidator" data-checkvalidator=""></div>
 
-                        <span class="ddjj-section-alert_1">Nota Aclaratoria En caso que la mercancía a exportar no figure en la lista de productos beneficiados, significa que la misma no se beneficia de las preferencias arancelarias del SGP solicitado. Consigueintemente, se sugiere seleccione en el campo 5.1 Terceros Paises, con la finalidad de poder acceder a la emisión del Certificado de Origen tipo Terceros Paises</span>
+                        <span id="nota_aclaratoria_sgp" class="ddjj-section-alert_1 hidden fadein">Nota Aclaratoria En caso que la mercancía a exportar no figure en la lista de productos beneficiados, significa que la misma no se beneficia de las preferencias arancelarias del SGP solicitado. Consigueintemente, se sugiere seleccione en el campo 5.1 Terceros Paises, con la finalidad de poder acceder a la emisión del Certificado de Origen tipo Terceros Paises</span>
                         {foreach $aranceles as $arancel}
                             <div id="ddjj_arancel_{$arancel->id_arancel}" class="none">
                                 <div class="row-fluid form">
@@ -280,29 +281,29 @@
                             </div>
                             <div style="clear: both;"></div>
                         </div>
-                        <!--div class="row-fluid form">
-                        <label class="span6 ddjj-section-label">5.7 Costos de Logistica hasta Frontera Nacional (flete, seguro, carga, etc.)</label>
-                        <div class="ddjj-total">
-                            <span class="total-valor-label">Total % Sobrevalor:</span>
-                            <span id="costoFronterePercentage" class="ddjj-total-result">0</span>%
+                        <div class="row-fluid form">
+                            <label class="span6 ddjj-section-label">6.7 Costos de Logistica hasta Frontera Nacional (flete, seguro, carga, etc.)</label>
+                            <div class="ddjj-total">
+                                <span class="total-valor-label">Total % Sobrevalor:</span>
+                                <span id="costoFronterePercentage" class="ddjj-total-result">0</span>%
+                            </div>
+                            <div class="ddjj-total">
+                                Total Valor ($us):
+                                <div class="ddjj-total-input"><input id="costoFrontera" name="costoFontera" maxlength="20" {if $ddjj && $ddjj->valor_frontera}value="{$ddjj->valor_frontera}"{/if}/></div>
+                            </div>
+                            <div style="clear: both;"></div>
                         </div>
-                        <div class="ddjj-total">
-                            Total Valor ($us):
-                            <div class="ddjj-total-input"><input id="costoFrontera" name="costoFontera" maxlength="20" {if $ddjj && $ddjj->valor_frontera}value="{$ddjj->valor_frontera}"{/if}/></div>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </div>
-                    <div class="row-fluid form">
-                        <label class="span6 ddjj-section-label">5.8 Total Valor FOB por Producto: (Campor 5.8) = (Campo 5.6) + (Campo 5.7)</label>
-                        <div class="ddjj-total">
-                            <span class="total-valor-label">Total % Sobrevalor:</span>
-                            <span id="fobPercentage" class="ddjj-total-result">0</span>%
-                        </div>
-                        <div class="ddjj-total">
-                            Total Valor ($us):<span id="fob" class="ddjj-total-result">0</span>
-                        </div>
-                        <div style="clear: both;"></div>
-                    </div-->
+                        <div class="row-fluid form">
+                            <label class="span6 ddjj-section-label">6.8 Total Valor FOB por Producto: (Campor 6.8) = (Campo 6.6) + (Campo 6.7)</label>
+                            <div class="ddjj-total">
+                                <span class="total-valor-label">Total % Sobrevalor:</span>
+                                <span id="fobPercentage" class="ddjj-total-result">0</span>%
+                            </div>
+                            <div class="ddjj-total">
+                                Total Valor ($us):<span id="fob" class="ddjj-total-result">0</span>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div
                     </section>
                     <h2>VII. LA MERCANCIA ES PRODUCIDA EN ZONA FRANCA</h2>
                     <section class="ddjj-section">

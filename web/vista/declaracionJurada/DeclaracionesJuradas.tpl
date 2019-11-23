@@ -52,8 +52,8 @@
                 { field: "acuerdo", title: "Acuerdo Comercial"},
                 { field: "denominacion", title: "Partida Arancelaria"},
                 { field: "denominacion_comercial", title: "Descripción Comercial"},
-                { field: "observaciones", title: "Observacion"},
                 { field: "fecha_registro", title: "Fecha de Registro"},
+                { field: "fecha_vencimiento", title: "Fecha de Vencimiento"},
                 { field: 'Clonar',filterable:false ,template:'<a target="_blank" onclick="clonarDeclaracionJurada(#= id_ddjj #)" class="k-button link">Clonar</a>'},
                 { field: 'Reasignar',filterable:false ,template: "<a target=\"_blank\" onclick=\"reAsignarDeclaracionJurada(#= id_ddjj #)\" class=\"k-button link\">Reasignar</a>"},
                 { field: 'Dar de Baja',filterable:false,template:
@@ -80,7 +80,6 @@
         var grid = $("#declaracionesjuradas").data("kendoGrid");
         {if $esExportador}
             grid.hideColumn(7);
-            grid.hideColumn(8);
         {else}
             grid.hideColumn(6);
         {/if}
@@ -111,11 +110,12 @@
             } else {
                 grid.hideColumn(9);
             }
-            if(this.value() == '6' || this.value() == '7' || this.value() == '2'  ) { //ocultamos dar de baja
-                grid.hideColumn(8);
-            } else {
-                grid.showColumn(8);
-            }
+        }
+        console.log(this.value());
+        if(this.value() == '6' || this.value() == '7' || this.value() == '2' || this.value() == '0' ) { //ocultamos dar de baja
+            grid.hideColumn(8);
+        } else {
+            grid.showColumn(8);
         }
 
         grid.setDataSource(dataddjj);
