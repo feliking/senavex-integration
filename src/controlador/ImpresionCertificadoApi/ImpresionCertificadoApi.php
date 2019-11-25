@@ -77,7 +77,7 @@ $sqlDepartamento= new SQLDepartamento();
 $departamentos=explode(",",$autorizacionPrevia->getId_departamento_destino());
 //$departamento=$sqlDepartamento->getBuscarDepartamentoPorId($departamento);
 
-$nro_registros = count($autorizacionPreviaDetalle);  //TODO  colocar el numero de registros
+$nro_registros = count($autorizacionPreviaDetalle); 
 ///////////////////////////// para el nro de fojas/////////////////
 $nro_fojas=$nro_registros;
 // $empresaImportador->setId_empresa_importador((isset($_REQUEST['nro_fojas'])?$_REQUEST['nro_fojas']:$_SESSION['nro_fojas']));
@@ -109,25 +109,22 @@ class PDF extends FPDF
         //$empresaImportador->setId_empresa_importador((isset($_REQUEST['id_empresa'])?$_REQUEST['id_empresa']:$_SESSION['id_empresa']));
         $empresaImportador->setId_empresa_importador($autorizacionPrevia->getId_empresa_importador());
         $empresaImportador=$sqlEmpresaImportador->getEmpresaApiPorID($empresaImportador);
-        //aca verificamos si es una persona o es un representante legal
+        $autorizacionPreviaDetalle = new AutorizacionPreviaDetalle();
+
+        $sqlAutorizacionPreviaDetalle = new SQLAutorizacionPreviaDetalle();
+        $autorizacionPreviaDetalle->setId_autorizacion_previa($_REQUEST['id_autorizacionPrevia']);
+        $autorizacionPreviaDetalle=$sqlAutorizacionPreviaDetalle->getAutorizacionDetallePorId($autorizacionPreviaDetalle);
+        $nro_registros = count($autorizacionPreviaDetalle);
+
         $persona = new Persona();
         $sqlPersona= new SQLPersona();
         $persona->setId_persona($empresaImportador->getId_representante_legal());
         $persona=$sqlPersona->getDatosPersonaPorId($persona);
-        $nro_registros = 7;  //TODO  colocar el numero de registros
         $nro_fojas=$nro_registros;
         
         
     
-        //Cell(width, height, text, border, position-next-cell, alignment);
-        
-        //////////////////////IMAGEN NO VALIDADA PARA LA AUTIZACION/////////////////////
-        //////modificado por Ivonne 01/10/2019 ////////////////////////
-        ///  $this->Image('styles/img/BGRUI.jpg', 0, 0, $this->w, $this->h);
-        ///$this->SetFillColor(211,211,211);
-        ///$this->RoundedRect(163, 67, 45, 10, 2, '1234', 'FD');
-        ////////////////////////fin modificacion 01/10/2019/////////////////////////////
-        
+
         //RUI$this->RoundedRect(9, 71, 30, 8, 2, '1234', 'D');
         //$this->Image('styles/img/institucion/logo-min.png',7,10,75,25);
         //$this->Image('styles/img/institucion/vortex2.png',140,7,70,30);
