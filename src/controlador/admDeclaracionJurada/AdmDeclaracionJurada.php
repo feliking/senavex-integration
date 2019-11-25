@@ -527,6 +527,7 @@ class AdmDeclaracionJurada extends Principal {
 
 //      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+      $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
       $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
       $vista->assign('observaciones_ddjj',$functions->getObservaciones($_REQUEST["id_declaracion_jurada"]));
       $vista->assign('tipo_valor_internacional',$tipo_valor_internacional->abreviatura);

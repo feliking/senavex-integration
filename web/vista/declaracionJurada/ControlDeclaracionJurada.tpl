@@ -37,7 +37,7 @@
     <input type="hidden" name="hiddenvalidatorco" data-criteriorigen=""><br>
     <div class="row-fluid  form" >
         <div class="span2 ddjj-section-label">
-            <span class="tooltip" title="Ingrese información complementaria la criterio de origen o al REO">?</span>Complemento:
+            <span class="tooltip" title="Ingrese información complementaria. Ej.: Respaldo que exige el REO y efectuar el control para la emisión del certificado de origen, respaldo de compra de mercancías o materia prima, etc.">?</span>Complemento:
         </div>
         <div class="span10 ddjj-input">
             <textarea id="complemento_criterio_origen" name="complemento" class="k-textbox form-textarea" rows="4" value="">{if $ddjj && $ddjj->complemento}{$ddjj->complemento}{/if}</textarea>

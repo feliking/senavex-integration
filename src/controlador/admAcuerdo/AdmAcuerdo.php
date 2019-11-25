@@ -237,18 +237,8 @@ class AdmAcuerdo extends Principal {
     if ($_REQUEST['tarea'] == 'listarCriterioOrigen') {
       $criterio_origen->setId_Acuerdo($_REQUEST["id_acuerdo"]);
       $resultado = $sqlCriterioOrigen->getListarCriterioPorAcuerdo($criterio_origen);
-      $strJson = '';
-      echo '[';
-      foreach ($resultado as $datos){
-        $strJson .= '{"id_criterio_origen":"' . $datos->getId_criterio_origen() .
-          '","descripcion":"' . $datos->getDescripcion().
-          '","orden":"' . $datos->getOrden().
-          '","parrafo":"' . $datos->getParrafo() . '"},';
-      }
 
-      $strJson = substr($strJson, 0, strlen($strJson) - 1);
-      echo $strJson;
-      echo ']';
+      echo json_encode($resultado);
       exit;
     }
 

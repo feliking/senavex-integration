@@ -351,6 +351,7 @@
                 {include file="declaracionJurada/dropzoneUploader.tpl"}
 
                 <div class="row-fluid form" >
+                    <span id="general_ddjj_warning" class="k-widget k-tooltip k-tooltip-validation k-invalid-msg hidden fadein" ><span class="k-icon k-warning"> </span> La DDJJ no fue llenada correctamente, revise sus datos.</span>
                     <ul class="ul-buttons">
                         <li>
                             <input type="button" value="Declarar" class="k-button btn-lg" onclick="previewDdjj()" />

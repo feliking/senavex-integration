@@ -1084,15 +1084,15 @@
     {**************************************Vista de la mercancia****************************************}
     ocultar('view_ddjj');
     function previewDdjj() {
+        $('#general_ddjj_warning').addClass('hidden');
         if(alta_ddjj.validate()){
             fillForm();
             cambiar('alta_ddjj_container','view_ddjj');
             if($('#observaciones_ddjj').length) $('#observaciones_ddjj').hide();
+        } else {
+            $('#general_ddjj_warning').removeClass('hidden');
         }
-        /*  else
-          {
-              $('#observaciones_ddjj').length)
-          }*/
+
     }
 
     {*********************************************tooltips ayudas*********************************************}

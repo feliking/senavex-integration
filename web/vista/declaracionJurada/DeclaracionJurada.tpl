@@ -608,7 +608,7 @@
         var acuerdo=$('#alta_ddjj input:radio[name="acuerdo"]:checked');
         $('#{$id}').find('.view_acuerdo_label').html(acuerdo.attr('data-acuerdo-descripcion')+' ('+acuerdo.attr('data-acuerdo-sigla')+')');
         var acuerdo_item=$('<div class="view_acuerdo_item"><div class="row-fluid"><label class="span2 ddjj-section-label">5.2 Clasificación Usada</label><div class="span3 ddjj-section-field view_acuerdo_item_partida"></div><label class="span2 ddjj-section-label">5.3 Subpartida Arancelaria</label><div class="span5 ddjj-section-field view_acuerdo_item_clacificacion"></div></div><div class="row-fluid"><label class="span3 ddjj-section-label">5.4 Descripción Arancel:</label><div class="span9 ddjj-section-field view_acuerdo_item_descripcion"></div></div></div>');    $('#view_acuerdo_container .view_acuerdo_item').remove();
-        if(data-acuerdo.attr('data-arancel')){
+        if(acuerdo.attr('data-arancel')){
             $.each(acuerdo.attr('data-arancel').split(','), function (index, value) {
                 if($('#denominacion_arancel_'+value).length) {
                     acuerdo_item.find('.view_acuerdo_item_partida').html($('#denominacion_arancel_' + value).text());
