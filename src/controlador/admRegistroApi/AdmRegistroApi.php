@@ -419,13 +419,13 @@ class AdmRegistroApi extends Principal {
     if($_REQUEST['tarea']=='ListarEmpresasApiPorEstado'){
             switch ($_REQUEST['tipo']) {
                 case 1:
-                    $tipo = "0,1";
+                    $tipo = "1";
                     break;
                 case 0:
                     $tipo = "9";
                     break;
                 case 2:
-                    $tipo = "4";
+                    $tipo = "2";
                     break;
                 case 3:
                     $tipo = "13";
@@ -643,9 +643,15 @@ class AdmRegistroApi extends Principal {
         $vista->assign('empresaRRLL', $rrll);
         $vista->assign("direccionRRLL",$direccionRRLL);
         $vista->assign('empresaApoderado', $apoderado);
-        $vista->display("admEmpresaApi/AsignacionRui.tpl"); 
+        $revi = $_REQUEST['revisar'];
+        if($revi == 1)
+            $vista->display("admEmpresaApi/AsignacionRui.tpl"); 
+        else
+            $vista->display("admEmpresaApi/RevisaRui.tpl");
         exit;
-        }
+    }
+
+
     if($_REQUEST['tarea']=='mostrarrui'){
             $hoy = date('Y-m-d H:i:s');
             $empresaImportador1 = new EmpresaImportador();

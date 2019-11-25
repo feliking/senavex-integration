@@ -181,6 +181,8 @@ class AdmAutorizacionPrevia extends Principal {
             $autorizacionPrevia = new AutorizacionPrevia();
             $autorizacionPrevia->setId_empresa_importador($_SESSION['id_empresa']);
             $autorizacionPrevia->setEstado($_REQUEST['id_estado']);
+            $fecha_comite = '2019-10-04';  //TODO MODIFICAR FECHA PARA COMITES
+            $autorizacionPrevia->setFecha_registro($fecha_comite);  
             $sqlAutorizacionPrevia = new SQLAutorizacionPrevia();
 
             $autorizacionPrevia=$sqlAutorizacionPrevia->getListarAPxEmpresa($autorizacionPrevia);

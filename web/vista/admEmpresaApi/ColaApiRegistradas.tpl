@@ -4,11 +4,11 @@
     </div>
 </div>
 <div class="row-fluid  form" >
-    <div id="admision" class="fadein"></div>
+    <div id="admisiona" class="fadein"></div>
 </div>    
  <script>
 {literal} 
-var grid3 =  $("#admision").kendoGrid({
+var grid3 =  $("#admisiona").kendoGrid({
     dataSource: {
         transport: {
             read: {
@@ -16,7 +16,7 @@ var grid3 =  $("#admision").kendoGrid({
                dataType: "json"
             }
         },
-        pageSize: 10
+        pageSize: 30
     },
     filterable: {
         extra: false,
@@ -38,56 +38,55 @@ var grid3 =  $("#admision").kendoGrid({
         pageSizes: true,
         buttonCount: 10
     },
-    change: cambiarceldasadmision,
+    change: cambiarceldasadmisiona,
     columns: [
         { field: "razonsocial", title: "Razon Social", width: '41%', },
         { field: "nit", title: "Nit", width: '14%',},
         { field: "padron", title: "Padron Importador",filterable: false, width: '41%', }
     ]
 });
-var registroadmision=0;
-function cambiarceldasadmision()
+var registroadmisiona=0;
+function cambiarceldasadmisiona()
 {  
-    var gridadmision = $("#admision").data("kendoGrid");
+    
+    var gridadmision = $("#admisiona").data("kendoGrid");
     var row = gridadmision.select();
     var data = gridadmision.dataItem(row);
-    if(registroadmision==data.id_empresa)
+    if(registroadmisiona==data.id_empresa)
     {   
-       if(data.estado=='0' || data.estado=='1' || data.estado=='4' || data.estado=='6' || data.estado=='14') 
+       if(data.estado=='0' || data.estado=='1' || data.estado=='2') 
        {
-            cerraractualizartab({/literal}data.razonsocial{literal},'admRegistroApi','asignacionrui&id_empresa='+data.id_empresa+'&revisar=1');
-       }
+            cerraractualizartab({/literal}data.razonsocial{literal},'admRegistroApi','asignacionrui&id_empresa='+data.id_empresa+'&revisar='+data.estado);
+       }     
     }
     else
     {
-        registroadmision=data.id_empresa;
+        registroadmisiona=data.id_empresa;
     }
 }
-var estadosadmision = [
+var estadosadmisiona = [
     { text: "Empresas Nuevas", value: "1" },
-    //{ text: "Empresas Observadas", value: "0" },
+    { text: "Empresas con RUI", value: "2" }
     //{ text: "Modificacion", value: "2" },
-    //{ text: "Modificacion Observada", value: "3" },
-    //{ text: "Renovación", value: "4" },
-    //{ text: "Renovación Observada", value: "5" }
+
 ];
 var dropDown3 = $("#menuempresasadmitidas").kendoDropDownList({
     dataTextField: "text",
     dataValueField: "value",
-    dataSource: estadosadmision,
+    dataSource: estadosadmisiona,
     index: "1",
     change : function (e) {
-        var grid = $("#admision").data("kendoGrid");
+        var grid = $("#admisiona").data("kendoGrid");
         
         var dataadmision= new kendo.data.DataSource({
             transport: {
                 read: {
-                    url: "index.php?opcion=admEmpresa&tarea=ListarEmpresasPorEstado&tipo="+this.value(),
+                    url: "index.php?opcion=admRegistroApi&tarea=ListarEmpresasApiPorEstado&tipo="+this.value(),
                    dataType: "json"
                 }
             }
             ,
-        pageSize: 10
+        pageSize: 30
         });
 
         grid.setDataSource(dataadmision);

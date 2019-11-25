@@ -21,7 +21,7 @@ class SQLAutorizacionPrevia {
     }  
 
     public function getListarAPxEmpresa(AutorizacionPrevia $autorizacionPrevia) {
-        return $autorizacionPrevia->findAll('id_empresa_importador = ? order by id_autorizacion_previa desc ', $autorizacionPrevia->getId_empresa_importador());
+        return $autorizacionPrevia->findAll('id_empresa_importador = ? AND fecha_registro > ? order by id_autorizacion_previa desc ', $autorizacionPrevia->getId_empresa_importador(), $autorizacionPrevia->getFecha_registro());
     }
 
     public function getListarAprobadas(AutorizacionPrevia $autorizacionPrevia) {
