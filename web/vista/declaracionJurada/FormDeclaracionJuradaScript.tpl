@@ -396,7 +396,7 @@
             } });
             $('#ddjj_acuerdo_copy').html($(this).attr('data-acuerdo-descripcion'));
 
-            $('.total-valor-label').html("Total % Sobrevalor "+$(this).attr('data-valor-descripcion')+':');
+            // $('.total-valor-label').html("Total % Sobrevalor "+$(this).attr('data-valor-descripcion')+':');
             ddjj_id_acuerdo=$(this).attr('value');
             refreshNormas(ddjj_id_acuerdo);
 
