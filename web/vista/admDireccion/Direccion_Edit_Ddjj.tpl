@@ -7,13 +7,13 @@
             <div name="cobro_direccion_{$de_id}" id="cobro_direccion_{$de_id}">
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="Seleccione tipo de via.">?</span>(*) Calle/Av./Plaza/Otro
+                        {*<span class="tooltip" title="Seleccione tipo de via.">?</span>*}(*) Calle/Av./Plaza/Otro
                     </div>
                     <div class="span2 " >
                         <input style="width:100%;" id="ed_tc_{$de_id}" name="ed_tc_{$de_id}" placeholder="Calle/Av/Plaza/Otro" required validationMessage="Seleccione un Tipo">
                     </div>
                     <div class="span3 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>(*) Nombre Calle/Av./Plaza/Otro
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}(*) Nombre Calle/Av./Plaza/Otro
                     </div>
                     <div class="span4 " >
                         <input type="text" required class="k-textbox " name="ed_ntc_{$de_id}" id="ed_ntc_{$de_id}" placeholder="Nombre Calle/Av./Plaza/Otro" required validationMessage="Nombre de la Calle/Av/Otro">
@@ -22,19 +22,19 @@
 
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Núm. de Domicilio
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Núm. de Domicilio
                     </div>
                     <div class="span1" >
                         <input type="text" class="k-textbox " placeholder="S/N" {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_numero_domicilio_{$de_id}" name="ed_numero_domicilio_{$de_id}" placeholder="Núm de Domicilio" validationMessage="Ingrese un numero de Domicílio válido">
                     </div>
                     <div class="span4 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Nombre del Edificio
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Nombre del Edificio
                     </div>
                     <div class="span3 " >
                         <input type="text" class="k-textbox "  id="ed_nombre_edificio_{$de_id}" placeholder="Nombre del Edificio" name="ed_nombre_edificio_{$de_id}" >
                     </div>
                     <div class="span1 parametro" id="text_ed_piso_{$de_id}" name="text_ed_piso_{$de_id}">
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Piso
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Piso
                     </div>
                     <div class="span1 " >
                         <input type="text"  class="k-textbox " {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_piso_{$de_id}" name="ed_piso_{$de_id}" placeholder="# Piso" validationMessage="Ingrese Número de Piso">
@@ -43,13 +43,13 @@
 
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Dpto/Oficina/Local
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Dpto/Oficina/Local
                     </div>
                     <div class="span2 " >
                         <input style="width:100%;" name="ed_td_{$de_id}" id="ed_td_{$de_id}">
                     </div>
                     <div class="span3 parametro" id="text_ed_ntd_{$de_id}" name="text_ed_ntd_{$de_id}">
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Núm. Dpto/Oficina/Local
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Núm. Dpto/Oficina/Local
                     </div>
                     <div class="span2 " >
                         <input type="text"  class="k-textbox " id="ed_ntd_{$de_id}" name="ed_ntd_{$de_id}"  placeholder="Núm DPTO" validationMessage="Ingrese Número de Dpto/Oficina/Local">
@@ -58,13 +58,13 @@
 
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>(*) Zona/Barrio/Otro
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}(*) Zona/Barrio/Otro
                     </div>
                     <div class="span2 " >
                         <input  style="width:100%;" name="ed_tz_{$de_id}" id="ed_tz_{$de_id}" placeholder="Zona/Barrio/Otro" required validationMessage="seleccione una Opción">
                     </div>
                     <div class="span3 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>(*) Nombre Zona/Barrio/Otro
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}(*) Nombre Zona/Barrio/Otro
                     </div>
                     <div class="span3 " >
                         <input type="text"  class="k-textbox "  id="ed_ntz_{$de_id}" name="ed_ntz_{$de_id}" required placeholder="Nombre de Zona/Barrio/Otro" validationMessage="Ingrese Nombre de Zona/Barrio/Otro">
@@ -73,13 +73,13 @@
 
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>(*) Departamento
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}(*) Departamento
                     </div>
                     <div class="span2 " >
                         <input style="width:100%;" required name="ed_dpto_{$de_id}" id="ed_dpto_{$de_id}" placeholder="Departamento" required validationMessage="Seleccione Departamento">
                     </div>
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>(*) Municipio
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}(*) Municipio
                     </div>
                     <div class="span3 " id="div_ed_municipio_{$de_id}" >
                         <input style="width:100%;" required name="ed_municipio_{$de_id}" required id="ed_municipio_{$de_id}" placeholder="Municipio" required validationMessage="Seleccione Municipio">
@@ -89,22 +89,22 @@
             <div name="libre_direccion_{$de_id}" id="libre_direccion_{$de_id}">    
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                       <span class="tooltip" title="direccion descriptiva.">?</span>Teléfono Fijo
+                       {*<span class="tooltip" title="direccion descriptiva.">?</span>*}(*) Teléfono Fijo
                     </div>
                     <div class="span2 " >
-                        <input type="text"  class="k-textbox " {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_tfijo_{$de_id}" name="ed_tfijo_{$de_id}" placeholder="Teléfono Fijo" validationMessage="Ingrese un numero de telefono válido">
+                        <input type="text"  class="k-textbox " maxlength="15" {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_tfijo_{$de_id}" name="ed_tfijo_{$de_id}" placeholder="Teléfono Fijo" validationMessage="Ingrese un numero de telefono válido">
                     </div> 
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Teléfono Celular
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Teléfono Celular
                     </div>
                     <div class="span2 " >
-                        <input type="text"  class="k-textbox " {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_tcel_{$de_id}" name="ed_tcel_{$de_id}" placeholder="Teléfono Celular" validationMessage="Ingrese un numero de telefono válido">
+                        <input type="text"  class="k-textbox " maxlength="15" {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_tcel_{$de_id}" name="ed_tcel_{$de_id}" placeholder="Teléfono Celular" validationMessage="Ingrese un numero de telefono válido">
                     </div> 
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Teléfono Fax
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Teléfono Fax
                     </div>
                     <div class="span2 " >
-                        <input type="text"  class="k-textbox " {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_tfax_{$de_id}" name="ed_tfax_{$de_id}" placeholder="Numero de FAX" validationMessage="Ingrese un numero de FAX válido">
+                        <input type="text"  class="k-textbox " maxlength="15" {literal} pattern="[1-9][0-9]{0,}"{/literal} id="ed_tfax_{$de_id}" name="ed_tfax_{$de_id}" placeholder="Numero de FAX" validationMessage="Ingrese un numero de FAX válido">
                     </div> 
                 </div>
 
@@ -118,7 +118,7 @@
 
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                        <span class="tooltip" title="direccion descriptiva.">?</span>Dirección Descriptiva
+                        {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Dirección Descriptiva
                     </div>  
                     <div class="span9 " >
                         <input type="text"  class="k-textbox "  id="ed_dir_desc_{$de_id}" name="ed_dir_desc_{$de_id}" placeholder="Direccion Descriptiva. Ej: Edificio de color beige, frente al supermercado...">
@@ -126,7 +126,7 @@
                 </div>
                 <div class="row-fluid " >
                     <div class="span2 parametro" >
-                        Persona de Contacto:
+                       (*) Persona de Contacto:
                     </div>
                     <div class="span9 " >
                         <input type="text"  class="k-textbox "  id="ed_contacto_{$de_id}" name="ed_contacto_{$de_id}" placeholder="Persona de contacto"  required validationMessage="Ingrese la persona de contacto"/>

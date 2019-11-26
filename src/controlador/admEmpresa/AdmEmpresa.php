@@ -2058,8 +2058,10 @@ class AdmEmpresa extends Principal {
           $direccion= new Direccion();
           $direccion->setId_direccion($datos->getId_direccion());
           $direccion = $sqldireccion->getDireccionByID($direccion);
-          $strJson .= '{"id_direccion":"' . $direccion->getId_direccion() .
-            '","direccion":"'.$direccion->getNombre_zona_barrio().'"},';
+          $strJson .= '{"id_direccion":' . json_encode($direccion->getId_direccion()) .
+            ',"direccion":'.json_encode($direccion->getNombre_zona_barrio()).
+            ',"contacto":'.json_encode($datos->getPersona_contacto()).
+            ',"telefono":'.json_encode($direccion->getTelefono_fijo()).'},';
           $selected='';
         }
         $strJson = substr($strJson, 0, strlen($strJson) - 1);
@@ -2067,6 +2069,7 @@ class AdmEmpresa extends Principal {
         echo ']';
         exit;
       }
+
         if($_REQUEST['tarea']=='estadoEmpresas')//empresas su ruex y su estado
         {
             //me envias en empresasruex

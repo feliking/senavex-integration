@@ -116,12 +116,12 @@
     <div class="row-fluid  form">
         <div class="span5">
             <label class="ddjj-section-label">
-                Se necesita un visita de Verificación?
+                Se necesita una visita de Verificación?
                 <input type="radio" name="verificacion" value="true"> Si
                 <input type="radio" name="verificacion" value="false" checked="true"> No
             </label>
-            <label id='verificacion-estricta' class="ddjj-section-label fadein">
-                Se necesita un visita de Verificación previa a la emisión de la DDJJ?
+            <label id='verificacion-estricta' class="ddjj-section-label fadein hidden">
+                Se necesita una visita de Verificación previa a la emisión de la DDJJ?
                 <input type="radio" name="verificacion_estricta" value="true" > Si
                 <input type="radio" name="verificacion_estricta" value="false" checked="true"> No
             </label>

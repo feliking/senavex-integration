@@ -45,8 +45,7 @@
 
             <section>
                 <h2>II. DATOS DEL PRODUCTOR</h2>
-                {if $edition || $ddjj->comercializador}
-                    <div id="view_productor">
+                    <div id="view_productor" {if !($edition || $ddjj->comercializador)}style="display: none" {/if}>
                         <section class="ddjj-section" >
                             <table class="ddjj-table">
                                 <thead><tr><th>2.1 Nombre o Razón Social del Productor</th><th>2.2 Domicilio Legal</th><th>2.3 Repr. Legal</th><th>2.4 CI o NIT</th><th>2.5 Teléfono y/o N° de celular</th><th>2.6 Precio Venta al Exportador en $us</th><th>2.7 Unidad de Medida</th><th>2.8 Cap. Producción Mensual</th><th>2.9 Dirección de Fábrica</th></tr></thead>
@@ -68,8 +67,7 @@
                             </table>
                         </section>
                     </div>
-                {else}
-                    <div id="ddjj_fabrica">
+                    <div id="ddjj_fabrica" {if $edition || $ddjj->comercializador}style="display: none" {/if}>
                         <section class="ddjj-section" >
                             <div class="row-fluid form">
                                 <label class="span4 ddjj-section-label">2.1 Dirección de la Planta de Producción o fábrica:</label>
@@ -85,7 +83,6 @@
                             </div>
                         </section>
                     </div>
-                {/if}
             </section>
 
 
@@ -168,13 +165,14 @@
                 <label class="span12 ddjj-section-label">
                     4.1 La mercancía es utilizada en ferias o muestras.</label>
                 <div class="span3 ddjj-section-field">
-                    <div id="view_muestra" class="row-fluid form "></div>
-                    {if $ddjj->muestra===true}
-                        SI
-                    {/if}
-                    {if $ddjj->muestra===false}
-                        NO
-                    {/if}
+                    <div id="view_muestra" class="row-fluid form ">
+                        {if $ddjj->muestra===true}
+                            SI
+                        {/if}
+                        {if $ddjj->muestra===false}
+                            NO
+                        {/if}
+                    </div>
                 </div>
             </section>
             <h2>V. ACUERDO COMERCIAL O SISTEMA GENERALIZADO DE PREFERENCIAS</h2>
@@ -603,7 +601,18 @@
         if($('#alta_ddjj #complemento_criterio_origen').val()) $('#{$id} #view_complemento').html($('#alta_ddjj #complemento_criterio_origen').val());
         else  $('#{$id} #view_complemento').html('');
 
-
+        var  fabrica_selected = $("#combo_fabricas").data("kendoComboBox").select();
+        console.log();
+        if(fabrica_selected !=-1){
+            $('#ddjj_fabrica').removeClass('none');
+            $('#view_fabrica').html(fabrica_object.direccion);
+            $('#view_fabrica_ciudad').html(fabrica_object.ciudad);
+            $('#view_fabrica_contacto').html(fabrica_object.contacto);
+            $('#view_fabrica_telefono').html(fabrica_object.telefono);
+        }
+        else{
+            $('#ddjj_fabrica').addClass('none');
+        }
 
         var acuerdo=$('#alta_ddjj input:radio[name="acuerdo"]:checked');
         $('#{$id}').find('.view_acuerdo_label').html(acuerdo.attr('data-acuerdo-descripcion')+' ('+acuerdo.attr('data-acuerdo-sigla')+')');
@@ -626,17 +635,7 @@
             var tabla_data=generateTableHtml(tabla_comercializadores,totalPercentage());
             $('#{$id} #view_productor .ddjj-table').html('').append(tabla_data.head).append(tabla_data.body);
 
-            var  fabrica_selected = $("#combo_fabricas").data("kendoComboBox").select();
-            if(fabrica_selected !=-1){
-                $('#ddjj_fabrica').removeClass('none');
-                $('#{$id} #view_fabrica').html(fabrica_object.direccion);
-                $('#{$id} #view_fabrica_ciudad').html(fabrica_object.ciudad);
-                $('#{$id} #view_fabrica_contacto').html(fabrica_object.contacto);
-                $('#{$id} #view_fabrica_telefono').html(fabrica_object.telefono);
-            }
-            else{
-                $('#ddjj_fabrica').addClass('none');
-            }
+            $('#ddjj_fabrica').addClass('none');
         }
 
         if(tabla_insumosnacionales.dataSource.total()==0) $('#{$id} #view_insumos_nacionales').hide();

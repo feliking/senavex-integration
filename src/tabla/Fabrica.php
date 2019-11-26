@@ -99,6 +99,20 @@ class Fabrica extends Db {
         return $this->id_direccion;
     }
 
+    public function jsonSerialize()
+    {
+        return [
+          'id_fabrica' => $this->id_fabrica,
+          'id_empresa' => $this->id_empresa,
+          'ciudad' => $this->ciudad,
+          'direccion' => $this->direccion,
+          'numero_contacto' => $this->numero_contacto,
+          'persona_contacto' => $this->persona_contacto,
+          'id_direccion' => $this->id_direccion,
+        ];
+    }
+
+
 
 }
 

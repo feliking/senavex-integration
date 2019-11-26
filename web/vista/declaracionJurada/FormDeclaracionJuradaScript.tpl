@@ -486,6 +486,9 @@
                 }
             }
         },
+        valueTemplate: '<span class="selected-value">#: data.direccion #</span>-<span>#: data.contacto #</span>-<span>#: data.telefono #</span>',
+        template: '<span >#: data.direccion # - #: data.contacto # - #: data.telefono #</span>',
+        height: 400,
         change : function (e) {
             if (this.value() && this.selectedIndex === -1) {
                 this.text('');

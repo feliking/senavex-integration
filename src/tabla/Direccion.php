@@ -192,6 +192,29 @@ class Direccion extends Db {
         $this->direccion_descriptiva = $direccion_descriptiva;
     }
 
+    public function jsonSerialize()
+    {
+        return [
+          'id_direccion_tipo' => $this->id_direccion_tipo,
+          'id_direccion_tipo_calle' => $this->id_direccion_tipo_calle,
+          'nombre_direccion_tipo_calle' => $this->nombre_direccion_tipo_calle,
+          'numero_domicilio' => $this->numero_domicilio,
+          'nombre_edificio' => $this->nombre_edificio,
+          'piso' => $this->piso,
+          'id_direccion_tipo_ubicacion_edificio' => $this->id_direccion_tipo_ubicacion_edificio,
+          'numero_dpto_oficina' => $this->numero_dpto_oficina,
+          'id_direccion_tipo_zona' => $this->id_direccion_tipo_zona,
+          'nombre_zona_barrio' => $this->nombre_zona_barrio,
+          'id_departamento' => $this->id_departamento,
+          'id_municipio' => $this->id_municipio,
+          'telefono_fijo' => $this->telefono_fijo,
+          'telefono_celular' => $this->telefono_celular,
+          'telefono_fax' => $this->telefono_fax,
+          'email' => $this->email,
+          'direccion_descriptiva' => $this->direccion_descriptiva,
+
+        ];
+    }
 
 }
 

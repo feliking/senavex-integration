@@ -58,7 +58,7 @@
                             </ul>
                             <div class="row-fluid fadein"><input type="hidden" name="hiddenvalidatorpro" data-productor=""></div>
                         </div>
-                        <div class="tabla_fabrica_comer {if ($ddjj && !$ddjj->comercializador) || !$ddjj}none{/if} fadein">
+                        <div class="tabla_fabrica_comer {if ($ddjj && $ddjj->comercializador) || !$ddjj}none{/if} fadein">
                     <span class="ddjj-section-alert">
                         Nota.- En caso que la dirección de la planta de producción o fábrica sea distinto al domicilio fiscal, agregue la siguiente información.
                         </span>

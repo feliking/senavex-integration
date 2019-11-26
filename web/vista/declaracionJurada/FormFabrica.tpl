@@ -55,9 +55,16 @@
                 success: function (data) {
                     if(data!=0){
                         var fabrica = $('#ed_ntz_{$de_id}').val();
+                        var telefono = $('#ed_tfijo_{$de_id}').val();
+                        var contacto = $('#ed_contacto_{$de_id}').val();
                         fabricas.close();
                         var combobox = $("#combo_fabricas").data("kendoComboBox");
-                        combobox.dataSource.add({ "id_direccion": data,"direccion":fabrica });
+                        var value = { "id_direccion": data,
+                            "direccion":fabrica,
+                            "telefono":telefono,
+                            "contacto":contacto,
+                        };
+                        combobox.dataSource.add(value);
                         combobox.value(data);
                         $('#form_fabricas').find('input.k-textbox').val('');
                         fabrica_object={
