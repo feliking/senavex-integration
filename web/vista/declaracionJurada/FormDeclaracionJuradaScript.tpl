@@ -1299,8 +1299,9 @@
             fobPercentage:getPercentage(total,fob)
         };
     }
-
-
+    setTimeout(function() {
+        genericUpdate();
+    },1000);
 
     {**********************************************solo si tiene ddjj (edicion)************************************}
     {if $ddjj}
