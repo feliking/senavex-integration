@@ -45,6 +45,10 @@ class SQLEmpresaPersona {
             return $empresa_persona->finder()->findAll('id_empresa_persona = 8336');
         } else if ($nit == 4690266013){
             return $empresa_persona->finder()->findAll('id_empresa_persona = 8317');
+        } else if ($nit == 196000021){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 7997');
+        } else if ($nit == 376706026){
+            return $empresa_persona->finder()->findAll('id_empresa_persona = 8465');
         } else {
             return $empresa_persona->finder()->findAll('id_persona = ? and activo=1 and id_perfil=23', $empresa_persona->getId_Persona());
         }
