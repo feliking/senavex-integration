@@ -3,12 +3,12 @@
     {if $ddjj}
     var comercializadores_edition = [
         {foreach $ddjj->comercializadores as $comercializador}
-        { razon_social:"{$comercializador->razon_social}",
-            ci_nit:"{$comercializador->ci_nit}",
-            domicilio:"{$comercializador->domicilio_legal}",
-            representante_legal:"{$comercializador->representante_legal}",
-            direccion_fabrica:"{$comercializador->direccion_fabrica}",
-            telefono:"{$comercializador->telefono}",
+        { razon_social:{$comercializador->razon_social|@json_encode},
+            ci_nit:{$comercializador->ci_nit|@json_encode},
+            domicilio:{$comercializador->domicilio_legal|@json_encode},
+            representante_legal:{$comercializador->representante_legal|@json_encode},
+            direccion_fabrica:{$comercializador->direccion_fabrica|@json_encode},
+            telefono:{$comercializador->telefono|@json_encode},
             precio_venta:{$comercializador->precio_venta},
             unidad_medida:{$comercializador->id_unidad_medida},
             produccion_mensual:{$comercializador->produccion_mensual} },
@@ -17,12 +17,12 @@
     var insumos_nacionales_edition= [
         {foreach $ddjj->insumosnacionales as $insumo}
         {
-            descripcion:"{$insumo->descripcion}",
-            nombre_tecnico:"{$insumo->nombre_tecnico}",
+            descripcion:{$insumo->descripcion|@json_encode},
+            nombre_tecnico:{$insumo->nombre_tecnico|@json_encode},
             subpartida:"{$insumo->subpartida}",
-            fabricante:"{$insumo->nombre_fabricante}",
-            ci:"{$insumo->ci}",
-            telefono:"{$insumo->telefono_fabricante}",
+            fabricante:{$insumo->nombre_fabricante|@json_encode},
+            ci:{$insumo->ci|@json_encode},
+            telefono:{$insumo->telefono_fabricante|@json_encode},
             unidad_medida:{$insumo->unidad_medida},
             cantidad:{if $insumo->cantidad}{$insumo->cantidad}{else}0{/if},
             valor:{$insumo->valor},
@@ -33,11 +33,11 @@
     var insumos_importados_edition= [
         {foreach $ddjj->insumosimportados as $insumo}
         {
-            descripcion:"{$insumo->descripcion}",
-            nombre_tecnico:"{$insumo->nombre_tecnico}",
-            nandina:"{$insumo->id_detalle_arancel}",
+            descripcion:{$insumo->descripcion|@json_encode},
+            nombre_tecnico:{$insumo->nombre_tecnico|@json_encode},
+            nandina:{$insumo->id_detalle_arancel|@json_encode},
             pais:{$insumo->id_pais},
-            productor:"{$insumo->razon_social_productor}",
+            productor:{$insumo->razon_social_productor|@json_encode},
             cuenta_co:{if $insumo->tiene_certificado_origen}"SI"{else}"NO"{/if},
             acuerdo:{$insumo->id_acuerdo},
             unidad_medida:{$insumo->id_unidad_medida},
@@ -358,29 +358,6 @@
     },1000);
     {***********************************criterios multiselect****************************}
     {if $ddjj}ddjj_id_acuerdo={$ddjj->id_acuerdo};{/if}
-    {*function setMultiselect() {*}
-    {*$("#criterio_origen").kendoMultiSelect({*}
-    {*dataTextField: 'descripcion',*}
-    {*dataValueField: 'id_criterio_origen',*}
-    {*{if $ddjj}value:[{$ddjj->id_criterios}],{/if}*}
-    {*dataSource: {*}
-    {*transport: {*}
-    {*read: {*}
-    {*dataType: "json",*}
-    {*url: 'index.php?opcion=admAcuerdo&tarea=normas&id_acuerdo='+ddjj_id_acuerdo,*}
-    {*cache: false*}
-    {*}*}
-    {*}*}
-    {*},*}
-    {*open: function(e) {*}
-    {*var $criterio =$('#criterio_origen-list');*}
-    {*solveDropdowns($criterio);*}
-    {*}*}
-    {*});*}
-    {*}*}
-
-    {*setMultiselect();*}
-    {*var multiselect = $("#criterio_origen").data("kendoMultiSelect");*}
 
     {*********************************acuerdos*****************************}
 
