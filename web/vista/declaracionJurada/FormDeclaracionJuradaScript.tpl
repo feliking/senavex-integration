@@ -47,7 +47,6 @@
         },
         {/foreach}
     ];
-    listarDeclaracione
     {/if}
     {***********************************to uppercase***************************}
     $('#alta_ddjj .k-textbox').on('input', function(evt) {
