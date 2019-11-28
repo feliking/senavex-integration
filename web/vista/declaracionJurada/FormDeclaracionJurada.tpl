@@ -82,7 +82,7 @@
                             </label>
                             <div class="span9 ddjj-input">
                                 <input type="text" class="k-textbox skip-restriccion"  name="denominacion_comercial" id="denominacion_comercial"
-                                       required validationMessage="Por favor ingrese la Denomincacion Comercial" {if $ddjj && $ddjj->denominacion_comercial}value="{$ddjj->denominacion_comercial}"{/if}/>
+                                       required validationMessage="Por favor ingrese la Denomincacion Comercial" {if $ddjj && $ddjj->denominacion_comercial}value={$ddjj->denominacion_comercial|@json_encode}{/if}/>
                             </div>
                         </div>
                         <div class="row-fluid form">
@@ -91,7 +91,7 @@
                             </label>
                             <div class="span9 ddjj-input" >
                                 <input type="text" class="k-textbox" name="aplicacion" id="aplicacion"
-                                       required validationMessage="Por favor ingrese sus Usos y Aplicaciones" {if $ddjj && $ddjj->aplicacion}value="{$ddjj->aplicacion}"{/if}/>
+                                       required validationMessage="Por favor ingrese sus Usos y Aplicaciones" {if $ddjj && $ddjj->aplicacion}value={$ddjj->aplicacion|@json_encode}{/if}/>
                             </div>
                         </div>
                         <div class="row-fluid form">
@@ -109,7 +109,7 @@
                             <div class="span8 ddjj-input" >
                                 <input type="text" class="k-textbox" name="caracteristicas" id="caracteristicas"
 {*                                       required validationMessage="Por favor las caracteristicas técnicas del producto" *}
-                                       {if $ddjj && $ddjj->caracteristicas}value="{$ddjj->caracteristicas}"{/if}/>
+                                       {if $ddjj && $ddjj->caracteristicas}value={$ddjj->caracteristicas|@json_encode}{/if}/>
                             </div>
                         </div>
                         <div class="row-fluid form">
@@ -134,7 +134,7 @@
                                 </label>
                                 <div class="span3 ddjj-input" >
                                     <input type="number" id="produccion_mensual_mercancia" name="produccion_mensual_mercancia" min="0" maxlength="20"
-                                           value="{if $ddjj && $ddjj->produccion_mensual}{$ddjj->produccion_mensual}{/if}"/>
+                                           value={if $ddjj && $ddjj->produccion_mensual}{$ddjj->produccion_mensual|@json_encode}{/if}/>
                                     <div class="row-fluid fadein"><input type="hidden" name="hiddenvalidatortpmp" data-produccionmensual></div>
                                 </div>
                                 <label class="span3 ddjj-section-label">
