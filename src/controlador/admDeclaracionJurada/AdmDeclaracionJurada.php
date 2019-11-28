@@ -395,11 +395,11 @@ class AdmDeclaracionJurada extends Principal {
         $partida->setId_partida($datos->getId_partida());
         $partida = $sqlpartida->getById($partida);
         $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-          '","denominacion_comercial":"' . $datos->getDenominacion_comercial() .
-          '","acuerdo":"' . $datos->acuerdo->getSigla() .
-          '","denominacion":"' . ($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
-          '","codigo":"' . $datos->getCorrelativo_ddjj() .
-          '","fecha_vencimiento":"' . substr($datos->getFecha_vencimiento(), 0, 11).
+          '","denominacion_comercial":' . json_encode($datos->getDenominacion_comercial()) .
+          ',"acuerdo":' . json_encode($datos->acuerdo->getSigla()) .
+          ',"denominacion":' . json_encode($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
+          ',"codigo":' . json_encode($datos->getCorrelativo_ddjj() ).
+          ',"fecha_vencimiento":"' . substr($datos->getFecha_vencimiento(), 0, 11).
           '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .'"},';
       }
 
