@@ -82,7 +82,7 @@
                             </label>
                             <div class="span9 ddjj-input">
                                 <input type="text" class="k-textbox skip-restriccion"  name="denominacion_comercial" id="denominacion_comercial"
-                                       required validationMessage="Por favor ingrese la Denomincacion Comercial" {if $ddjj && $ddjj->denominacion_comercial}value={$ddjj->denominacion_comercial|escape:"html"}{/if}/>
+                                       required validationMessage="Por favor ingrese la Denomincacion Comercial" {if $ddjj && $ddjj->denominacion_comercial}value="{$ddjj->denominacion_comercial|escape:"html"}"{/if}/>
                             </div>
                         </div>
                         <div class="row-fluid form">
