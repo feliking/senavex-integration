@@ -70,8 +70,6 @@ class Acuerdo extends Db {
 
     private $id_estado_acuerdo;
 
-    private $criterio_valor;
-
 
     public function setId_Acuerdo($id_acuerdo) {
         $this->id_acuerdo = $id_acuerdo;
@@ -146,12 +144,7 @@ class Acuerdo extends Db {
     public function getId_estado_acuerdo() {
         return $this->id_estado_acuerdo;
     }
-    public function getCriterio_valor(){
-        return $this->criterio_valor;
-    }
-    public function setCriterio_valor($criterio_valor){
-        $this->criterio_valor=$criterio_valor;
-    }
+
 }
 
 ?>

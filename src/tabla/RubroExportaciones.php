@@ -15,7 +15,6 @@ class RubroExportaciones extends Db {
 
     private $id_rubro_exportaciones;
     private $descripcion;
-    private $criterio_valor;
     
     public function setId_rubro_exportaciones($id_rubro_exportaciones) {
         $this->id_rubro_exportaciones = $id_rubro_exportaciones;
@@ -30,12 +29,7 @@ class RubroExportaciones extends Db {
     public function getDescripcion() {
         return $this->descripcion;
     }
-    public function getCriterio_valor(){
-        return $this->criterio_valor;
-    }
-    function setCriterio_valor($criterio_valor){
-        $this->criterio_valor=$criterio_valor;
-    }
+
     
 }
 

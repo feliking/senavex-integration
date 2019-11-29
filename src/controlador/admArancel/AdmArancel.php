@@ -165,7 +165,6 @@ class AdmArancel extends Principal {
                       $partida->setDenominacion($funcionesGenerales->validateStringArancel($object->denominacion));
                       $partida->setReo($funcionesGenerales->validateStringArancel($object->reo));
                       $partida->setUnidad_medida($funcionesGenerales->validateStringArancel($object->unidad_medida ));
-                      $partida->setCriterio_valor($funcionesGenerales->validateNumberArancel($object->criterio_valor));
                       $partida->setActivo(TRUE);
 //                      if(property_exists($object,'columna1'))$partida->setColumna1((string)str_replace('"', '\"', $object->columna1));
 //                      if(property_exists($object,'columna2'))$partida->setColumna2((string)str_replace('"', '\"', $object->columna2));

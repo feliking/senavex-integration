@@ -15,7 +15,6 @@ class ZonasEspeciales extends Db {
 
     public $id_zonas_especiales;
     private $denominacion;
-    private $criterio_valor;
 
     public function setId_zonas_especiales($id_zonas_especiales) {
         $this->id_zonas_especiales = $id_zonas_especiales;
@@ -28,12 +27,6 @@ class ZonasEspeciales extends Db {
     }
     public function getDenominacion() {
         return $this->denominacion;
-    }
-    public function getCriterio_valor(){
-        return $this->criterio_valor;
-    }
-    function setCriterio_valor($criterio_valor){
-        $this->criterio_valor=$criterio_valor;
     }
 }
 ?>

@@ -22,7 +22,6 @@ class Partida extends Db {
     private $reo;
     private $unidad_medida;
     private $activo;
-    private $criterio_valor;
     private $columna1;
     private $columna2;
     private $columna3;
@@ -69,12 +68,6 @@ class Partida extends Db {
     }
     public function getActivo() {
         return $this->activo;
-    }
-    public function getCriterio_valor(){
-        return $this->criterio_valor;
-    }
-    function setCriterio_valor($criterio_valor){
-        $this->criterio_valor=$criterio_valor;
     }
     public function setColumna1($columna1) {
         $this->columna1 = $columna1;

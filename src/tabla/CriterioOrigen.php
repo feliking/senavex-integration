@@ -20,7 +20,6 @@ class CriterioOrigen extends Db implements JsonSerializable {
     private $parrafo;
     private $orden;
     private $activo;
-    private $criterio_valor;
 
 
     public function setId_criterio_origen($id_criterio_origen) {
@@ -68,12 +67,6 @@ class CriterioOrigen extends Db implements JsonSerializable {
     }
     public function getActivo() {
         return $this->activo;
-    }
-    public function getCriterio_Valor(){
-        return $this->criterio_valor;
-    }
-    function setCriterio_Valor($criterio_valor){
-        $this->criterio_valor=$criterio_valor;
     }
 
     public function jsonSerialize() {
