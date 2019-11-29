@@ -28,7 +28,8 @@ include_once(PATH_TABLA . DS . 'Departamento.php');
 ///////////////// adicionado la tabla y el modelo de AUTORIZACION PREVIA DETALLE ////////////////
 include_once(PATH_MODELO . DS . 'SQLAutorizacionPreviaDetalle.php');
 include_once(PATH_TABLA . DS . 'AutorizacionPreviaDetalle.php');
-
+include_once(PATH_TABLA . DS . 'ComiteApi.php');
+include_once(PATH_MODELO . DS . 'SQLComiteApi.php');
 
 
 //DATOS PARA LA AUTORIZACION PREVIA
@@ -77,8 +78,11 @@ $sqlAautorizacionPreviaDetalle = new SQLAutorizacionPreviaDetalle();
 $autorizacionPreviaDetalle->setId_autorizacion_previa($autorizacionPrevia->getId_autorizacion_previa());
 $autorizacionPreviaDetalles=$sqlAautorizacionPreviaDetalle->getAutorizacionPreviaDetallexIDAutorizacionPrevia($autorizacionPreviaDetalle);
 
+$comiteApi = new ComiteApi();
+$sqlComiteApi = new SQLComiteApi();
+$comiteApi->setId_comite_api($autorizacionPrevia->getId_comite_api());
+$comiteApi = $sqlComiteApi->getComitePorID($comiteApi);
 
-//$autorizacionPreviaDetalle=$sqlAautorizacionPreviaDetalle->getListarAPDxAutorizacionPrevia($autorizacionPrevia->getId_autorizacion_previa());
 
 
 ////////////////////////////////////////////////////-----------------------------------------------------------------------------------------------------
@@ -222,7 +226,7 @@ $pdf->SetFont('Arial','',4);
 //--------------
 $pdf->SetXY(20, 30);
 $pdf->SetFont('Times','B',10);
-$pdf->Cell(185,6,utf8_decode('API - 19/010/'.$autorizacionPrevia->getNro_serie()),2,0,'R'); 
+$pdf->Cell(185,6,utf8_decode('API - 19/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie()),2,0,'R'); 
 
 
 
