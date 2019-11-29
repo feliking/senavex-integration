@@ -101,7 +101,7 @@ var partidasSource= new kendo.data.DataSource({
             activo:"{$partida->activo}",
             unidad_medida:"{if $partida->unidad_medida}{$partida->unidad_medida}{/if}" ,
             reo:"{if $partida->reo}{$partida->reo}{/if}",
-            criterio_valor:{if $partida->criterio_valor}{$partida->criterio_valor}{else}0{/if}
+            {*criterio_valor:{if $partida->criterio_valor}{$partida->criterio_valor}{else}0{/if}*}
         },
         {/foreach}
     ],
@@ -114,9 +114,9 @@ var partidasSource= new kendo.data.DataSource({
                 unidad_medida: "unidad_medida",
                 activo:"activo",
                 reo:"reo",
-                criterio_valor: {
-                    type: "number"
-                }
+                // criterio_valor: {
+                //     type: "number"
+                // }
             }
         }
     },
@@ -150,7 +150,7 @@ var partidas=$("#tabla_partidas").kendoGrid({
         { field: "denominacion", title: "Denominación"},
         { field: "unidad_medida", title: "Unidad de Medida"},
         { field: "reo", title: "REO"},
-        { field: "criterio_valor",title:"Valor de Riesgo"},
+        // { field: "criterio_valor",title:"Valor de Riesgo"},
         { field: "activo", hidden:true},
         { command:[
             { name:"Eliminar",
