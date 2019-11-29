@@ -453,11 +453,11 @@ class AdmDeclaracionJurada extends Principal {
         $partida = $sqlpartida->getById($partida);
 
         $strJson .= '{"id_ddjj":"' . $resultado[$i]["id_ddjj"] .
-          '","descripcion_comercial":"' . $resultado[$i]["denominacion_comercial"] .
-          '","denominacion":"' . ($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
-          '","caracteristicas":"' . $resultado[$i]["caracteristicas"] .
+          '","descripcion_comercial":' . json_encode($resultado[$i]["denominacion_comercial"]) .
+          ',"denominacion":' . json_encode($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
+          ',"caracteristicas":' . json_encode($resultado[$i]["caracteristicas"]) .
 //          '","fecha_limite_revision":"' . substr($resultado[$i]["fecha_limite_revision"], 0, 11) .
-          '","fecha_registro":"' . substr($resultado[$i]["fecha_registro"], 0, 11) .
+          ',"fecha_registro":"' . substr($resultado[$i]["fecha_registro"], 0, 11) .
           '","estadoddjj":"' . $resultado[$i]["estadoddjj"] . '"},';
 
         $selected='';
