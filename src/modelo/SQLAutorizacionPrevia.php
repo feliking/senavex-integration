@@ -25,7 +25,7 @@ class SQLAutorizacionPrevia {
     }
 
     public function getListarAprobadas(AutorizacionPrevia $autorizacionPrevia) {
-        return $autorizacionPrevia->findAll('estado = 1 order by id_autorizacion_previa asc ');
+        return $autorizacionPrevia->findAll('estado = 1 order by id_autorizacion_previa desc ');
     }
 
     public function getListarAPsinDetalle(AutorizacionPrevia $autorizacionPrevia) {

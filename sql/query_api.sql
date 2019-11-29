@@ -8,5 +8,8 @@ INSERT INTO comite_api(id_estado_comite, fecha_inicio, fecha_fin, id_usuario_reg
 INSERT INTO comite_api(id_estado_comite, fecha_inicio, fecha_fin, id_usuario_registro, fecha_creacion_registro) VALUES (0, '2019-10-15', '2019-11-01', 3222, '2019-10-25');
 
 --adicionar Q en la BD para el rol 22
+ALTER TABLE comite_api ADD COLUMN nro_comite integer;
+ALTER TABLE comite_api ADD COLUMN fecha_emision date;
+ALTER TABLE autorizacion_previa ADD COLUMN id_comite_api integer;
 
 

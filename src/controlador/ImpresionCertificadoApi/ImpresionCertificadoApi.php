@@ -27,6 +27,8 @@ include_once(PATH_TABLA . DS . 'Pais.php');
 ///////////////// adicionado la tabla y el modelo de departamento ////////////////
 include_once(PATH_MODELO . DS . 'SQLDepartamento.php');
 include_once(PATH_TABLA . DS . 'Departamento.php');
+include_once(PATH_TABLA . DS . 'ComiteApi.php');
+include_once(PATH_MODELO . DS . 'SQLComiteApi.php');
 
 
 
@@ -87,6 +89,11 @@ $rubro_exportaciones = new RubroExportaciones();
 $sqlRubro_exportaciones = new SQLRubroExportaciones();
 $rubros=explode(",",$empresaImportador->getIdrubro_exportaciones());
 
+$comiteApi = new ComiteApi();
+$sqlComiteApi = new SQLComiteApi();
+$comiteApi->setId_comite_api($autorizacionPrevia->getId_comite_api());
+$comiteApi = $sqlComiteApi->getComitePorID($comiteApi);
+
 ////////////////////////////////////////////////////-----------------------------------------------------------------------------------------------------
 
 class PDF extends FPDF
@@ -116,6 +123,12 @@ class PDF extends FPDF
         $autorizacionPreviaDetalle=$sqlAutorizacionPreviaDetalle->getAutorizacionDetallePorId($autorizacionPreviaDetalle);
         $nro_registros = count($autorizacionPreviaDetalle);
 
+        $comiteApi = new ComiteApi();
+        $sqlComiteApi = new SQLComiteApi();
+        $comiteApi->setId_comite_api($autorizacionPrevia->getId_comite_api());
+        $comiteApi = $sqlComiteApi->getComitePorID($comiteApi);
+
+
         $persona = new Persona();
         $sqlPersona= new SQLPersona();
         $persona->setId_persona($empresaImportador->getId_representante_legal());
@@ -131,7 +144,7 @@ class PDF extends FPDF
         ////////// NRO CERTIFICADO///////////////
         $this->SetFont('Arial','B',12);
         $this->SetXY(162, 52);
-        $this->Cell(45,10,'API-19/010/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
+        $this->Cell(45,10,'API-19/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
         $this->SetFont('Arial','B',22);
         $this->SetXY(163, 50);
       
@@ -158,8 +171,12 @@ class PDF extends FPDF
             $codigo='RUI valido:';
         }
 
+        $date = $comiteApi->getFecha_emision();
+        $mod_date = strtotime($date."+ 60 days");
+        $date_registro = strtotime($date);
 
-        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO ITEMS: '.$nro_fojas.' -FECHA DE EMISION: 05/11/19 -FECHA DE VENCIMIENTO: 04/01/20   ';//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
+
+        $codigo.=' -EMPRESA:'.$empresaImportador->getRazon_social().' -NIT: '.$empresaImportador->getNit().' -REPRESENTANTE LEGAL: '.$persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno().' -CANTIDAD: '.$autorizacionPrevia->getCantidad_total().' -PESO: '.$autorizacionPrevia->getPeso_total().' -VALOR FOB: '.$autorizacionPrevia->getValor_total().' -NRO ITEMS: '.$nro_fojas.' -FECHA DE EMISION: '.date("d/m/y",$date_registro).' -FECHA DE VENCIMIENTO: '.date("d/m/y",$mod_date);//.' Codigo de Seguridad:'.$empresaImportador->getCodigo_seguridad();
         //$codigo.=utf8_decode(' Fecha de impresión:').date("Y-m-d");
         //$codigo.=' http://vortex.senavex.gob.bo/ruex.php?datos='.$empresaImportador->getCodigo_seguridad();
         $aleato = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 15);
@@ -387,7 +404,8 @@ $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Fecha de emisión   '),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
-$date = '11/05/2019';
+
+$date = $comiteApi->getFecha_emision();
 //$date = $autorizacionPrevia->getFecha_registro();
 $date_registro = strtotime($date);
 $pdf->MultiCell(140,6,date("d/m/y",$date_registro),'','L');

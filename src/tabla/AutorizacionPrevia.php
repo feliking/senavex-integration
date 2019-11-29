@@ -33,6 +33,7 @@ private $cantidad_total;
 private $peso_total;
 private $valor_total;
 private $nro_serie;
+private $id_comite_api;
 
 
 
@@ -79,6 +80,9 @@ function setValor_total($valor_total) { $this->valor_total = $valor_total; }
 function getValor_total() { return $this->valor_total; }
 function setNro_serie($nro_serie) { $this->nro_serie = $nro_serie; }
 function getNro_serie() { return $this->nro_serie; }
+function setId_comite_api($id_comite_api) { $this->id_comite_api = $id_comite_api; }
+function getId_comite_api() { return $this->id_comite_api; }
+
 
     
 }
