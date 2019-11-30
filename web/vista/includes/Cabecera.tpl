@@ -1,4 +1,4 @@
- <div class="cuerpo" >	   
+ <div class="cuerpo" >
     <div class="container-fluid" >
         <div class="row-fluid " >
                     <div class="span12 hidden-phone" ></div> 
@@ -38,8 +38,8 @@
                             <a href="" onclick="return false;"><img class="bottom" src="styles/img/menuB.png"  /> </a>
                             <a href="" onclick="menu();return false;" ><img class="top" src="styles/img/menuA.png"/> </a>
                             <div id="flecha" class="flecha fadein"></div>
-                            <div id="menu" class="menu fadein" ><!--este es el menu -->  
-                                {foreach from=$opciones_persona item=opcion}<!--empezamos a mostrar las opciones--> 
+                            <div id="menu" class="menu fadein" ><!--este es el menu -->
+                                {foreach from=$opciones_persona item=opcion}<!--empezamos a mostrar las opciones-->
                                     {if $opcion=='a'}
                                         <!--div id="a"  class="widget menucf"onclick="anadir('Registro de Empresas','admEmpresa','revisarempresatemporal')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_Registro_B.png"  /></a>
@@ -92,7 +92,7 @@
                                         </div>
                                     {/if}
                                     {if $opcion=='g'}
-                                        <div id="g" class="widget menucf" onclick="anadir('Declaración Jurada','admDeclaracionJurada','')" >
+                                        <div id="g" class="widget menucf" onclick="anadir('Declaración Jurada','admDeclaracionJurada','declaracionesJuradas')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_ddjj_B.png"  /> </a>
                                             <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_ddjj.png" /> </a>
                                             <span>Declaración Jurada</span>
@@ -120,10 +120,10 @@
                                         </div>
                                     {/if}
                                     {if $opcion=='k'}
-                                        <div id="k" class="widget menucf" onclick="anadir('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada')" >
+                                        <div id="k" class="widget menucf" onclick="anadir('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada')" >
                                             <a href="" onclick="return false;"><img  class="menubottom" src="styles/img/Ico_ddjj_B.png"  /> </a>
                                             <a href=""onclick="return false;"><img  class="menutop" src="styles/img/Ico_ddjj.png" /> </a>
-                                            <span>Declaraciones Juradas {$ddjjporrevisar}</span>
+                                            <span>Revisiones DDJJ</span>
                                             {if $ddjjporrevisar != "0"}<em class="cajaterminosavisomenu"><div class='terminosavisomenu' id="ddjjporrevisar">{$ddjjporrevisar}</div></em>{else}
                                                 <em class="cajaterminosavisomenu"><div class='terminosavisomenu' id="ddjjporrevisar">{$ddjjporrevisar}</div></em><script>ocultar("ddjjporrevisar");</script>{/if}
                                         </div>
@@ -316,6 +316,44 @@
                                             <span>SOLICITUDES API</span>
                                         </div>
                                     {/if}
+                                {if $opcion=='A'}
+                                    <div class="widget menucf" onclick="anadir('Acuerdos','admAcuerdo','acuerdos')">
+                                        <div><img class="menubottom" src="styles/img/Ico_Registro_B.png"/></div>
+                                        <div><img class="menutop" src="styles/img/Ico_Registro.png"/></div>
+                                        <span>Acuerdos</span>
+                                    </div>
+                                {/if}
+                                {if $opcion=='B'}
+                                    <div class="widget menucf" onclick="anadir('Aranceles','admArancel','aranceles')">
+                                        <div><img class="menubottom" src="styles/img/Ico_Registro_B.png"/></div>
+                                        <div><img class="menutop" src="styles/img/Ico_Registro.png"/></div>
+                                        <span>Aranceles</span>
+                                    </div>
+                                {/if}
+                                {if $opcion=='E'}
+                                    <div class="widget menucf" onclick="anadir('Análisis de Riesgo','admAnalisisRiesgo','analisisContenido')">
+                                        <div><img class="menubottom" src="styles/img/Ico_Invent_B.png"/></div>
+                                        <div><img class="menutop" src="styles/img/Ico_Invent.png"/></div>
+                                        <span>Análisis de Riesgo</span>
+                                    </div>
+                                {/if}
+                                {if $opcion=='F'}
+                                    <div class="widget menucf" onclick="anadir('Verificaciones','admVerificaciones','verificaciones')">
+                                        <div><img class="menubottom" src="styles/img/Ico_MPerson_B.png"/></div>
+                                        <div><img class="menutop" src="styles/img/Ico_MPerson.png"/></div>
+                                        <span>Verificaciones</span>
+                                    </div>
+                                {/if}
+                                {if $opcion=='G'}
+                                    {*preguntamos si es la unidad legal o no*}
+                                    <div class="widget menucf"
+                                         onclick="{if $veSanciones}anadir('Registro Infracciones','admSancion','sanciones')
+                                                      {else}infracciones.listarInfracciones(){/if}">
+                                        <div><img class="menubottom" src="styles/img/Ico_ddjj_B.png"/></div>
+                                        <div><img class="menutop" src="styles/img/Ico_ddjj.png"/></div>
+                                        <span>Registro Infracciones</span>
+                                    </div>
+                                {/if}
                                 {/foreach}
                                 <script>
                                     {literal}

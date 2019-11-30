@@ -343,3 +343,9 @@ function ayuda(controlador)
     varayuda=controlador;
 }
 </script>
+{*libriries to be added*}
+<script src="styles/js-personales/dropzone.min.js"></script>
+<script src="styles/js-personales/papaparse.min.js"></script>
+<script src="styles/js-personales/jquery.auto-complete.min.js"></script>
+<script src="styles/js-personales/verificacion.js"></script>
+<script src="styles/js-personales/infracciones.js"></script>

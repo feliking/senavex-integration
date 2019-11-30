@@ -7,13 +7,16 @@
  */
 
 class SQLInsumosImportados {
-    
-    public function getBuscarInsumosPorDdjj(InsumosImportados $insumos_importados) {
-        return $insumos_importados->finder()->with_pais()->with_acuerdo()->with_unidad_medida()->findAll('id_ddjj = '.$insumos_importados->getId_DDJJ());
-    }
-    
-    public function setGuardarInsumosImportados(InsumosImportados $insumos_importados){
-        return $insumos_importados->save();
-    }
+
+  public function getBuscarInsumosPorDdjj(InsumosImportados $insumos_importados) {
+    return $insumos_importados->finder()->with_pais()->with_acuerdo()->with_unidad_medida()->findAll('id_ddjj = '.$insumos_importados->getId_DDJJ());
+  }
+
+  public function setGuardarInsumosImportados(InsumosImportados $insumos_importados){
+    return $insumos_importados->save();
+  }
+  public function setEliminarInsumosImportadosPorDdjj(InsumosImportados $insumos_importados){
+    return $insumos_importados->deleteAll('id_ddjj = '.$insumos_importados->getId_DDJJ());
+  }
 
 }

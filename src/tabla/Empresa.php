@@ -140,6 +140,9 @@ class Empresa extends Db {
     /** FK|INT|-|0|F|F|Codigo de Seguridad|-|20|F **/
     private $codigo_seguridad;
     private $encuesta;
+    private $ultima_revision;
+
+
     public function setId_empresa($id_empresa) {
         $this->id_empresa = $id_empresa;
     }
@@ -503,6 +506,11 @@ function getEncuesta() {
     function setEncuesta($encuesta) {
         $this->encuesta = $encuesta;
     }
- 
+    function getUltima_revision(){
+        return $this->ultima_revision;
+    }
+    function setUltima_revision($ultima_revision){
+        $this->ultima_revision=$ultima_revision;
+    }
 }
 ?>

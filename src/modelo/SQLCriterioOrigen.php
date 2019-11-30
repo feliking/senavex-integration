@@ -20,8 +20,13 @@ class SQLCriterioOrigen {
         return $criterio_origen->finder()->find('id_acuerdo = ? and obligatorio = ? ', array($criterio_origen->getId_Acuerdo(), $criterio_origen->getObligatorio()));
     }
     
-    public function getListarCriterioPorAcuerdo(CriterioOrigen $criterio_origen) {
-        return $criterio_origen->finder()->findAll('id_acuerdo = ?', $criterio_origen->getId_Acuerdo());
-    }    
-    
+//    public function getListarCriterioPorAcuerdo(CriterioOrigen $criterio_origen) {
+//        return $criterio_origen->finder()->findAll('id_acuerdo = ?', $criterio_origen->getId_Acuerdo());
+//    }
+
+  public function getListarCriterioPorAcuerdo(CriterioOrigen $criterio_origen) {
+    return $criterio_origen->finder()->findAll('id_acuerdo = ? and activo=true order by orden', $criterio_origen->getId_Acuerdo());
+  }
+
+
 }

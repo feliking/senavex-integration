@@ -284,6 +284,9 @@ class Persona extends Db {
     function setExpedido($expedido) {
         $this->expedido = $expedido;
     }
+    function getNombreCompleto(){
+        return $this->nombres.' '.$this->paterno.' '.$this->materno;
+    }
 }
 
 ?>

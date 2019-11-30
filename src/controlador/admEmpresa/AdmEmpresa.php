@@ -996,7 +996,7 @@ class AdmEmpresa extends Principal {
 
             //------------------------preguntamos si es cafetalera
             $vista->assign('ico', $empresarevision->getIco());
-            $personal=  AdmPersona::listarPersonasPorEmpresa($empresarevision->getId_empresa());
+            $personal=  AdmPersona::listarFPersonasPorEmpresa($empresarevision->getId_empresa());
             $vista->assign('personal', $personal);
             $vista->assign('empresa', $empresarevision);
             $vista->assign('modificaciones',explode(",",$empresarevision->getModificaciones()));
@@ -2043,6 +2043,33 @@ class AdmEmpresa extends Principal {
             exit;
         }
         //---------------------------------------------------------------esta parte es para el bloqueo de empresas------------------------------
+      //-------------------------- Tareas para las Fábricas -----------------
+      if($_REQUEST['tarea']=='listarDirecciones'){
+        $sqldireccion = new SQLDireccion();
+
+        $fabrica=new Fabrica();
+        $sqlFabrica =new SQLFabrica();
+
+        $fabrica->setId_Empresa($_SESSION["id_empresa"]);
+        $resultado = $sqlFabrica->getListarFabricasporEmpresa($fabrica);
+        $strJson = '';
+        echo '[';
+        foreach ($resultado as $datos){
+          $direccion= new Direccion();
+          $direccion->setId_direccion($datos->getId_direccion());
+          $direccion = $sqldireccion->getDireccionByID($direccion);
+          $strJson .= '{"id_direccion":' . json_encode($direccion->getId_direccion()) .
+            ',"direccion":'.json_encode($direccion->getNombre_zona_barrio()).
+            ',"contacto":'.json_encode($datos->getPersona_contacto()).
+            ',"telefono":'.json_encode($direccion->getTelefono_fijo()).'},';
+          $selected='';
+        }
+        $strJson = substr($strJson, 0, strlen($strJson) - 1);
+        echo $strJson;
+        echo ']';
+        exit;
+      }
+
         if($_REQUEST['tarea']=='estadoEmpresas')//empresas su ruex y su estado
         {
             //me envias en empresasruex
@@ -2508,4 +2535,15 @@ class AdmEmpresa extends Principal {
             //echo '  123  ' . $resp .'  lau  ';*/
             curl_close($curl);
     }
+  public function AsignaUltimaVerificacion($id_empresa){
+    $empresa = new Empresa();
+    $sqlEmpresa = new SQLEmpresa();
+
+    $empresa->setId_empresa($id_empresa);
+    $empresa=$sqlEmpresa->getEmpresaPorID($empresa);
+
+    $empresa->setUltima_revision(date("Y-m-d")); // asignamos la fecha de la ultima visita de verificacion realizada  a la empresa
+
+    $empresa->save();
+  }
 }

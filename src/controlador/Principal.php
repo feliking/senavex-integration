@@ -20,10 +20,8 @@ class Principal {
     }
     if($_SESSION['rol']=='REGISTRO_IMPORTADOR')
     {
-        
         include_once( PATH_CONTROLADOR . DS . 'admImportTemporal' . DS . 'AdmImportTemporal.php');
             $AdmImportTemporal = new AdmImportTemporal();
-             
     }
     if($_SESSION['rol']=='root')
     {  

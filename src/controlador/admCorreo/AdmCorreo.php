@@ -265,7 +265,7 @@ class AdmCorreo extends Principal {
         //-------------------------------Variables
         
         $asunto = 'Plataforma Virtual del Senavex - '.$tipocorreo->getAsunto();
-        $remitente = "soporte@senavex.gob.bo"; //Aqu&iacute va la direcci&oacute;n de quien env&iacutea el email.
+        $remitente = EMAIL;
         
         $mensaje = '';
         //-----------------for sending an attachment of contract---------------
@@ -988,9 +988,9 @@ class AdmCorreo extends Principal {
                 $para = $parametro1;//correo
                 $mensaje .=
                 '<p style=\"height:100px;color:black;\">
-                <b>'.$parametro2.', te damos la bienvenida a nuestra plataforma virtual </b>
+                <b>'.$parametro2.', </b>
                 <br/><br/>
-                    Te informamos que ha sido revisada una Declaraci&oacute;n Jurada para que pueda aprobarla en la plataforma del SENAVEX.
+                    Te informamos que ha sido revisada una Declaraci&oacute;n Jurada la cual entro en vigencia, por favor cancelar la Declaración en un plazo de 15 dias.
                     <br/>
                     Saludos<br/>
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
@@ -1000,9 +1000,9 @@ class AdmCorreo extends Principal {
                 $para = $parametro1;//correo
                 $mensaje .=
                 '<p style=\"height:100px;color:black;\">
-                <b>'.$parametro2.', te damos la bienvenida a nuestra plataforma virtual </b>
+                <b>'.$parametro2.',</b>
                 <br/><br/>
-                    Te informamos que sido RECHAZADA una Declaraci&oacute;n Jurada en la plataforma del SENAVEX. Se le insinúa revisar y realizar las correcciones si en caso se requiere.
+                    Le informamos que su DDJJ ha sido rechazada en la plataforma virtual del SENAVEX. Por lo que, debe revisar y analizar dichas observaciones.
                     <br/>
                     Saludos<br/>
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
@@ -1121,6 +1121,53 @@ class AdmCorreo extends Principal {
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
                  </p>';
                 break;
+          case 50:
+            $para = $parametro1;
+            $mensaje .=
+              '<p style=\"height:100px;color:black;\">
+                <b>Estimado Usuario </b>
+                <br/> Le informamos que la declaracion jurada para el producto "'.$parametro2.'" a sido rechazada , por el siguiente motivo:
+                <br/>'.$parametro3.'
+                <br/> Por favor registre la Declaracion Jurada nuevamente con las correcciones pertinentes.
+                <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>
+                 </p><br/>';
+            break;
+          case 51:
+            $para = $parametro1;
+            $mensaje .=
+              '<p style=\"height:100px;color:black;\">
+                <b>Estimado Administrador</b>
+                <br/> Te informamos que el sistema a creado la visita de verificación Nro. "'.$parametro2.'" asegurate de que este asignada a algun personal.<br>
+                <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>
+                 </p><br/>';
+            break;
+          case 52:
+            $para = $parametro1;//correo
+            $mensaje .=
+              '<p style=\"height:100px;color:black;\">
+                <b>'.$parametro2.', </b>
+                <br/><br/>
+                    Te informamos que entro tu Declaraci&oacute;n Jurada fue facturada satisfactoriamente.
+                    <br/>
+                    Saludos<br/>
+                <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>
+                 </p>';
+            break;
+          case 53: // Se modifico la Declaracion Jurada
+            $para = $parametro1;//correo
+            $vista = Principal::getVistaInstance();
+            $vista->assign('nombre',$parametro2);
+            $vista->assign('codigo',$parametro4->getCorrelativo_ddjj());
+            $mensaje .= $vista->fetch("correos/reasignarCorreo.tpl");
+
+            break;
+          case 54: // ddjj a visita de verificacion
+            $para = $parametro1;//correo
+            $vista = Principal::getVistaInstance();
+            $vista->assign('nombre',$parametro2);
+            $mensaje .= $vista->fetch("correos/visitaVerificacionCorreo.tpl");
+
+            break;
         }
         
         $mensaje .='<a href="http://vortex.senavex.gob.bo/index.php">http://vortex.senavex.gob.bo</a>';

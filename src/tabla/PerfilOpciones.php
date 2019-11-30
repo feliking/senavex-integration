@@ -59,8 +59,6 @@ class PerfilOpciones extends Db {
         $this->activo = $activo;
     }
 
-
-
 }
 
 ?>

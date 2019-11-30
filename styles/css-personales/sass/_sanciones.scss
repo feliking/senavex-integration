@@ -1,0 +1,271 @@
+.section-sancion{
+  margin-bottom: 20px;
+  border-bottom: 1px solid $form-line-border;
+}
+.label-sancion{
+  color: $ddjj-primary;
+}
+.label-block{
+  display: block;
+  text-align: left;
+  margin-bottom: 10px;
+}
+.sanciones-flujo{
+  background: $sanciones-gray;
+  display: flex;
+  justify-content: space-between;
+  padding:9px 9px;
+  border-radius: 30px;
+  position: relative;
+  margin: 5px 0;
+  li.flujo-item{
+    display: inline-block;
+    position: relative;
+    cursor: not-allowed;
+    z-index: 1;
+    span{
+      width:35px;
+      height: 35px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px $sanciones-degrade;
+      color: $sanciones-degrade;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      display: table-cell;
+      vertical-align: middle;
+      animation-timing-function: ease-out;
+    }
+    &.activo{
+      span{
+        animation: animacion-item 0.2s;
+        animation-fill-mode: forwards;
+      }
+    }
+    &.selectable{
+      cursor: pointer;
+    }
+  }
+  li.sanciones-barra {
+    background: $sanciones-degrade;
+    position:relative;
+    display: block;
+    height: 5px;
+    margin-top: 14px;
+    flex-grow: 1;
+    .barra{
+      width: 0px;
+      height: 100%;
+      background: $ddjj-primary;
+      animation-timing-function: ease-out;
+    }
+    &.activo{
+      .barra{
+        animation: animacion-barra 0.4s;
+        animation-fill-mode: forwards;
+      }
+    }
+  }
+}
+.sanciones-tooltip{
+  &:hover{
+    .sanciones-tooltip-contenedor{
+      display: block;
+    }
+  }
+}
+.sanciones-tooltip-contenedor{
+  width: 180px;
+  text-align: left;
+  position: absolute;
+  bottom: 40px;
+  left: -75px;
+  font-size: 16px;
+  font-family: "Questrial",sans-serif;
+   display: none;
+  .contenido-tooltip {
+    background: $tooltip-background;
+    color: black;
+    max-width: 180px;
+    border: 1px solid $tooltip-border;
+    border-radius: 0;
+    opacity: 1;
+    text-align: center;
+    font-size: 12px;
+    padding: 10px;
+    color: $tooltip-color;
+    border-radius: 6px;
+  }
+  .flecha-tooltip{
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 5.5px 0 5.5px;
+    border-color: $tooltip-border transparent transparent transparent;
+    margin: auto;
+  }
+}
+@keyframes animacion-item {
+  to {
+    box-shadow: 0 0 0 5px $ddjj-primary;
+    color: $ddjj-primary;
+  }
+}
+@keyframes animacion-barra {
+  to {
+    width: 100%;
+  }
+}
+
+.sancion-slider-wrapper{
+  position: relative;
+  box-shadow: 0px 0px 5px;
+  width: 100%;
+  white-space: nowrap;
+  margin: 10px auto;
+  overflow: hidden;
+  .sancion-slider{
+    margin: 0;
+    padding: 0;
+    transition: all 1s !important;
+    width: 100%;
+    li{
+      margin: 0;
+      padding: 10px;
+      display: inline-block;
+      box-sizing: border-box;
+      vertical-align: top;
+      position: relative;
+    }
+  }
+}
+.seguimiento-titulo{
+  text-align: center;
+  margin: 0 0 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $ddjj-primary;
+}
+
+.seguimiento-notificacion{
+  background: $tooltip-background;
+  border: 1px solid $tooltip-border;
+  color: $tooltip-color;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin: 20px;
+  &.danger{
+    background: $danger-background;
+    border: 1px solid $danger-border;
+    color: $danger-color;
+  }
+}
+.sequimiento-edicion{
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 15px;
+}
+#botones-reporte{
+  border-bottom: 1px solid $ddjj-primary;
+  margin-bottom: 10px;
+}
+#reportes-filtros{
+  margin-bottom: 20px;
+  .header-menu-item{
+    margin: 0 5px;
+    width: 31%;
+  }
+}
+.sanciones-filtro{
+  width: 100%;
+  font-size: 12px;
+}
+
+.reportes-table{
+  margin: auto;
+  border-spacing: 0.5rem;
+  border-collapse: collapse;
+  &.fluid{
+    width: 100%;
+  }
+  th{
+    background: $ddjj-primary-degrade;
+    font-weight: bold;
+  }
+  td,th{
+    border: 1px solid $ddjj-primary;
+    padding: 0.5rem;
+    font-size: 13px;
+  }
+  td{
+    color:$ddjj-secondary;
+    text-transform: uppercase;
+  }
+  &.double-row{
+    tr{
+      &:nth-child(4n), &:nth-child(4n-1) {
+        background: $ddjj-tertiary;
+      }
+    }
+  }
+  &.simple-row{
+    tr{
+      &:nth-child(2n-1){
+        background: $ddjj-tertiary;
+      }
+    }
+  }
+  &.titulos-bold{
+    tr:first-child, tr:last-child{
+      font-weight: bold;
+    }
+  }
+
+  td.accordion-table{
+    padding: 0;
+  }
+  .accordion-table-toogle{
+    width: 30px;
+  }
+}
+
+.accordion-table{
+  transition: height 1s  !important;
+  overflow: hidden !important;
+  padding: 0;
+  &.close{
+    height: 0px;
+  }
+}
+.accordion-table-toogle{
+  padding: 10px 10px 10px 5px;
+  background: $ddjj-primary-degrade;
+  border: 1px solid $ddjj-primary;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+  text-align: center;
+  &:after{
+    content:"";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 7.5px 0 7.5px;
+    border-color: $ddjj-primary transparent transparent transparent;
+    display: inline-block;
+  }
+
+}
+.resumen-seguiemiento{
+  margin: 5px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid $ddjj-primary;
+  .resumen-seguiemiento-title{
+    color: $ddjj-primary;
+    margin-bottom: 5px;
+  }
+  [class*="span"]{
+    min-height: 15px;
+  }
+}
