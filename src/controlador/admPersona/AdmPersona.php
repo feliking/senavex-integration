@@ -551,8 +551,9 @@ class AdmPersona extends Principal {
         $campousuario=trim(mb_strtoupper($_REQUEST['nombres']));
         $campousuario=$campousuario[0].$_REQUEST['customers'];
         $clave=substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 8);
-     
-        switch ($_REQUEST['idperfil']) 
+
+
+        switch ($_REQUEST['idperfil'])
         {
             //----------------exportadires----------------------
             case 3:  
@@ -598,6 +599,11 @@ class AdmPersona extends Principal {
                 if(AdmCorreo::enviarCorreo($_REQUEST['email'],$_REQUEST['nombres'],'',$campousuario,$clave,23)) $swenvio=true;
                 else $swenvio=false;
                 break;//es un para firmas
+
+            case 25:
+              if(AdmCorreo::enviarCorreo($_REQUEST['email'],$_REQUEST['nombres'],'',$campousuario,$clave,55)) $swenvio=true;
+              else $swenvio=false;
+
         }
         //$swenvio = true;
         if($swenvio)//perguntamos si no es el de recojo de tramites

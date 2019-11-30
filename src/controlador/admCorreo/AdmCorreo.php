@@ -1168,6 +1168,18 @@ class AdmCorreo extends Principal {
             $mensaje .= $vista->fetch("correos/visitaVerificacionCorreo.tpl");
 
             break;
+          case 55:
+            $para = $parametro1;//correo
+            $mensaje .=
+              '<p style=\"height:100px;color:black;\">
+                <b>'.$parametro2.', te damos la bienvenida a nuestra plataforma virtual </b>
+                <br/><br/>
+                    Te informamos que se te asign&oacute; el perfil de Administrador de la UCO en la plataforma del SENAVEX.
+                    <br/>
+                    Saludos<br/>
+                <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
+                 </p>';
+            break;
         }
         
         $mensaje .='<a href="http://vortex.senavex.gob.bo/index.php">http://vortex.senavex.gob.bo</a>';
