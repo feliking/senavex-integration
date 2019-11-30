@@ -128,7 +128,7 @@
                             </div>
                         </div>
                         <div class="row-fluid form">
-                            <div class="tabla_comercializadores_datos_produccion {if ($ddjj && !$ddjj->comercializador) || !$ddjj}none{/if} fadein">
+                            <div class="tabla_comercializadores_datos_produccion {if ($ddjj && $ddjj->comercializador) || !$ddjj}none{/if} fadein">
                                 <label class="span3 ddjj-section-label">
                                     3.7 <span class="tooltip" title="Indicar la capacidad de producción mensual de la mercancía registrada.">?</span>Capacidad de producción mensual:
                                 </label>
@@ -209,7 +209,7 @@
                                 </div>
                             </div>
                         {/foreach}
-                        <input type="hidden" name="hiddenvalidatoracorp" data-arancelesacorp="" class="k-invalid" aria-invalid="true">
+                        <input type="hidden" id="idArancelesacorp" name="hiddenvalidatoracorp" data-arancelesacorp="" class="k-invalid" aria-invalid="true">
                     </section>
                     <h2>VI. COMPONENTES QUE FORMAN PARTE DE LA ESTRUCTURA DE LA MERCANCÍA</h2>
                     <section class="ddjj-section">

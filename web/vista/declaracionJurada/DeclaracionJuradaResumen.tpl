@@ -109,7 +109,7 @@
             <section  class="ddjj-section">
                 <div class="row-fluid">
                     <label class="span5 ddjj-section-label">
-                         Acuerdo Comercial o Sistema generalizado de Preferendcias
+                         Acuerdo Comercial o Sistema generalizado de Preferencias
                     </label>
                     <div class="span7 ddjj-section-field ">{$ddjj->acuerdo->descripcion} ({$ddjj->acuerdo->sigla})</div>
                 </div>

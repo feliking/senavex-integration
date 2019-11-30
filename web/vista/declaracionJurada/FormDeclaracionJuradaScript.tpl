@@ -387,18 +387,21 @@
     });
 
     function refreshNormas(id_acuerdo) {
-        $.ajax({
-            type: 'post',
-            url: 'index.php',
-            data: 'opcion=admAcuerdo&tarea=normas&id_acuerdo='+id_acuerdo,
-            success: function(data) {
-                data=JSON.parse(data);
-                $("#ddjj_normas").html('');
-                $.each(data, function( index, value ) {
-                    $("#ddjj_normas").append("<tr><td class='cell-120'>"+value['descripcion']+"</td><td>"+value['parrafo']+"</td></tr>");
-                });
-            }
-        });
+        if(typeof id_acuerdo !== "undefined") {
+            $.ajax({
+                type: 'post',
+                url: 'index.php',
+                data: 'opcion=admAcuerdo&tarea=normas&id_acuerdo='+id_acuerdo,
+                success: function(data) {
+                    data=JSON.parse(data);
+                    $("#ddjj_normas").html('');
+                    $.each(data, function( index, value ) {
+                        $("#ddjj_normas").append("<tr><td class='cell-120'>"+value['descripcion']+"</td><td>"+value['parrafo']+"</td></tr>");
+                    });
+                }
+            });
+        }
+
     }
     {********************************instancia de campos*********************************}
     $('input:radio[name="esComercializador"]').change(function () {
@@ -1033,9 +1036,11 @@
                     var acuerdoradio=$('input:radio[name="acuerdo"]:checked');
                     var arancelesvalidationflag=true;
                     if(acuerdoradio.length) {
-                        $.each(acuerdoradio.attr('data-arancel').split(","), function (index, value) {
-                            if ($('#descripcion_arancel_' + value).length && $('#descripcion_arancel_' + value).html().trim()=='') arancelesvalidationflag = false;
-                        });
+                        if(acuerdoradio.attr('data-arancel')){
+                            $.each(acuerdoradio.attr('data-arancel').split(","), function (index, value) {
+                                if ($('#descripcion_arancel_' + value).length && $('#descripcion_arancel_' + value).html().trim()=='') arancelesvalidationflag = false;
+                            });
+                        }
                         return arancelesvalidationflag;
 
                     }else{
@@ -1283,7 +1288,13 @@
     {if $ddjj}
 
     var radio_acuerdo_checked=$('input:radio[name="acuerdo"]:checked');
-    var aranceles=radio_acuerdo_checked.attr('data-arancel').split(",");
+    var aranceles = [];
+
+    if(radio_acuerdo_checked.length && radio_acuerdo_checked.attr('data-arancel')) {
+        aranceles= radio_acuerdo_checked.attr('data-arancel').split(",");
+    }
+
+
     $('[id^="ddjj_arancel_"]').hide();
     refreshNormas(radio_acuerdo_checked.attr('value'));
     aranceles.forEach(function(id) { if(id!=''){

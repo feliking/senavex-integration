@@ -178,13 +178,6 @@ class AdmDeclaracionJurada extends Principal {
       if($acuerdosVerificacion[1]) $vista->assign('acuerdoBloqueo',$acuerdosVerificacion[1]);
 
 
-      //********************* esta seccion incluye la regional a ser escojida***********
-      /*$regional = new Regional();
-      $sqlRegional = new SQLRegional();
-      $regionales = $sqlRegional->getListarRegionales($regional,FALSE);
-      $vista->assign('regionales',$regionales);
-      $vista->display("declaracionJurada/Regionales.tpl");*/
-      //********************************************************************************
 
       $vista->assign('representanteEmpresa',$representanteEmpresa);
       $vista->assign('unidadmedida', $unidad_medida);
