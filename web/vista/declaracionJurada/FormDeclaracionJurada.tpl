@@ -281,29 +281,31 @@
                             </div>
                             <div style="clear: both;"></div>
                         </div>
-                        <div class="row-fluid form">
-                            <label class="span6 ddjj-section-label">6.7 Costos de Logistica hasta Frontera Nacional (flete, seguro, carga, etc.)</label>
-                            <div class="ddjj-total">
-                                <span class="total-valor-label">Total % Sobrevalor:</span>
-                                <span id="costoFronterePercentage" class="ddjj-total-result">0</span>%
+                        <div id="idCostofob">
+                            <div class="row-fluid form">
+                                <label class="span6 ddjj-section-label">6.7 Costos de Logistica hasta Frontera Nacional (flete, seguro, carga, etc.)</label>
+                                <div class="ddjj-total">
+                                    <span class="total-valor-label">Total % Sobrevalor:</span>
+                                    <span id="costoFronterePercentage" class="ddjj-total-result">0</span>%
+                                </div>
+                                <div class="ddjj-total">
+                                    Total Valor ($us):
+                                    <div class="ddjj-total-input"><input id="costoFrontera" name="costoFontera" maxlength="20" {if $ddjj && $ddjj->valor_frontera}value="{$ddjj->valor_frontera}"{/if}/></div>
+                                </div>
+                                <div style="clear: both;"></div>
                             </div>
-                            <div class="ddjj-total">
-                                Total Valor ($us):
-                                <div class="ddjj-total-input"><input id="costoFrontera" name="costoFontera" maxlength="20" {if $ddjj && $ddjj->valor_frontera}value="{$ddjj->valor_frontera}"{/if}/></div>
+                            <div class="row-fluid form">
+                                <label class="span6 ddjj-section-label">6.8 Total Valor FOB por Producto: (Campor 6.8) = (Campo 6.6) + (Campo 6.7)</label>
+                                <div class="ddjj-total">
+                                    <span class="total-valor-label">Total % Sobrevalor:</span>
+                                    <span id="fobPercentage" class="ddjj-total-result">0</span>%
+                                </div>
+                                <div class="ddjj-total">
+                                    Total Valor ($us):<span id="fob" class="ddjj-total-result">0</span>
+                                </div>
+                                <div style="clear: both;"></div>
                             </div>
-                            <div style="clear: both;"></div>
                         </div>
-                        <div class="row-fluid form">
-                            <label class="span6 ddjj-section-label">6.8 Total Valor FOB por Producto: (Campor 6.8) = (Campo 6.6) + (Campo 6.7)</label>
-                            <div class="ddjj-total">
-                                <span class="total-valor-label">Total % Sobrevalor:</span>
-                                <span id="fobPercentage" class="ddjj-total-result">0</span>%
-                            </div>
-                            <div class="ddjj-total">
-                                Total Valor ($us):<span id="fob" class="ddjj-total-result">0</span>
-                            </div>
-                            <div style="clear: both;"></div>
-                        </div
                     </section>
                     <h2>VII. LA MERCANCIA ES PRODUCIDA EN ZONA FRANCA</h2>
                     <section class="ddjj-section">
@@ -335,17 +337,6 @@
                             </div>
                         </div>
                     </section>
-
-                    <!--table class="ddjj-table" style="visibility: hidden">
-                        <thead><tr><th> REO(campo opcional, se llena automaticamente al escojer la partida)</th></tr></thead>
-                        <tbody>
-                        <tr>
-                            <td id="ddjj_reo">
-                                $ddjj->reo}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table-->
 
                 </form>
                 {include file="declaracionJurada/dropzoneUploader.tpl"}

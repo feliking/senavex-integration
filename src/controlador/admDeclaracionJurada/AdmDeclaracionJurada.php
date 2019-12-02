@@ -289,9 +289,7 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
       $declaracion_jurada->setId_Persona($_SESSION["id_persona"]);
       $declaracion_jurada->setId_estado_ddjj(0);// status por Revisar
-      /*print_r($servicio_exportador);
-      echo $servicio_exportador->getId_servicio_exportador();
-      echo 'Laurex';*/
+
       $declaracion_jurada->setId_Servicio_Exportador($servicio_exportador->getId_servicio_exportador());
       $declaracion_jurada->setDenominacion_Comercial(strtoupper ($_REQUEST["denominacion_comercial"]));
       if(isset($_REQUEST["caracteristicas"]) && $_REQUEST["caracteristicas"] !='') $declaracion_jurada->setCaracteristicas(strtoupper ($_REQUEST["caracteristicas"]));
@@ -311,13 +309,14 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setSobrevalor_total_insumosimportados($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_total_insumosimportados"]));
       $declaracion_jurada->setValor_mano_obra($funcionesGenerales->setNumeric($_REQUEST["valor_mano_obra"]));
       $declaracion_jurada->setSobrevalor_mano_obra($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_mano_obra"]));
-      $declaracion_jurada->setValor_fob($funcionesGenerales->setNumeric($_REQUEST["valor_fob"]));
-      $declaracion_jurada->setSobrevalor_fob($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_fob"]));
       $declaracion_jurada->setValor_exw($funcionesGenerales->setNumeric($_REQUEST["valor_exw"]));
       $declaracion_jurada->setSobrevalor_exw($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_exw"]));
-      $declaracion_jurada->setValor_frontera($funcionesGenerales->setNumeric($_REQUEST["valor_frontera"]));
-      $declaracion_jurada->setSobrevalor_frontera($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_frontera"]));
-      //$declaracion_jurada->setId_regional($funcionesGenerales->setNumeric($_REQUEST["regional"]));
+
+      if(isset($_REQUEST["valor_fob"])) $declaracion_jurada->setValor_fob($funcionesGenerales->setNumeric($_REQUEST["valor_fob"]));
+      if(isset($_REQUEST["sobrevalor_fob"])) $declaracion_jurada->setSobrevalor_fob($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_fob"]));
+      if(isset($_REQUEST["valor_frontera"])) $declaracion_jurada->setValor_frontera($funcionesGenerales->setNumeric($_REQUEST["valor_frontera"]));
+      if(isset($_REQUEST["sobrevalor_frontera"])) $declaracion_jurada->setSobrevalor_frontera($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_frontera"]));
+
       //buscamos el ID DIRECCION DE EMPRESA
       $empresa = new Empresa();
       $sqlEmpresa = new SQLEmpresa();

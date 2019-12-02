@@ -311,26 +311,41 @@
                     </div>
                     <div style="clear: both;"></div>
                 </div>
-                <div class="row-fluid form">
-                    <label class="span6 ddjj-section-label">6.7 Costos de Logistica hasta Frontera Nacional (flete, seguro, carga, etc.)</label>
-                    <div class="ddjj-total">
-                        Total % sobre el valor:<div id="view_costoFronterePercentage" class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_frontera}%</div>
+
+                <div id="view_fobSeccion" class="{if ($ddjj && $ddjj->acuerdo->id_tipo_acuerdo == '2')}hidden{/if}">
+                    <div class="row-fluid form">
+                        <label class="span6 ddjj-section-label">6.7 Costos de Logistica hasta Frontera Nacional (flete,
+                            seguro, carga, etc.)</label>
+                        <div class="ddjj-total">
+                            Total % sobre el valor:
+                            <div id="view_costoFronterePercentage"
+                                 class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_frontera}%
+                            </div>
+                        </div>
+                        <div class="ddjj-total">
+                            Total Valor ($us):
+                            <div id="view_costoFrontere"
+                                 class="ddjj-total-input ddjj-section-field">{$ddjj->valor_frontera}</div>
+                        </div>
+                        <div style="clear: both;"></div>
                     </div>
-                    <div class="ddjj-total">
-                        Total Valor ($us): <div id="view_costoFrontere" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_frontera}</div>
+                    <div class="row-fluid form">
+                        <label class="span6 ddjj-section-label">6.8 Total Valor FOB por Producto: (Campo 6.8)= (Campo
+                            6.6) + (Campo 6.7)</label>
+                        <div class="ddjj-total">
+                            Total % sobre el valor:
+                            <div id="view_fobPercentage"
+                                 class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_fob}%
+                            </div>
+                        </div>
+                        <div class="ddjj-total">
+                            Total Valor ($us):
+                            <div id="view_fob" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_fob}</div>
+                        </div>
+                        <div style="clear: both;"></div>
                     </div>
-                    <div style="clear: both;"></div>
                 </div>
-                <div class="row-fluid form">
-                    <label class="span6 ddjj-section-label">6.8 Total Valor FOB por Producto: (Campo 6.8)= (Campo 6.6) + (Campo 6.7)</label>
-                    <div class="ddjj-total">
-                        Total % sobre el valor:<div id="view_fobPercentage" class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_fob}%</div>
-                    </div>
-                    <div class="ddjj-total">
-                        Total Valor ($us): <div id="view_fob" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_fob}</div>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div>
+
             </section>
             <h2>VII. LA MERCANCIA ES PRODUCIDA EN ZONA FRANCA</h2>
             <section class="ddjj-section">
@@ -510,16 +525,19 @@
             datos+='&valor_total_insumosimportados='+$("#alta_ddjj #totalValorII").html().trim();
             datos+='&sobrevalor_total_insumosimportados='+$("#alta_ddjj #totalSobrevalorII").html().trim();
             datos += '&id_partida=' + $('#alta_ddjj #ddjj_arancel').attr('id_partida');
-            //datos += '&reo=' + $('#alta_ddjj #ddjj_reo').html().trim();
             var values=genericUpdate();
             datos+='&sobrevalor_mano_obra='+values.manoObraPercentage;
             datos+='&valor_mano_obra='+values.manoObra;
-            datos+='&sobrevalor_fob='+values.fobPercentage;
-            datos+='&valor_fob='+values.fob;
             datos+='&sobrevalor_exw='+values.exwPercentage;
             datos+='&valor_exw='+values.exw;
-            datos+='&sobrevalor_frontera='+values.fronteraPercentage;
-            datos+='&valor_frontera='+values.frontera;
+
+            if(es_acuerdo){
+                datos+='&sobrevalor_fob='+values.fobPercentage;
+                datos+='&valor_fob='+values.fob;
+                datos+='&sobrevalor_frontera='+values.fronteraPercentage;
+                datos+='&valor_frontera='+values.frontera;
+            }
+
             var acuerdo=$('#alta_ddjj input:radio[name="acuerdo"]:checked');
             var id_partidas_acuerdo = [];
             if(acuerdo.attr('data-arancel')){
@@ -664,12 +682,18 @@
         $('#{$id} #view_totalEnFabricaPercentage').html(values.exwPercentage+'%');
         $('#{$id} #view_costoFrontere').html(kendo.toString(values.frontera, "n").split('.').join(""));
         $('#{$id} #view_costoFronterePercentage').html(values.fronteraPercentage+'%');
-        $('#{$id} #view_fob').html(kendo.toString(values.fob, "n").split('.').join(""));
-        $('#{$id} #view_fobPercentage').html(values.fobPercentage+'%');
+        if(es_acuerdo) {
+            $('#{$id} #view_fob').html(kendo.toString(values.fob, "n").split('.').join(""));
+            $('#{$id} #view_fobPercentage').html(values.fobPercentage+'%');
+            $('#{$id} #view_fobSeccion').show();
+        } else {
+            $('#{$id} #view_fobSeccion').hide();
+            $('#{$id} #view_fob').html('');
+            $('#{$id} #view_fobPercentage').html('');
+        }
 
 
-        //var zonas_especiales=$('#alta_ddjj input:radio[name="lista_elaboracion"]:checked');
-        //var acuerdo=$('#alta_ddjj input:radio[name="elaboracion_detalle"]:checked');
+
         $('#{$id} #view_elaboraciondetalle').html($('#alta_ddjj input:radio[name="lista_elaboracion"]:checked').val());
         if (($('#alta_ddjj input:radio[name="lista_elaboracion"]:checked').val())==1)
         {

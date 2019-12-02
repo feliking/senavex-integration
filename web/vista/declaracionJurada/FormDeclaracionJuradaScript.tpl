@@ -361,6 +361,7 @@
     {*********************************acuerdos*****************************}
 
     var ddjj_id_acuerdo=0;
+    var es_acuerdo = true;
     $('input:radio[name="acuerdo"]').change(function(){
         if ($(this).is(':checked')) {
 
@@ -377,14 +378,27 @@
             refreshNormas(ddjj_id_acuerdo);
 
             $('#ddjj_acuerdo_copy').html($(this).attr('data-acuerdo-descripcion'));
-        }
-        console.log($(this));
-        if($(this).attr('data-idtipo-acuerdo') === '2') {
-            $('#nota_aclaratoria_sgp').removeClass('hidden');
-        } else {
-            $('#nota_aclaratoria_sgp').addClass('hidden');
+            sgpConsiderations($(this));
+
         }
     });
+    function sgpConsiderations(acuerdoRadio) {
+        if(!acuerdoRadio.length) return;
+        if(acuerdoRadio.attr('data-idtipo-acuerdo') === '2') {
+            $('#nota_aclaratoria_sgp').removeClass('hidden');
+            $('#idCostofob').addClass('hidden');
+            es_acuerdo=false;
+        } else {
+            $('#nota_aclaratoria_sgp').addClass('hidden');
+            $('#idCostofob').removeClass('hidden');
+            es_acuerdo=true;
+        }
+        //actualiza la tabla y los porcentajes de el formulario de ddjj
+        genericUpdate();
+    }
+    setTimeout(function () {
+        sgpConsiderations($('input:radio[name="acuerdo"]:checked'));
+    }, 500);
 
     function refreshNormas(id_acuerdo) {
         if(typeof id_acuerdo !== "undefined") {
@@ -424,6 +438,7 @@
         }
     });
     $('#alta_ddjj #produccion_mensual_mercancia').kendoNumericTextBox({ format:"n" });
+
     $('#alta_ddjj #totalValorMO').kendoNumericTextBox({ format:"n4",
         min:0,
         decimals: 4,
@@ -635,6 +650,7 @@
             }
         }
     });
+
     $("#tabla_insumosnacionales").kendoGrid({
         dataSource: dataInsumosNacionales,
         editable: true,
@@ -1075,6 +1091,7 @@
             if($('#observaciones_ddjj').length) $('#observaciones_ddjj').hide();
         } else {
             $('#general_ddjj_warning').removeClass('hidden');
+
         }
 
     }
@@ -1224,10 +1241,13 @@
     {**********************************************total porcentaje********************************}
     function totalPercentage() {
         var total=0;
+
         total+= +refreshingTotal(tabla_insumosnacionales,'valor');
         total+= +refreshingTotal(tabla_insumosimportados,'valor');
         total+= +$('#totalValorMO').data("kendoNumericTextBox").value();
-        total+= +$('#costoFrontera').data("kendoNumericTextBox").value();
+        if (es_acuerdo) {
+            total+= +$('#costoFrontera').data("kendoNumericTextBox").value();
+        }
         return total;
 
     }
@@ -1235,18 +1255,8 @@
         var total=+totalPercentage(),
             totalIN=+(refreshingTotal(tabla_insumosnacionales,'valor') || 0),
             totalII=+(refreshingTotal(tabla_insumosimportados,'valor') || 0),
-            manoObra=+($('#alta_ddjj #totalValorMO').data("kendoNumericTextBox").value()|| 0),
-            frontera=+($('#alta_ddjj #costoFrontera').data("kendoNumericTextBox").value()|| 0),
-            exw=manoObra+totalII+totalIN,
-            fob=exw+frontera;
-
-//    console.log('total',total);
-//    console.log('totalIN',totalIN);
-//    console.log('totalII',totalII);
-//    console.log('namoObra',manoObra);
-//    console.log('frontera',frontera);
-//    console.log('exw',exw);
-//    console.log('fob',fob);
+            manoObra=+($('#alta_ddjj #totalValorMO').data("kendoNumericTextBox").value() || 0),
+            exw=manoObra+totalII+totalIN;
 
         updateSobrevalor(tabla_insumosnacionales,total);
         updateSobrevalor(tabla_insumosimportados,total);
@@ -1260,11 +1270,7 @@
         $('#totalEnFabrica').html(kendo.toString(exw, "n").split('.').join(""));
         $('#totalEnFabricaPercentage').html(getPercentage(total,exw));
 
-        $('#costoFronterePercentage').html(getPercentage(total,frontera));
-        $('#fobPercentage').html(getPercentage(total,fob));
-        $('#fob').html(kendo.toString(fob, "n").split('.').join(""));
-
-        return {
+        var data = {
             total:total,
             totalIN:totalIN,
             totalINPercentage:kendo.toString(getPercentage(total,totalIN), "n").split('.').join(""),
@@ -1272,13 +1278,31 @@
             totalIIPercentage:kendo.toString(getPercentage(total,totalII), "n").split('.').join(""),
             manoObra:manoObra,
             manoObraPercentage:getPercentage(total,manoObra),
-            frontera:frontera,
-            fronteraPercentage:getPercentage(total,frontera),
             exw:exw,
             exwPercentage:getPercentage(total,exw),
-            fob:fob,
-            fobPercentage:getPercentage(total,fob)
         };
+        //actualizamos estos valores solo si la ddjj es un acuerdo
+        if (es_acuerdo) {
+            var frontera=+($('#alta_ddjj #costoFrontera').data("kendoNumericTextBox").value() || 0),
+                fob=exw+frontera;
+
+            $('#costoFronterePercentage').html(getPercentage(total,frontera));
+            $('#fobPercentage').html(getPercentage(total,fob));
+            $('#fob').html(kendo.toString(fob, "n").split('.').join(""));
+
+            data.fob = fob;
+            data.fobPercentage= getPercentage(total,fob);
+            data.frontera= frontera;
+            data.fronteraPercentage= getPercentage(total,frontera);
+        } else {
+            $('#alta_ddjj #costoFrontera').data("kendoNumericTextBox").value(0);
+
+            $('#costoFronterePercentage').html('');
+            $('#fobPercentage').html('');
+            $('#fob').html('');
+        }
+
+        return data;
     }
     setTimeout(function() {
         genericUpdate();

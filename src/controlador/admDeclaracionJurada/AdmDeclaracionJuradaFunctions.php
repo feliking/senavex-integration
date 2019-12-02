@@ -705,10 +705,18 @@ class AdmDeclaracionJuradaFunctions {
         $ddjj = $sqlDdjj->getBuscarDeclaracionPorIdEmpresa($ddjj);
 
         $ddjj->setFecha_Revision(date('Y-m-d H:i:s'));
-        $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);/// verificacion aprobada
-        $ddjj->setFecha_limite_cancelacion($funcionesGenerales->addDate($hoy,15));
         $ddjj->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
         $ddjj->setId_asistente($_SESSION['id_persona']);
+
+        if ($ddjj->getMuestra()=== true){
+          $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VIGENTE);/// verificacion aprobada
+        }
+        //si no es para ferias o muestras le mandamos a pago
+        else{
+          $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);/// verificacion aprobada
+          $ddjj->setFecha_limite_cancelacion($funcionesGenerales->addDate($hoy,15));
+        }
+
 
 
         if($sqlDdjj->setGuardarDdjj($ddjj)) {
