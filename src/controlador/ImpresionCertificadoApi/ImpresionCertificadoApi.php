@@ -269,7 +269,21 @@ $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Empresa'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
-$pdf->Cell(140,6,utf8_decode($empresaImportador->getRazon_social()),0,0,'L');
+if(strlen($empresaImportador->getRazon_social()) >48)
+    {
+        $pdf->SetFont('Arial','',7);
+        $y=6;
+    }
+    if(strlen($empresaImportador->getRazon_social()) >85)
+    {
+        $pdf->SetFont('Arial','',6);
+        $y=5;
+    }
+$pdf->MultiCell(140,$y,utf8_decode($empresaImportador->getRazon_social()),'','L');
+$pdf->SetFont('Arial','',10);
+
+// $pdf->Cell(140,6,utf8_decode($empresaImportador->getRazon_social()),0,0,'L');
+
 ////////////// NIT ////////////////////////
 $pdf->SetXY(22, 124);
 $pdf->SetFont('Arial','B',10);
@@ -331,22 +345,22 @@ $pdf->Cell(45,6,utf8_decode('País de origen'),0,0,'L');
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $y=6;
-    if(count($paises)>8)
+    if(count($paises)>5)
     {
         $pdf->SetFont('Arial','',7);
         $y=5;
     }
-    if(count($paises)>10)
+    if(count($paises)>7)
     {
         $pdf->SetFont('Arial','',7);
         $y=4.5;
     }
-    if(count($paises)>12)
+    if(count($paises)>9)
     {
         $pdf->SetFont('Arial','',6);
         $y=4;
     }
-    if(count($paises)>15)
+    if(count($paises)>12)
     {
         $pdf->SetFont('Arial','',6);
         $y=3;
