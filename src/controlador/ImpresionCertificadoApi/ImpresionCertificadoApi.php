@@ -269,6 +269,7 @@ $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Empresa'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
+$y = 6;
 if(strlen($empresaImportador->getRazon_social()) >48)
     {
         $pdf->SetFont('Arial','',7);
