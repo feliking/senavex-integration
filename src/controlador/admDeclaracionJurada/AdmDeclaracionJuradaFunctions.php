@@ -677,7 +677,7 @@ class AdmDeclaracionJuradaFunctions {
       $vista->assign('representanteEmpresa', $this->getPersonaEmpresa($ddjj->getId_empresa(), $ddjj->getId_persona()));
       $vista->assign('criterios', $this->getCriterios($ddjj->getId_criterios()));
       $vista->assign('partidas', $this->getPartidas($ddjj->getId_partidas_acuerdo()));
-      $vista->assign('direccion', $direccionRepresentanteTpl);
+      $vista->assign('direccionTpl', $direccionRepresentanteTpl);
       $vista->assign('fabrica', $this->getFabrica($ddjj->getId_direccion()));
       $vista->assign('ddjj', $ddjj);
 

@@ -188,7 +188,6 @@ class AdmDeclaracionJurada extends Principal {
       $vista->assign('arancel_vigente', $arancel_vigente);
       $vista->assign('aranceles', $aranceles);
       $vista->assign('zonas_especiales',$zonas_especialess);
-      $vista->assign('direccion',$direccionRepresentanteTpl);
       $vista->assign('key',session_id());
 
       if($_REQUEST['correction']=='true'){
@@ -198,7 +197,7 @@ class AdmDeclaracionJurada extends Principal {
 
       $vista->display("declaracionJurada/FormDeclaracionJurada.tpl");
 
-      $vista->assign('direccion',$direccionRepresentanteTpl);
+      $vista->assign('direccionTpl',$direccionRepresentanteTpl);
       $vista->assign('representanteEmpresa',$representanteEmpresa);
       $vista->assign('edition',true);
       $vista->assign('id','view_ddjj');

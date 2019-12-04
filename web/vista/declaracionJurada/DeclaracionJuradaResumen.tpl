@@ -32,7 +32,7 @@
                     <label class="span2 ddjj-section-label">1.4 Domicilio Fiscal:</label>
                 </div>
                 <div class="row-fluid">
-                   {$direccion}
+                   {$direccionTpl}
                 </div>
                 
                 
