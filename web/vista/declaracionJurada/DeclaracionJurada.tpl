@@ -216,80 +216,77 @@
 
             </section>
             <h2>VI. COMPONENTES QUE FORMAN PARTE DE LA ESTRUCTURA DE LA MERCANCÍA</h2>
-            {if ($ddjj && $ddjj->insumosnacionales|@count!=0) || !$ddjj}
-                <section class="ddjj-section" id="view_insumos_nacionales">
-                    <label class="ddjj-section-label">6.1 Materiales e Insumos Nacionales:</label>
-                    <table class="ddjj-table">
-                        <thead><tr><th>Nombre Comercial</th><th>Nombre o Razón Social</th><th>CI o NIT</th><th>No. Telf. Productor</th><th>Unidad de Medida</th><th>Cantidad</th><th>Valor ($us)</th><th>% Sobrevalor</th></tr></thead>
-                        <tbody>
-                        {foreach $ddjj->insumosnacionales as $insumonacional}
-                            <tr>
-                                <td>{$insumonacional->descripcion}</td>
-                                <td>{$insumonacional->nombre_fabricante}</td>
-                                <td>{$insumonacional->ci}</td>
-                                <td>{$insumonacional->telefono_fabricante}</td>
-                                <td>{foreach $unidadmedida as $um}{if $um->id_unidad_medida==$insumonacional->unidad_medida}{$um->descripcion}{/if}{/foreach}</td>
-                                <td>{$insumonacional->cantidad}</td>
-                                <td>{$insumonacional->valor}</td>
-                                <td>{$insumonacional->sobrevalor}%</td>
-                            </tr>
-                        {/foreach}
-                        </tbody>
-                        <tfoot>
+
+            <section class="ddjj-section" id="view_insumos_nacionales" style="{if ($ddjj && $ddjj->insumosnacionales|@count==0) || !$ddjj}display: none{/if}">
+                <label class="ddjj-section-label">6.1 Materiales e Insumos Nacionales:</label>
+                <table class="ddjj-table">
+                    <thead><tr><th>Nombre Comercial</th><th>Nombre o Razón Social</th><th>CI o NIT</th><th>No. Telf. Productor</th><th>Unidad de Medida</th><th>Cantidad</th><th>Valor ($us)</th><th>% Sobrevalor</th></tr></thead>
+                    <tbody>
+                    {foreach $ddjj->insumosnacionales as $insumonacional}
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="ddjj-table-total-label">6.2 Total:</td>
-                            <td class="ddjj-table-total view-total-valor">{$ddjj->valor_total_insumosnacional}</td>
-                            <td class="ddjj-table-total view-total-sobrevalor">{$ddjj->sobrevalor_total_insumosnacional}%</td>
+                            <td>{$insumonacional->descripcion}</td>
+                            <td>{$insumonacional->nombre_fabricante}</td>
+                            <td>{$insumonacional->ci}</td>
+                            <td>{$insumonacional->telefono_fabricante}</td>
+                            <td>{foreach $unidadmedida as $um}{if $um->id_unidad_medida==$insumonacional->unidad_medida}{$um->descripcion}{/if}{/foreach}</td>
+                            <td>{$insumonacional->cantidad}</td>
+                            <td>{$insumonacional->valorFormat}</td>
+                            <td>{$insumonacional->sobrevalor}%</td>
                         </tr>
-                        </tfoot>
-                    </table>
-                </section>
-            {/if}
-            {if ($ddjj && $ddjj->insumosimportados|@count!=0) || !$ddjj}
-                <section class="ddjj-section" id="view_insumosimportados">
-                    <label class="ddjj-section-label">6.3 Materiales e Insumos, Importados Directamente o Extranjeros Adquiridos en el Mercado Nacional:</label>
-                    <table class="ddjj-table">
-                        <thead><tr><th>Nombre Comercial</th><th>Nombre Tecnico</th><th>Código Arancelario</th><th>País de Origen</th><th>Nombre o Razón Social</th><th>Cuenta C.O.</th><th>Acuerdo Comercial</th><th>Unidad de Medida</th><th>Cantidad</th><th>Valor($us)</th><th>% Sobrevalor</th></tr></thead>
-                        <tbody>
-                        {foreach $ddjj->insumosimportados as $insumoimportado}
-                            <tr>
-                                <td>{$insumoimportado->descripcion}</td>
-                                <td>{$insumoimportado->nombre_tecnico}</td>
-                                <td>{$insumoimportado->id_detalle_arancel}</td>
-                                <td>{foreach $paises as $pais}{if $pais->id_pais==$insumoimportado->id_pais}{$pais->nombre}{/if}{/foreach}</td>
-                                <td>{$insumoimportado->razon_social_productor}</td>
-                                <td>{if $insumoimportado->tiene_certificado_origen}SI{else}NO{/if}</td>
-                                <td>{if $insumoimportado->id_acuerdo ==0}NINGUNO{else}{foreach $acuerdos as $acuerdo}{if $acuerdo->id_acuerdo==$insumoimportado->id_acuerdo}{$acuerdo->sigla}{/if}{/foreach}{/if}</td>
-                                <td>{foreach $unidadmedida as $um}{if $um->id_unidad_medida==$insumoimportado->id_unidad_medida}{$um->descripcion}{/if}{/foreach}</td>
-                                <td>{$insumoimportado->cantidad}</td>
-                                <td>{$insumoimportado->valor}</td>
-                                <td>{$insumoimportado->sobrevalor}%</td>
-                            </tr>
-                        {/foreach}
-                        </tbody>
-                        <tfoot>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="ddjj-table-total-label">6.2 Total:</td>
+                        <td class="ddjj-table-total view-total-valor">{$ddjj->valor_total_insumosnacionalFormat}</td>
+                        <td class="ddjj-table-total view-total-sobrevalor">{$ddjj->sobrevalor_total_insumosnacional}%</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </section>
+            <section class="ddjj-section" id="view_insumosimportados" style="{if ($ddjj && $ddjj->insumosimportados|@count==0) || !$ddjj}display: none{/if}">
+                <label class="ddjj-section-label">6.3 Materiales e Insumos, Importados Directamente o Extranjeros Adquiridos en el Mercado Nacional:</label>
+                <table class="ddjj-table">
+                    <thead><tr><th>Nombre Comercial</th><th>Nombre Tecnico</th><th>Código Arancelario</th><th>País de Origen</th><th>Nombre o Razón Social</th><th>Cuenta C.O.</th><th>Acuerdo Comercial</th><th>Unidad de Medida</th><th>Cantidad</th><th>Valor($us)</th><th>% Sobrevalor</th></tr></thead>
+                    <tbody>
+                    {foreach $ddjj->insumosimportados as $insumoimportado}
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="ddjj-table-total-label">6.4 Total:</td>
-                            <td class="ddjj-table-total view-total-valor">{$ddjj->valor_total_insumosimportados}</td>
-                            <td class="ddjj-table-total view-total-sobrevalor">{$ddjj->sobrevalor_total_insumosimportados}%</td>
+                            <td>{$insumoimportado->descripcion}</td>
+                            <td>{$insumoimportado->nombre_tecnico}</td>
+                            <td>{$insumoimportado->id_detalle_arancel}</td>
+                            <td>{foreach $paises as $pais}{if $pais->id_pais==$insumoimportado->id_pais}{$pais->nombre}{/if}{/foreach}</td>
+                            <td>{$insumoimportado->razon_social_productor}</td>
+                            <td>{if $insumoimportado->tiene_certificado_origen}SI{else}NO{/if}</td>
+                            <td>{if $insumoimportado->id_acuerdo ==0}NINGUNO{else}{foreach $acuerdos as $acuerdo}{if $acuerdo->id_acuerdo==$insumoimportado->id_acuerdo}{$acuerdo->sigla}{/if}{/foreach}{/if}</td>
+                            <td>{foreach $unidadmedida as $um}{if $um->id_unidad_medida==$insumoimportado->id_unidad_medida}{$um->descripcion}{/if}{/foreach}</td>
+                            <td>{$insumoimportado->cantidad}</td>
+                            <td>{$insumoimportado->valorFormat}</td>
+                            <td>{$insumoimportado->sobrevalor}%</td>
                         </tr>
-                        </tfoot>
-                    </table>
-                </section>
-            {/if}
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="ddjj-table-total-label">6.4 Total:</td>
+                        <td class="ddjj-table-total view-total-valor">{$ddjj->valor_total_insumosimportadosFormat}</td>
+                        <td class="ddjj-table-total view-total-sobrevalor">{$ddjj->sobrevalor_total_insumosimportados}%</td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </section>
             <section class="ddjj-section">
                 <div class="row-fluid form">
                     <label class="span6 ddjj-section-label">6.5 Mano de Obra, otros costos de Fabricación y Unidad:</label>
@@ -297,7 +294,7 @@
                         Total % sobre el valor:<div id="view_totalSobrevalorMO" class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_mano_obra}%</div>
                     </div>
                     <div class="ddjj-total">
-                        Total Valor ($us): <div id="view_totalValorMO" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_mano_obra}</div>
+                        Total Valor ($us): <div id="view_totalValorMO" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_mano_obraFormat}</div>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
@@ -307,12 +304,12 @@
                         Total % sobre el valor:<div id="view_totalEnFabricaPercentage" class="ddjj-total-input ddjj-section-field">{$ddjj->sobrevalor_exw}%</div>
                     </div>
                     <div class="ddjj-total">
-                        Total Valor ($us): <div id="view_totalEnFabrica" class="ddjj-total-input ddjj-section-field" valor="{$ddjj->valor_exw_numeric}">{$ddjj->valor_exw_numeric}</div>
+                        Total Valor ($us): <div id="view_totalEnFabrica" class="ddjj-total-input ddjj-section-field" >{$ddjj->valor_exwFormat}</div>
                     </div>
                     <div style="clear: both;"></div>
                 </div>
 
-                <div id="view_fobSeccion" class="{if ($ddjj && $ddjj->acuerdo->id_tipo_acuerdo == '2')}hidden{/if}">
+                <div id="view_fobSeccion" style="{if ($ddjj && $ddjj->acuerdo->id_tipo_acuerdo == '2')}display:none{/if}">
                     <div class="row-fluid form">
                         <label class="span6 ddjj-section-label">6.7 Costos de Logistica hasta Frontera Nacional (flete,
                             seguro, carga, etc.)</label>
@@ -325,7 +322,7 @@
                         <div class="ddjj-total">
                             Total Valor ($us):
                             <div id="view_costoFrontere"
-                                 class="ddjj-total-input ddjj-section-field">{$ddjj->valor_frontera}</div>
+                                 class="ddjj-total-input ddjj-section-field">{$ddjj->valor_fronteraFormat}</div>
                         </div>
                         <div style="clear: both;"></div>
                     </div>
@@ -340,7 +337,7 @@
                         </div>
                         <div class="ddjj-total">
                             Total Valor ($us):
-                            <div id="view_fob" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_fob}</div>
+                            <div id="view_fob" class="ddjj-total-input ddjj-section-field">{$ddjj->valor_fobFormat}</div>
                         </div>
                         <div style="clear: both;"></div>
                     </div>
@@ -520,22 +517,25 @@
             var datos='opcion=admDeclaracionJurada&tarea=saveDeclaracionJurada&';
             datos+=$("#alta_ddjj").serialize();
             datos+='&unidadmedida='+$("#alta_ddjj #unidadmedida").text().trim();
-            datos+='&valor_total_insumosnacional='+$("#alta_ddjj #totalValorIN").html().trim();
-            datos+='&sobrevalor_total_insumosnacional='+$("#alta_ddjj #totalSobrevalorIN").html().trim();
-            datos+='&valor_total_insumosimportados='+$("#alta_ddjj #totalValorII").html().trim();
-            datos+='&sobrevalor_total_insumosimportados='+$("#alta_ddjj #totalSobrevalorII").html().trim();
             datos += '&id_partida=' + $('#alta_ddjj #ddjj_arancel').attr('id_partida');
             var values=genericUpdate();
+
+
+
+            datos+='&valor_total_insumosnacional='+ values.totalIN;
+            datos+='&sobrevalor_total_insumosnacional='+ values.totalINPercentage;
+            datos+='&valor_total_insumosimportados='+ values.totalII;
+            datos+='&sobrevalor_total_insumosimportados='+ values.totalIIPercentage;
             datos+='&sobrevalor_mano_obra='+values.manoObraPercentage;
             datos+='&valor_mano_obra='+values.manoObra;
             datos+='&sobrevalor_exw='+values.exwPercentage;
             datos+='&valor_exw='+values.exw;
 
             if(es_acuerdo){
-                datos+='&sobrevalor_fob='+values.fobPercentage;
-                datos+='&valor_fob='+values.fob;
                 datos+='&sobrevalor_frontera='+values.fronteraPercentage;
                 datos+='&valor_frontera='+values.frontera;
+                datos+='&sobrevalor_fob='+values.fobPercentage;
+                datos+='&valor_fob='+values.fob;
             }
 
             var acuerdo=$('#alta_ddjj input:radio[name="acuerdo"]:checked');
@@ -620,7 +620,6 @@
         else  $('#{$id} #view_complemento').html('');
 
         var  fabrica_selected = $("#combo_fabricas").data("kendoComboBox").select();
-        console.log();
         if(fabrica_selected !=-1){
             $('#ddjj_fabrica').removeClass('none');
             $('#view_fabrica').html(fabrica_object.direccion);
@@ -656,6 +655,8 @@
             $('#ddjj_fabrica').addClass('none');
         }
 
+
+
         if(tabla_insumosnacionales.dataSource.total()==0) $('#{$id} #view_insumos_nacionales').hide();
         else{
             $('#{$id} #view_insumos_nacionales').show();
@@ -676,14 +677,14 @@
 
         var values=genericUpdate();
 
-        $('#{$id} #view_totalValorMO').html(kendo.toString(values.manoObra, "n").split('.').join(""));
+        $('#{$id} #view_totalValorMO').html(kendo.toString(values.manoObra,"0.####"));
         $('#{$id} #view_totalSobrevalorMO').html(values.manoObraPercentage+'%');
-        $('#{$id} #view_totalEnFabrica').html(kendo.toString(values.exw, "n").split('.').join(""));
+        $('#{$id} #view_totalEnFabrica').html(kendo.toString(values.exw,"0.####"));
         $('#{$id} #view_totalEnFabricaPercentage').html(values.exwPercentage+'%');
-        $('#{$id} #view_costoFrontere').html(kendo.toString(values.frontera, "n").split('.').join(""));
+        $('#{$id} #view_costoFrontere').html(kendo.toString(values.frontera,"0.####"));
         $('#{$id} #view_costoFronterePercentage').html(values.fronteraPercentage+'%');
         if(es_acuerdo) {
-            $('#{$id} #view_fob').html(kendo.toString(values.fob, "n").split('.').join(""));
+            $('#{$id} #view_fob').html(kendo.toString(values.fob,"0.####"));
             $('#{$id} #view_fobPercentage').html(values.fobPercentage+'%');
             $('#{$id} #view_fobSeccion').show();
         } else {

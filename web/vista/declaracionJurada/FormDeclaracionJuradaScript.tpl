@@ -242,7 +242,8 @@
         $('<input data-bind="value:' + options.field + '"/>')
             .appendTo(container)
             .kendoNumericTextBox({
-                decimals: 4
+                decimals: 4,
+                format: '0.0'
             });
     }
     function onSelectunidadmedida(e) {
@@ -439,14 +440,16 @@
     });
     $('#alta_ddjj #produccion_mensual_mercancia').kendoNumericTextBox({ format:"n" });
 
-    $('#alta_ddjj #totalValorMO').kendoNumericTextBox({ format:"n4",
+    $('#alta_ddjj #totalValorMO').kendoNumericTextBox({
+        format:"0.####",
         min:0,
         decimals: 4,
         change: function() {
             genericUpdate();
         }
     });
-    $('#alta_ddjj #costoFrontera').kendoNumericTextBox({ format:"n",
+    $('#alta_ddjj #costoFrontera').kendoNumericTextBox({
+        format:"0.####",
         min:0,
         decimals: 4,
         change: function() {
@@ -612,7 +615,7 @@
                     },
                     cantidad: {
                         type:"number",
-                        format:"{literal}{0:n3}{/literal}",decimals: 4,
+                        decimals: 4,
                         step    : 0.001,
                         defaultValue:'',
                         validation: {
@@ -627,7 +630,9 @@
                     },
                     valor: {
                         type: "number",
-                        format:"{literal}{0:0.0000}{/literal}",decimals: 4,
+                        {*format:"{literal}{0:0.0000}{/literal}",*}
+                        format:"{literal}{0:#.# \\'%'}{/literal}",
+                        decimals: 4,
                         defaultValue:"",
                         validation: {
                             required: true,
@@ -640,7 +645,7 @@
                                 }
                                 return true;
                             }
-                        }
+                        },
                     },
                     sobrevalor: {
                         type: "number",
@@ -666,13 +671,12 @@
             { field: "telefono", title: "No. Telf. Fabricante"},
             { field: "unidad_medida", title: "Unidad de Medida",template:"#=getDescripcionUnidadMedida(unidad_medida)#",editor: UMedidaDropDownEditor},
             { field: "cantidad", title: "Cantidad",editor:ValorNumeric},
-            { field: "valor",title:"Valor($us)",editor:ValorNumeric},
+            { field: "valor",title:"Valor($us)",editor:ValorNumeric,format:"{literal}{0:0.####}{/literal}"},
             { field: "sobrevalor", title: "% Sobrevalor",editor: readonlyEditor,format:"{literal}{0:#.## \\'%'}{/literal}"}
         ],
         save: function (data) {
             setTimeout(function () {
                 genericUpdate();
-
             },100);
         }
     }).data("kendoGrid");
@@ -848,7 +852,7 @@
             { field: "acuerdo", title: "Acuerdo Comercial",template:"#=getAcuerdoSigla(acuerdo)#", editor: AcuerdoDropDownEditor},
             { field: "unidad_medida", title: "Unidad de Medida",template:"#=getDescripcionUnidadMedida(unidad_medida)#",editor: UMedidaDropDownEditor},
             { field: "cantidad", title: "Cantidad",editor:ValorNumeric },
-            { field: "valor", title: "Valor($us)",editor:ValorNumeric },
+            { field: "valor", title: "Valor($us)",editor:ValorNumeric,format:"{literal}{0:0.####}{/literal}" },
             { field: "sobrevalor", title: "% Sobrevalor ",editor: readonlyEditor,format:"{literal}{0:#.## \\'%'}{/literal}"}
         ],
         save: function (data) {
@@ -1261,21 +1265,21 @@
         updateSobrevalor(tabla_insumosnacionales,total);
         updateSobrevalor(tabla_insumosimportados,total);
 
-        $('#totalValorIN').html(kendo.toString(totalIN, "n").split('.').join(""));
+        $('#totalValorIN').html(kendo.toString(totalIN,"0.####"));
         $('#totalSobrevalorIN').html(kendo.toString(getPercentage(total,totalIN), "n").split('.').join(""));
-        $('#totalValorII').html(kendo.toString(totalII, "n").split('.').join(""));
+        $('#totalValorII').html(kendo.toString(totalII,"0.####"));
         $('#totalSobrevalorII').html(kendo.toString(getPercentage(total,totalII), "n").split('.').join(""));
 
         $('#totalSobrevalorMO').html(getPercentage(total,manoObra));
-        $('#totalEnFabrica').html(kendo.toString(exw, "n").split('.').join(""));
+        $('#totalEnFabrica').html(kendo.toString(exw,"0.####"));
         $('#totalEnFabricaPercentage').html(getPercentage(total,exw));
 
         var data = {
             total:total,
             totalIN:totalIN,
-            totalINPercentage:kendo.toString(getPercentage(total,totalIN), "n").split('.').join(""),
+            totalINPercentage:getPercentage(total,totalIN),
             totalII:totalII,
-            totalIIPercentage:kendo.toString(getPercentage(total,totalII), "n").split('.').join(""),
+            totalIIPercentage:getPercentage(total,totalII),
             manoObra:manoObra,
             manoObraPercentage:getPercentage(total,manoObra),
             exw:exw,
@@ -1285,10 +1289,9 @@
         if (es_acuerdo) {
             var frontera=+($('#alta_ddjj #costoFrontera').data("kendoNumericTextBox").value() || 0),
                 fob=exw+frontera;
-
-            $('#costoFronterePercentage').html(getPercentage(total,frontera));
-            $('#fobPercentage').html(getPercentage(total,fob));
-            $('#fob').html(kendo.toString(fob, "n").split('.').join(""));
+            $('#costoFronterePercentage').html(kendo.toString(getPercentage(total,frontera), "n").split('.').join(""));
+            $('#fobPercentage').html(kendo.toString(getPercentage(total,fob), "n").split('.').join(""));
+            $('#fob').html(kendo.toString(fob,"0.####"));
 
             data.fob = fob;
             data.fobPercentage= getPercentage(total,fob);

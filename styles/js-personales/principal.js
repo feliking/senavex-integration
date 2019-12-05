@@ -422,7 +422,7 @@ function  generateTableHtml(GridData,valor_internacional) {
     var tr=$('<tr></tr>')
     $.each(columns,function (index,column) {
         var ctitle = column.title;
-        if(column.field=='sobrevalor') ctitle+=' '+valor_internacional;
+        // if(column.field=='sobrevalor') ctitle+=' '+valor_internacional;
         tr.append('<th>' + ctitle + '</th>');
     });
     head.append(tr);

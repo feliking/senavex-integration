@@ -267,7 +267,7 @@
                             </div>
                             <div class="ddjj-total">
                                 Total Valor ($us):
-                                <div class="ddjj-total-input"><input id="totalValorMO" name="totalValorMO" maxlength="20" {if $ddjj && $ddjj->valor_mano_obra}value="{$ddjj->valor_mano_obra}"{/if}/></div>
+                                <div class="ddjj-total-input"><input id="totalValorMO" name="totalValorMO" maxlength="20" {if $ddjj && $ddjj->valor_mano_obraFormat}value="{$ddjj->valor_mano_obraFormat}"{/if}/></div>
                             </div>
                             <div style="clear: both;"></div>
                         </div>
@@ -290,7 +290,7 @@
                                 </div>
                                 <div class="ddjj-total">
                                     Total Valor ($us):
-                                    <div class="ddjj-total-input"><input id="costoFrontera" name="costoFontera" maxlength="20" {if $ddjj && $ddjj->valor_frontera}value="{$ddjj->valor_frontera}"{/if}/></div>
+                                    <div class="ddjj-total-input"><input id="costoFrontera" name="costoFontera" maxlength="20" {if $ddjj && $ddjj->valor_fronteraFormat}value="{$ddjj->valor_fronteraFormat}"{/if}/></div>
                                 </div>
                                 <div style="clear: both;"></div>
                             </div>

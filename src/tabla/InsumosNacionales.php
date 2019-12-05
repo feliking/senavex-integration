@@ -1,6 +1,7 @@
 <?php
 
 include_once(PATH_BASE . DS . 'config' . DS . 'Db.php');
+include_once( PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');
 
 //control de acceso
 defined('_ACCESO') or die('Acceso restringido');
@@ -65,6 +66,9 @@ class InsumosNacionales extends Db {
     }
     public function getValor() {
         return $this->valor;
+    }
+    public function getValorFormat() {
+        return FuncionesGenerales::getNumberFormat($this->valor);
     }
     public function setSobrevalor($sobrevalor) {
         $this->sobrevalor = $sobrevalor;

@@ -302,6 +302,7 @@ class AdmDeclaracionJurada extends Principal {
       $declaracion_jurada->setNombre_tecnico(strtoupper ($_REQUEST["nombre_tecnico"]));
       $declaracion_jurada->setAplicacion(strtoupper ($_REQUEST["aplicacion"]));
       if($_REQUEST["produccion_mensual_mercancia"]!='') $declaracion_jurada->setProduccion_mensual(str_replace(',', '.',$_REQUEST["produccion_mensual_mercancia"]));
+
       $declaracion_jurada->setValor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["valor_total_insumosnacional"]));
       $declaracion_jurada->setSobrevalor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_total_insumosnacional"]));
       $declaracion_jurada->setValor_total_insumosimportados($funcionesGenerales->setNumeric($_REQUEST["valor_total_insumosimportados"]));

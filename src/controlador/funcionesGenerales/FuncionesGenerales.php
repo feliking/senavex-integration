@@ -616,6 +616,8 @@ class FuncionesGenerales extends Principal {
   }
 
   public static function getNumberFormat($number){
-    return number_format((float)$number, 4, '.', '');
+    $number =  number_format($number, 4, ',', '');
+    $number = rtrim($number, '0');
+    return rtrim($number, ',');
   }
 }

@@ -286,6 +286,9 @@ class DeclaracionJurada extends Db {
     public function getValor_mano_obra() {
         return $this->valor_mano_obra;
     }
+    public function getValor_mano_obraFormat() {
+        return FuncionesGenerales::getNumberFormat($this->valor_mano_obra);
+    }
     public function setSobrevalor_mano_obra($sobrevalor_mano_obra) {
         $this->sobrevalor_mano_obra = $sobrevalor_mano_obra;
     }
@@ -298,6 +301,9 @@ class DeclaracionJurada extends Db {
     public function getValor_total_insumosnacional() {
         return $this->valor_total_insumosnacional;
     }
+    public function getValor_total_insumosnacionalFormat() {
+        return FuncionesGenerales::getNumberFormat($this->valor_total_insumosnacional);
+    }
     public function setSobrevalor_total_insumosnacional($sobrevalor_total_insumosnacional) {
         $this->sobrevalor_total_insumosnacional = $sobrevalor_total_insumosnacional;
     }
@@ -309,6 +315,9 @@ class DeclaracionJurada extends Db {
     }
     public function getValor_total_insumosimportados() {
         return $this->valor_total_insumosimportados;
+    }
+    public function getValor_total_insumosimportadosFormat() {
+        return FuncionesGenerales::getNumberFormat($this->valor_total_insumosimportados);
     }
     public function setSobrevalor_total_insumosimportados($sobrevalor_total_insumosimportados) {
         $this->sobrevalor_total_insumosimportados = $sobrevalor_total_insumosimportados;
@@ -418,6 +427,9 @@ class DeclaracionJurada extends Db {
     public function getValor_fob() {
         return $this->valor_fob;
     }
+    public function getValor_fobFormat() {
+        return FuncionesGenerales::getNumberFormat($this->valor_fob);
+    }
     public function setSobrevalor_fob($sobrevalor_fob) {
         $this->sobrevalor_fob = $sobrevalor_fob;
     }
@@ -433,7 +445,7 @@ class DeclaracionJurada extends Db {
     public function getValor_exw() {
         return $this->valor_exw;
     }
-    public function getValor_exw_numeric() {
+    public function getValor_exwFormat() {
         return FuncionesGenerales::getNumberFormat($this->valor_exw);
     }
     public function setSobrevalor_exw($sobrevalor_exw) {
@@ -447,6 +459,9 @@ class DeclaracionJurada extends Db {
     }
     public function getValor_frontera() {
         return $this->valor_frontera;
+    }
+    public function getValor_fronteraFormat() {
+        return FuncionesGenerales::getNumberFormat($this->valor_frontera);
     }
     public function setSobrevalor_frontera($sobrevalor_frontera) {
         $this->sobrevalor_frontera = $sobrevalor_frontera;
