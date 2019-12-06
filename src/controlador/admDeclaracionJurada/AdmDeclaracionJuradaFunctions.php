@@ -655,16 +655,39 @@ class AdmDeclaracionJuradaFunctions {
         $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VIGENTE);
         $declaraciones = $sqlDeclaracionJurada->getByEstado($declaracion_jurada);
         foreach($declaraciones as $declaracion){
-            $dateVencimiento= date($declaracion->getFecha_vencimiento());
-            $hoy=date("Y-m-d H:i:s");
-            if($hoy>$dateVencimiento){
-                $declaracion_jurada = new DeclaracionJurada();
-                $declaracion_jurada->setId_ddjj($declaracion->getId_ddjj());
-                $declaracion_jurada=$sqlDeclaracionJurada->getById($declaracion_jurada);
-                $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VENCIDA);
-                $declaracion_jurada->save();
-            }
+          $dateVencimiento= date($declaracion->getFecha_vencimiento());
+          $hoy=date("Y-m-d H:i:s");
+          if($hoy>$dateVencimiento){
+            $declaracion_jurada = new DeclaracionJurada();
+            $declaracion_jurada=$sqlDeclaracionJurada->getById($declaracion_jurada);
+            $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VENCIDA);
+            $declaracion_jurada->save();
+          }
+
+          $hoy= new DateTime($hoy);
+          $dateVencimiento = new DateTime($dateVencimiento);
+          $interval = $hoy->diff($dateVencimiento);
+          echo '--'.$interval->format('%R%a');
+          switch ($interval->format('%R%a')) {
+            case '+15':
+              $declaracion_jurada = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion);
+              $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
+              $correos=explode(',',$correos);
+
+              if(trim($correos[0])==trim($correos[1]))
+              {
+                AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'15',$declaracion_jurada->empresa->getRuex().'-'.$declaracion_jurada->getCorrelativo_ddjj(),'',57);
+              }
+              else
+              {
+                AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'15',$declaracion_jurada->empresa->getRuex().'-'.$declaracion_jurada->getCorrelativo_ddjj(),'',57);
+                AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'15',$declaracion_jurada->empresa->getRuex().'-'.$declaracion_jurada->getCorrelativo_ddjj(),'',57);
+              }
+
+            break;
+          }
         }
+
     }
     public function verDdjjResumen($vista,$id)
     { // devuelve una plantilla solo con los datos imporatantes de la declaracion jurada

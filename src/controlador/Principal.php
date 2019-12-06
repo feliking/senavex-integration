@@ -59,6 +59,9 @@ class Principal {
   }
   public static function getVistaInstance() {
     $vista = new Vista();
+    if($_REQUEST['tarea']='cronJob'){
+      return $vista;
+    }
     //Declarar tarea y opcion
     $vista->assign('tarea', $_REQUEST['tarea']);
     $vista->assign('opcion', $_REQUEST['opcion']);

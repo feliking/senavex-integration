@@ -1180,6 +1180,20 @@ class AdmCorreo extends Principal {
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
                  </p>';
             break;
+          case 56: // ddjj para feria entra en vigencia
+            $para = $parametro1;//correo
+            $vista = Principal::getVistaInstance();
+            $vista->assign('nombre',$parametro2);
+            $mensaje .= $vista->fetch("correos/vigenciaDdjjMuestraCorreo.tpl");
+            break;
+          case 57: // ddjj para feria entra en vigencia
+            $para = $parametro1;//correo
+            $vista = Principal::getVistaInstance();
+            $vista->assign('nombre',$parametro2);
+            $vista->assign('dias',$parametro3);
+            $vista->assign('codigo',$parametro4);
+            $mensaje .= $vista->fetch("correos/diasParaVencimientoDdjjCorreo.tpl");
+            break;
         }
         
         $mensaje .='<a href="http://vortex.senavex.gob.bo/index.php">http://vortex.senavex.gob.bo</a>';

@@ -601,17 +601,24 @@ class AdmDeclaracionJurada extends Principal {
 
         AdmDeclaracionJuradaFunctions::terminarServicioColas($declaracion_jurada->getId_Servicio_Exportador());
 
-        if($declaracion_jurada->getId_estado_ddjj()!=AdmDeclaracionJurada::DDJJ_VISITA) {
+        if($declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_VISITA) {
+          $functions->auditoriaDdjj(8, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+          $tipo_correo = 54; //correo de visita de ferificacion
+        }
+        else if($declaracion_jurada->getMuestra()=== true) {
+          $functions->auditoriaDdjj(8, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+          AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
+          $tipo_correo = 56; //correo de vigencia de feria o muestra
+        }
+        else {
           $functions->auditoriaDdjj(5, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
           AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
-          $tipo_correo = 33;
-        } else {
-          $functions->auditoriaDdjj(8, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
-          $tipo_correo = 54;
+          $tipo_correo = 33; // correo de cancelarion
         }
 
         $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
         $correos=explode(',',$correos);
+
         if(trim($correos[0])==trim($correos[1]))
         {
           AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);

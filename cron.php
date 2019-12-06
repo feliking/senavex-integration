@@ -4,8 +4,8 @@
     define('_ACCESO', 1);
     include_once('config/Config.php');
     include_once('src/Aplicacion.php');
-
-
+    include_once( PATH_CONTROLADOR . DS . 'admCorreo' . DS . 'AdmCorreo.php');
+    include_once(PATH_CONTROLADOR . DS .'admDeclaracionJurada'. DS .'AdmDeclaracionJuradaFunctions.php');
 
 
 
@@ -24,11 +24,9 @@
     ////                               Revision                                                       ///////
     ///////Controla el dtiempo en que una declaracion juarada tiene que ser revisada                       ////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    include_once(PATH_CONTROLADOR . DS . 'admDeclaracionJurada' . DS . 'AdmDeclaracionJuradaFunctions.php');
-
-    $functions = new AdmDeclaracionJuradaFunctions();
-    $functions->verificaRevisionParaCancelar(); //verifica que ddjj para revisara estan en estado 0 de revision y si ha pasado el tiempo de revision registra un retraso para el exportador
-    $functions->venceDdjj();//Verigica que ddjj con estado 1 ya ha vencido si es asi le cambia el estado a vencido
+    $_REQUEST['tarea'] = 'cronJob';
+    AdmDeclaracionJuradaFunctions::verificaRevisionParaCancelar(); //verifica que ddjj para revisara estan en estado 0 de revision y si ha pasado el tiempo de revision registra un retraso para el exportador
+    AdmDeclaracionJuradaFunctions::venceDdjj();//Verigica que ddjj con estado 1 ya ha vencido si es asi le cambia el estado a vencido
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +38,6 @@
 
     include_once(PATH_TABLA . DS . 'Empresa.php');
     include_once(PATH_MODELO . DS . 'SQLEmpresa.php');
-    include_once( PATH_CONTROLADOR . DS . 'admCorreo' . DS . 'AdmCorreo.php');
 
 
         $hoy = new DateTime(date("Y-m-d"));
