@@ -59,7 +59,7 @@ class Principal {
   }
   public static function getVistaInstance() {
     $vista = new Vista();
-    if($_REQUEST['tarea']='cronJob'){
+    if($_REQUEST['tarea']=='cronJob'){
       return $vista;
     }
     //Declarar tarea y opcion
