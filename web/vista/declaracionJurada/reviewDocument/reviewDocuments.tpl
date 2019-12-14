@@ -6,7 +6,7 @@
         </li>
         {/if}
         <li>
-            <input type="button"  value="Cancelar" class="k-button btn-lg" onclick="remover(tabStrip.select());"/>
+            <input type="button"  value="Cerrar" class="k-button btn-lg" onclick="remover(tabStrip.select());"/>
         </li>
     </ul>
 </div>

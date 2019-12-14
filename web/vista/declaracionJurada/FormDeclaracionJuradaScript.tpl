@@ -713,17 +713,17 @@
                     },
                     nombre_tecnico: {
                         defaultValue:"",
-                        validation: {
-                            nombre_tecnicovalidation: function (input) {
-                                input.attr("data-nombre_tecnicovalidation-msg", "Debe ingresar el nombre tecnico");
-                                if (input.is("[name='nombre_tecnico']") && input.val() == "") {
-                                    return /^[A-Z]/.test(input.val());
-                                }
-
-
-                                return true;
-                            }
-                        }
+                        // validation: {
+                        //     nombre_tecnicovalidation: function (input) {
+                        //         input.attr("data-nombre_tecnicovalidation-msg", "Debe ingresar el nombre tecnico");
+                        //         if (input.is("[name='nombre_tecnico']") && input.val() == "") {
+                        //             return /^[A-Z]/.test(input.val());
+                        //         }
+                        //
+                        //
+                        //         return true;
+                        //     }
+                        // }
                     },
                     nandina: {
                         //defaultValue:"",
