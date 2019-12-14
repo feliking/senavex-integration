@@ -2,7 +2,7 @@
     <ul class="ul-buttons">
         {if $esCancelacion}
         <li>
-            <button id="review_ddjj_setVigencia" class="k-button btn-lg" onclick="sendDdjjVigencia()" >Validar Cancelación</button>
+            <button id="review_ddjj_setVigencia" class="k-button btn-lg" onclick="sendDdjjVigencia()" >Validar el pago</button>
         </li>
         {/if}
         <li>

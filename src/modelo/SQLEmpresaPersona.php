@@ -103,4 +103,16 @@ class SQLEmpresaPersona {
         return $empresa_persona->finder()->findAll('id_empresa = ? AND id_perfil = ? AND activo = 1', array($empresa_persona->getId_empresa(),$empresa_persona->getId_Perfil()));
     }
 
+    public function getPersonaObjPorPerfil(EmpresaPersona $empresa_persona) {
+      $sql = "SELECT p.* as persona
+                FROM empresa_persona ep JOIN persona p ON(ep.id_persona=p.id_persona)
+                WHERE ep.activo = 1 AND ep.id_perfil=".$empresa_persona->getId_Perfil()." AND p.estado=true";
+      $connection = $empresa_persona->getDbConnection();
+      $connection->Active = true;
+      $command = $connection->createCommand($sql);
+      $dataReader = $command->query();
+      $rows = $dataReader->readAll();
+      return $rows;
+    }
+
 }

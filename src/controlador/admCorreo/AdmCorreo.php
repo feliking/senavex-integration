@@ -990,7 +990,8 @@ class AdmCorreo extends Principal {
                 '<p style=\"height:100px;color:black;\">
                 <b>'.$parametro2.', </b>
                 <br/><br/>
-                    Te informamos que ha sido revisada una Declaraci&oacute;n Jurada la cual entro en vigencia, por favor cancelar la Declaración en un plazo de 15 dias.
+                    Te informamos que ha sido revisada una Declaraci&oacute;n Jurada la cual entro en vigencia, por favor cancelar el costo de la  DDJJ en un plazo de 15 dias.
+                    Numero de cuenta del Senavex : 13433658, del BANCO UNION.
                     <br/>
                     Saludos<br/>
                 <b>Servicio Nacional de Verificaci&oacute;n de Exportaciones </b>    
@@ -1193,6 +1194,16 @@ class AdmCorreo extends Principal {
             $vista->assign('dias',$parametro3);
             $vista->assign('codigo',$parametro4);
             $mensaje .= $vista->fetch("correos/diasParaVencimientoDdjjCorreo.tpl");
+            break;
+          case 58: // notificar a la UCO que se dio de baja una DDJJ
+            $para = $parametro1;//correo
+            $vista = Principal::getVistaInstance();
+            $vista->assign('nombre',$parametro2);
+            $vista->assign('codigo',$parametro3);
+            $vista->assign('justificacion',$parametro4);
+            $vista->assign('quienElimino',$parametro5);
+
+            $mensaje .= $vista->fetch("correos/notificacionUcoBajaDdjjCorreo.tpl");
             break;
         }
         

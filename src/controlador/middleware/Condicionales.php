@@ -88,6 +88,9 @@ class Condicionales
   public function getEstadoEmpresaBloqueada(){
     return $this->estado_empresa_bloqueada;
   }
+  public function getPerfilUco(){
+    return $this->id_administrador_uco;
+  }
 
   //------------------------------metodos genericos
   public function asignaCondicionalesVista($vista){

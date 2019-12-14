@@ -5,6 +5,7 @@ include_once(PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGener
 include_once(PATH_CONTROLADOR . DS . 'admSistemaColas' . DS . 'AdmSistemaColas.php');
 include_once(PATH_CONTROLADOR . DS . 'admEstadoEmpresas' . DS . 'AdmEstadoEmpresas.php');
 include_once(PATH_CONTROLADOR . DS . 'admArancel' . DS . 'AdmArancel.php');
+include_once(PATH_CONTROLADOR . DS . 'admPersona' . DS . 'AdmPersona.php');
 include_once(PATH_CONTROLADOR . DS .'admDeclaracionJurada'. DS .'AdmDeclaracionJurada.php');
 
 include_once(PATH_TABLA . DS . 'DeclaracionJurada.php');
@@ -800,12 +801,18 @@ class AdmDeclaracionJuradaFunctions {
                 AdmCorreo::enviarCorreo($correos[1],$ddjj->getDenominacion_comercial(),$justificacion,'','',50);
             }
 
-//            $persona = new Persona();
-//            $sqlPersona = new SQLPersona();
-//            $persona->setId_persona($ddjj->getId_asistente());
-//            $persona = $sqlPersona->getDatosPersonaPorId($persona);
-//
-//            AdmCorreo::enviarCorreo($persona->getEmail(),$ddjj->getDenominacion_comercial(),$justificacion,'','',50);
+          $condicional = new Condicionales();
+          if($condicional->esExportador()) {
+            $adminsUco = AdmPersona::getPersonasPorPerfil($condicional->getPerfilUco());
+
+            foreach ($adminsUco as $admin) {
+              try {
+                AdmCorreo::enviarCorreo($admin['email'],$admin['nombres'],$ddjj->empresa->getRuex().'-'.$ddjj->getCorrelativo_ddjj(),$justificacion, $_SESSION["nombre"],58);
+              } catch (Exception $e) {
+//                echo $e->getMessage();
+              }
+            }
+          }
         }
     }
     public static function bajaDdjjporCancelacion($id_ddjj){

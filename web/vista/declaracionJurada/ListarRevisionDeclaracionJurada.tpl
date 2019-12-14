@@ -95,7 +95,7 @@ function cambiarceldasddjj()
     var data = gridddjj.dataItem(row);
     if(registroddjj==data.id_ddjj)
     {
-        if(data.estadoddjj== 'Para cancelar') {
+        if(data.estadoddjj== 'Para pagar') {
             anadir('Revisar Documentos DD.JJ.','admDeclaracionJurada','reviewDocumentsDeclaracion&id_declaracion_jurada='+data.id_ddjj);
         } else {
             anadir('Revisar DD.JJ.','admDeclaracionJurada','reviewDeclaracion&id_declaracion_jurada='+data.id_ddjj);

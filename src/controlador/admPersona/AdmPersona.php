@@ -949,4 +949,12 @@ class AdmPersona extends Principal {
         } 
         return $empresaPorPersona;
   }
+  public static function getPersonasPorPerfil($id_perfil) {
+    $empresa_persona = new EmpresaPersona();
+    $sqlEmpresaPersona = new SQLEmpresaPersona();
+    $empresa_persona->setId_Perfil($id_perfil);
+    $personasPorPerfil=$sqlEmpresaPersona->getPersonaObjPorPerfil($empresa_persona);
+
+    return $personasPorPerfil;
+  }
 }
