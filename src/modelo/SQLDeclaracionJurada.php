@@ -110,6 +110,9 @@ class SQLDeclaracionJurada {
   public function getByAcuerdo(DeclaracionJurada $declaracion_jurada){
     return $declaracion_jurada->finder()->findAll('id_acuerdo = ?',$declaracion_jurada->getId_acuerdo());
   }
+  public function getByAcuerdoYEstado(DeclaracionJurada $declaracion_jurada){
+    return $declaracion_jurada->finder()->findAll('id_acuerdo = ? and id_estado_ddjj = ?',array($declaracion_jurada->getId_acuerdo(),$declaracion_jurada->getId_estado_ddjj()));
+  }
   public function getByEstado(DeclaracionJurada $declaracion_jurada) {
     return $declaracion_jurada->finder()->findAll('id_estado_ddjj = ?' ,$declaracion_jurada->getId_estado_ddjj());
   }

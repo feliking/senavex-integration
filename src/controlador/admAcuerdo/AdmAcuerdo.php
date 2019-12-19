@@ -9,6 +9,8 @@
 /* Controlar el acceso de los usuarios*/
 defined('_ACCESO') or die('Acceso restringido');
 
+include_once(PATH_CONTROLADOR . DS .'admDeclaracionJurada'. DS .'AdmDeclaracionJurada.php');
+
 include_once(PATH_TABLA . DS . 'Acuerdo.php');
 include_once(PATH_TABLA . DS . 'TipoAcuerdo.php');
 include_once(PATH_TABLA . DS . 'EstadoAcuerdo.php');
@@ -389,5 +391,16 @@ class AdmAcuerdo extends Principal {
     $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
     $acuerdo->setId_estado_acuerdo(2);
     return $acuerdo->save();
+  }
+  public function setIdAcuerdoToReviewDDJJ($id_acuerdo_antiguo,$id_acuerdo){
+    $ddjj = new DeclaracionJurada();
+    $sqlddjj = new SQLDeclaracionJurada();
+    $ddjj->setId_acuerdo($id_acuerdo_antiguo);
+    $ddjj->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_REVISAR);
+    $ddjjs= $sqlddjj->getByAcuerdoYEstado($ddjj);
+    foreach ($ddjjs as $dj) {
+      $dj->setId_acuerdo($id_acuerdo);
+      $dj->save();
+    }
   }
 }
