@@ -505,6 +505,7 @@ class AdmDeclaracionJurada extends Principal {
       $pais=$sqlPais->getListarPais($pais);
       $acuerdos=$sqlAcuerdo->getAcuerdoSinNinguno($acuerdo,true);
       $direccion = $functions->getDireccion($declaracion_jurada->getId_direccion());
+      $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($declaracion_jurada->getId_direccion());
       $fabrica=$functions->getFabrica($declaracion_jurada->getId_direccion());
 
       $acuerdo->setId_Acuerdo($declaracion_jurada->getId_acuerdo());
@@ -519,6 +520,7 @@ class AdmDeclaracionJurada extends Principal {
 
 //      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+      $vista->assign('direccionTpl',$direccionRepresentanteTpl);
       $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
       $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
       $vista->assign('observaciones_ddjj',$functions->getObservaciones($_REQUEST["id_declaracion_jurada"]));
