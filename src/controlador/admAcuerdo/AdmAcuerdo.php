@@ -127,7 +127,11 @@ class AdmAcuerdo extends Principal {
                     }
                 }
                 //anular acuerdo si es edicion
-                if($_REQUEST['id_acuerdo'] && !$noesUsado) $this->anularAcuerdo($_REQUEST['id_acuerdo']);
+                if($_REQUEST['id_acuerdo'] && !$noesUsado){
+                  $this->anularAcuerdo($_REQUEST['id_acuerdo']);
+                  $this->setIdAcuerdoToReviewDDJJ($_REQUEST['id_acuerdo'],$acuerdo->getId_Acuerdo());
+                }
+
 
                 echo '{"status":"1","message":"El acuerdo se cuardo satisfactoriamente."}';
             }
