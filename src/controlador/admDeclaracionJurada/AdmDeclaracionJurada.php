@@ -590,6 +590,7 @@ class AdmDeclaracionJurada extends Principal {
         $declaracion_jurada->setFecha_limite_cancelacion($funcionesGenerales->addDate($hoy,15));
       }
       $declaracion_jurada->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
+      $declaracion_jurada->setComplemento(strtoupper ($_REQUEST["complemento"]));
       $declaracion_jurada->setId_asistente($_SESSION['id_persona']);
       $declaracion_jurada->setId_criterios( implode (",", json_decode($_REQUEST['criterios_origen'])));
 

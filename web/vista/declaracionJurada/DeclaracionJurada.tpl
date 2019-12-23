@@ -444,25 +444,29 @@
             {if $preview || $documentReview}
                 <h2>DETERMINACIÓN DEL CRITERIO DE ORIGEN</h2>
                 <section class="ddjj-section">
-                    <table class="ddjj-table">
-                        <thead><tr><th class="cell-lg">Acuerdo Comercial O Régimen Preferencial Seleccionado</th><th >Criterio de Origen, según Acuerdo Comercial o Régimen</th></tr></thead>
-                        <tbody>
-                        <tr>
-                            <td class="view_acuerdo_label">
-                                {$ddjj->acuerdo->descripcion} ({$ddjj->acuerdo->sigla})
-                            </td>
-                            <td id="view_criterio_origen">
-                                {foreach $criterios as $criterio}{$criterio}{if not $criterio@last}, {/if}{/foreach}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    <div class="row-fluid  form" >
+                        <table class="ddjj-table">
+                            <thead><tr><th class="cell-lg">Acuerdo Comercial O Régimen Preferencial Seleccionado</th><th >Criterio de Origen, según Acuerdo Comercial o Régimen</th></tr></thead>
+                            <tbody>
+                            <tr>
+                                <td class="view_acuerdo_label">
+                                    {$ddjj->acuerdo->descripcion} ({$ddjj->acuerdo->sigla})
+                                </td>
+                                <td id="view_criterio_origen">
+                                    {foreach $criterios as $criterio}{$criterio}{if not $criterio@last}, {/if}{/foreach}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {if $ddjj->complemento}
                     <div class="row-fluid  form" >
                         <label class="span2 ddjj-section-label">Complemento</label>
                         <div class="span10 ddjj-section-area" id="view_complemento">
-                            {if $ddjj->complemento}{$ddjj->complemento}{/if}
+                            {$ddjj->complemento}
                         </div>
                     </div>
+                    {/if}
                 </section>
             {elseif $review}
                 <div class="row-fluid form" >
@@ -650,9 +654,9 @@
         else{
             $('#{$id} #view_productor').show();
             var tabla_data=generateTableHtml(tabla_comercializadores,totalPercentage());
-            $('#{$id} #view_productor .ddjj-table').html('').append(tabla_data.head).append(tabla_data.body);
+            $('#view_productor .ddjj-table').html('').append(tabla_data.head).append(tabla_data.body);
 
-            $('#ddjj_fabrica').addClass('none');
+            $('#ddjj_fabrica').hide();
         }
 
 
@@ -769,6 +773,7 @@
                 cambiar('review','{$id}loading_ddjj');
                 var data='opcion=admDeclaracionJurada&tarea=aproveDdjj&id_ddjj={$ddjj->id_ddjj}';
                 data+='&observacion_general='+$('#observacion_general').val();
+                data+='&complemento='+$('#complemento_criterio_origen').val();
                 // data+='&observacion_ddjj='+$('#observacion_ddjj').val();
                 data += '&criterios_origen=' + JSON.stringify($('#criterio_origen').data("kendoMultiSelect").value());
 
