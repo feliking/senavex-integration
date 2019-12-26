@@ -2546,4 +2546,12 @@ class AdmEmpresa extends Principal {
 
     $empresa->save();
   }
+  public static function tieneRuex($id_empresa){
+    $empresa = new Empresa();
+    $sqlEmpresa = new SQLEmpresa();
+    $empresa->setId_empresa($id_empresa);
+    $empresa=$sqlEmpresa->getEmpresaPorID($empresa);
+
+    return !!$empresa->getRuex();
+  }
 }

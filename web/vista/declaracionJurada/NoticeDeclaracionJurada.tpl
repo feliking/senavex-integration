@@ -1,4 +1,4 @@
-<div class="row-fluid  form  none" id="{$id}_notice_ddjj">
+<div class="row-fluid  form  {if !$display}none{/if}" id="{$id}_notice_ddjj">
     <div class="span12 ddjj-container" >
         <div class="ddjj-notice-header">
             <div class="row-fluid">
@@ -38,5 +38,9 @@ function acceptAction(){
     remover(tabStrip.select());
     cerraractualizartab('Declaración Jurada','admDeclaracionJurada','declaracionesJuradas');
     {/if}
+    {if $cerrar}
+    remover(tabStrip.select());
+    {/if}
+
 }
 </script>

@@ -9,6 +9,7 @@ include_once(PATH_CONTROLADOR . DS . 'admCorreo' . DS . 'AdmCorreo.php');
 include_once(PATH_CONTROLADOR . DS . 'admDireccion' . DS . 'AdmDireccion.php');
 include_once(PATH_CONTROLADOR . DS . 'admUploader' . DS . 'AdmUploader.php');
 include_once(PATH_CONTROLADOR . DS . 'admAnalisisRiesgo' . DS . 'AdmAnalisisFormula.php');
+include_once(PATH_CONTROLADOR . DS . 'admEmpresa' . DS . 'AdmEmpresa.php');
 include_once(PATH_CONTROLADOR . DS . 'middleware' . DS . 'Middleware.php');
 
 include_once(PATH_TABLA . DS . 'DeclaracionJurada.php');
@@ -143,6 +144,14 @@ class AdmDeclaracionJurada extends Principal {
 
     //***********************declaraciones Juradas vista previa******************
     if($_REQUEST['tarea']=='declaracionesJuradas'){
+
+      if ($condicional->esExportador() && !AdmEmpresa::tieneRuex($_SESSION["id_empresa"])) {
+        $vista->assign('custom_message','No puede acceder a DDJJ, si no tiene RUEX.');
+        $vista->assign('cerrar','cerrar');
+        $vista->assign('display','display');
+        $vista->display("declaracionJurada/NoticeDeclaracionJurada.tpl");
+        exit;
+      }
 
       $estados = $sqlEstadoDdjj->getListarEstadoDdjj($estado_ddjj);
       $vista->assign('estados',$estados);
@@ -373,6 +382,8 @@ class AdmDeclaracionJurada extends Principal {
     }
     //************************ json de la lista de ddjj *******************////
     if($_REQUEST['tarea']=='listarDeclaraciones'){
+
+
       $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
       $declaracion_jurada->setId_estado_ddjj($_REQUEST['estado_ddjj']!=''?$_REQUEST['estado_ddjj']:1);
       $resultado = $sqlDeclaracionJurada->getListarDdjjObjectsEstado($declaracion_jurada,$condicional->esPerfilUco());
