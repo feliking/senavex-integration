@@ -386,7 +386,7 @@ class AdmDeclaracionJurada extends Principal {
 
       $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
       $declaracion_jurada->setId_estado_ddjj($_REQUEST['estado_ddjj']!=''?$_REQUEST['estado_ddjj']:1);
-      $resultado = $sqlDeclaracionJurada->getListarDdjjObjectsEstado($declaracion_jurada,$condicional->esPerfilUco());
+      $resultado = $sqlDeclaracionJurada->getListarDdjjObjectsEstado($declaracion_jurada,$condicional->esPerfilUco() || $condicional->esCertificador());
       $sqlpartida = new SQLPartida();
       $strJson = '';
       echo '[';
