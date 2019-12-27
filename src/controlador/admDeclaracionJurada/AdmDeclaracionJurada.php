@@ -155,7 +155,7 @@ class AdmDeclaracionJurada extends Principal {
 
       $estados = $sqlEstadoDdjj->getListarEstadoDdjj($estado_ddjj);
       $vista->assign('estados',$estados);
-      $vista->assign('esExportador',$condicional->esExportador());
+      $vista->assign('esExportador',$condicional->esExportador() || $condicional->esTramites());
       $vista->display("declaracionJurada/DeclaracionesJuradas.tpl");
     }
     // ************************envia el formulario de una ddjj*******************************/////
