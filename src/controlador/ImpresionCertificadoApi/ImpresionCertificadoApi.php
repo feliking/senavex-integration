@@ -144,7 +144,7 @@ class PDF extends FPDF
         ////////// NRO CERTIFICADO///////////////
         $this->SetFont('Arial','B',12);
         $this->SetXY(162, 52);
-        $this->Cell(45,10,'API-19/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
+        $this->Cell(45,10,'API-20/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
         $this->SetFont('Arial','B',22);
         $this->SetXY(163, 50);
       

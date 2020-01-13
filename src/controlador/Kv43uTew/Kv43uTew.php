@@ -226,7 +226,7 @@ $pdf->SetFont('Arial','',4);
 //--------------
 $pdf->SetXY(20, 30);
 $pdf->SetFont('Times','B',10);
-$pdf->Cell(185,6,utf8_decode('API - 19/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie()),2,0,'R'); 
+$pdf->Cell(185,6,utf8_decode('API - 20/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie()),2,0,'R'); 
 
 
 
