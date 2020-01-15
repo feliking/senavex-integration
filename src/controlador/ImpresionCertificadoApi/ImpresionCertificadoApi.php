@@ -135,8 +135,7 @@ class PDF extends FPDF
         $persona=$sqlPersona->getDatosPersonaPorId($persona);
         $nro_fojas=$nro_registros;
         
-        
-    
+        $gestion = substr($comiteApi->getFecha_fin(), 2,2);
 
         //RUI$this->RoundedRect(9, 71, 30, 8, 2, '1234', 'D');
         //$this->Image('styles/img/institucion/logo-min.png',7,10,75,25);
@@ -144,7 +143,7 @@ class PDF extends FPDF
         ////////// NRO CERTIFICADO///////////////
         $this->SetFont('Arial','B',12);
         $this->SetXY(162, 52);
-        $this->Cell(45,10,'API-20/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
+        $this->Cell(45,10,'API-'.$gestion.'/'.$comiteApi->getNro_comite().'/'.$autorizacionPrevia->getNro_serie(),0,1,'C');     
         $this->SetFont('Arial','B',22);
         $this->SetXY(163, 50);
       

@@ -90,6 +90,15 @@ class AdmDeposito extends Principal {
             $sqlDeposito = new SQLDeposito();
             $deposito->setCodigo_Deposito($_REQUEST['codigo_deposito']);
             $res = $sqlDeposito->getListarDepositoPorCodigo($deposito);
+            if(count($res)>0){
+                $factura = new FacturaSenavexManual();
+                $sqlFacturaSenavexManual = new SQLFacturaSenavexManual();
+                $factura->setId_factura_senavex_manual($res[0]->getId_factura());
+                $factura = $sqlFacturaSenavexManual->getFacturaManualPorID($factura);
+                if($factura->getEstado() == 1){
+                    $res = array();
+                }
+            }
             echo '[';
             echo '{"suceso":"'. count($res) .'"}';
             echo ']';
