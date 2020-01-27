@@ -6,6 +6,8 @@ defined('_ACCESO') or die('Acceso restringido');
 include_once(PATH_LIB . DS . 'PHPExcel' . DS . 'IOFactory.php');
 include_once(PATH_LIB . DS . 'PHPExcel' . DS . 'PHPExcel.php');
 include_once(PATH_LIB . DS . 'PHPExcel' . DS . 'Writer'. DS . 'Excel2007.php');
+include_once(PATH_LIB . DS . 'Spreadsheet' . DS . 'php-excel-reader'. DS . 'excel_reader2.php');
+include_once(PATH_LIB . DS . 'Spreadsheet' . DS . 'SpreadsheetReader.php');
 
 include_once(PATH_TABLA . DS . 'AutorizacionPrevia.php');
 include_once(PATH_TABLA . DS . 'AutorizacionPreviaDetalle.php');
@@ -81,7 +83,64 @@ class AdmAutorizacionPrevia extends Principal {
             $empresa=$sqlAutorizacionPrevia->getListar($autorizacionPrevia);
 
         }
+        if($_REQUEST['tarea']=='loadExcel'){
 
+            $allowedfileExtensions = array('xls', 'xlsx');
+            if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+                $fileName = $_FILES['file']['name'];
+                $fileNameCm = explode(".", $fileName);
+                $fileExtension = strtolower(end($fileNameCm));
+                $fileTmpPath = $_FILES['file']['tmp_name'];
+                $fech = date("m-d-h-i-s");
+                if (in_array($fileExtension, $allowedfileExtensions)) {
+                    $uploadFileDir = 'styles/solicitudes/';
+                    $dest_path = $uploadFileDir .$_SESSION['id_empresa'].'_'.$fech.'.'.$fileExtension;
+                    if(move_uploaded_file($fileTmpPath, $dest_path))
+                    {
+                        $Reader = new SpreadsheetReader($dest_path);
+                        $data = array();
+                        $key_success = [];
+                        $key_error = [];
+                        $key_total = 0;
+                        $i = 1;
+                        foreach ($Reader as $Key => $Row)
+                        {
+                           if ($Key >= 10) { //rows data
+                               if (trim($Row[2]) == '' && trim($Row[3]) == '' && trim($Row[4]) == '' && trim($Row[5]) == '' && trim($Row[6]) == '' && trim($Row[7]) == '' && trim($Row[8]) == '' && trim($Row[9]) == '') {
+                                   $some = '';
+                               }
+                               else {
+                                   if (trim($Row[2]) != '' && trim($Row[3]) != '' && trim($Row[4]) != '' && trim($Row[5]) != '' && trim($Row[6]) != '' && trim($Row[7]) != '' && trim($Row[8]) != '' && trim($Row[9]) != '') {
+                                       $data[$i]['num']=$i;
+                                       $data[$i]['subpartida']=$Row[2];
+                                       $data[$i]['desc_arancelaria']=$Row[3];
+                                       $data[$i]['desc_comercial']=$Row[4];
+                                       $data[$i]['cantidadgrid']=$Row[5];
+                                       $data[$i]['unidad_medida']=$Row[6];
+                                       $data[$i]['peso_bruto']=$Row[7];
+                                       $data[$i]['precio_unitario_sus']=$Row[8];
+                                       $data[$i]['valor_total_sus']=$Row[9];
+                                       $data[$i]['precio_unitario_div']=$Row[11];
+                                       $data[$i]['valor_total_div']=$Row[12];
+                                       $i++;
+                                       $key_success[] = $Key+1;
+                                   }
+                                   else {
+                                       $key_error[] = $Key+1;
+                                   }
+                               }
+                           }
+                        }
+                        $data['success']['rows'] = $key_success;
+                        $data['success']['count'] = count($key_success);
+                        $data['error']['rows'] = $key_error;
+                        $data['error']['count'] = count($key_error);
+                        $data['total'] = count($key_success) + count($key_error);
+                        echo json_encode($data);
+                    }
+                }
+            }
+        }
         if($_REQUEST['tarea']=='guardaSolicitud'){
 
             $allowedfileExtensions = array('xls', 'xlsx');
@@ -109,12 +168,10 @@ class AdmAutorizacionPrevia extends Principal {
                     $autorizacionPrevia->setFecha_registro(date("Y-m-d H:i:s")); 
                     $autorizacionPrevia->setEstado(3); 
                     $autorizacionPrevia->setId_empresa_importador($_SESSION['id_empresa']);
-                    
                     $autorizacion = $sqlAutorizacionPrevia->save($autorizacionPrevia);
 		            $corr = 10000 + $autorizacionPrevia->getId_autorizacion_previa();
-
                     $dest_path = $uploadFileDir . $corr.'_'.$_SESSION['id_empresa'].'_'.$fech.'.'.$fileExtension;
-                     
+
                     if(move_uploaded_file($fileTmpPath, $dest_path))
                     {
                       echo 1;
@@ -130,8 +187,26 @@ class AdmAutorizacionPrevia extends Principal {
             } else {
                 echo 2;
             }
-        
-            
+            $detalle = json_decode($_REQUEST['arrayvalue']);
+            $arraytmp = [];
+            foreach ($detalle as $key => $item) {
+                $sqlAutorizacionPreviaDetalle = new SQLAutorizacionPreviaDetalle();
+                $autorizacionPreviaDetalle = new autorizacionPreviaDetalle();
+                $autorizacionPreviaDetalle->setCodigo_nandina(intval($item->subpartida));
+                $autorizacionPreviaDetalle->setDescripcion_arancelaria($item->desc_arancelaria);
+                $autorizacionPreviaDetalle->setDescripcion_comercial($item->desc_comercial);
+                $autorizacionPreviaDetalle->setCantidad($item->cantidadgrid);
+                $autorizacionPreviaDetalle->setUnidad_medida($item->unidad_medida);
+                $autorizacionPreviaDetalle->setPeso($item->peso_bruto);
+                $autorizacionPreviaDetalle->setPrecio_unitario_fob($item->precio_unitario_sus);
+                $autorizacionPreviaDetalle->setFob($item->valor_total_sus);
+                $autorizacionPreviaDetalle->setValor_fob_total_divisa($item->valor_total_div);
+                $autorizacionPreviaDetalle->setPrecio_unitario_fob_divisa($item->precio_unitario_div);
+                $autorizacionPreviaDetalle->setId_autorizacion_previa(intval($autorizacionPrevia->getId_autorizacion_previa()));
+//              var_dump($autorizacionPreviaDetalle); die('<<<<<<<<<<<<<<<');
+                $sqlAutorizacionPreviaDetalle->SaveAutDetalle($autorizacionPreviaDetalle);
+                $arraytmp[] = $autorizacionPreviaDetalle;
+            }
             exit;
         }
 

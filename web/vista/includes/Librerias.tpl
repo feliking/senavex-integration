@@ -12,6 +12,7 @@
 <link href="styles/css/kendo.common.min.css" rel="stylesheet">
 <link href="styles/css/kendo.rtl.min.css" rel="stylesheet">
 <link href="styles/css/kendo.uniform.min.css" rel="stylesheet">
+<link href="styles/fontawesome/css/all.css"
 
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" type="text/css" href="styles/css-personales/principal.css" media="screen" />
@@ -19,7 +20,7 @@
 <link rel="stylesheet" type="text/css" href="styles/css-personales/bootstrap-responsive.min.css" media="screen" />
 <link href="styles/css-personales/k-window-bienvenida.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="styles/css-personales/idangerous.swiper.css" media="screen" />
-
+<link rel="stylesheet" href="styles/fontawesome/css/fontawesome.css">
 <!-- Scripts JS globales -->
 <script src="styles/js/jquery.min.js"></script>
 <script src="styles/js/kendo.all.min.js"></script>
