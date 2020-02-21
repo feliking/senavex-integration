@@ -54,7 +54,7 @@
                 { field: "denominacion_comercial", title: "Descripción Comercial"},
                 { field: "fecha_registro", title: "Fecha de Registro"},
                 { field: "fecha_vencimiento", title: "Fecha de Vencimiento"},
-                { field: 'Clonar',filterable:false ,template:'<a target="_blank" onclick="clonarDeclaracionJurada(#= id_ddjj #)" class="k-button link">Clonar</a>'},
+                { field: 'Clonar',filterable:false ,template:'<a target="_blank" onclick="clonarDeclaracionJurada(#= id_ddjj #)" class="k-button link">Duplicar</a>'},
                 { field: 'Reasignar',filterable:false ,template: "<a target=\"_blank\" onclick=\"reAsignarDeclaracionJurada(#= id_ddjj #)\" class=\"k-button link\">Reasignar</a>"},
                 { field: 'Dar de Baja',filterable:false,template:
                         '<a target="_blank" onclick="eliminarDdjj(#= id_ddjj #)" class="k-button link">Dar de Baja</a>'

@@ -183,6 +183,7 @@ class AdmDeclaracionJurada extends Principal {
       $acuerdos = $acuerdosVerificacion[0];
 
       $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($representanteEmpresa[1]->direccion);
+   
 
       if($acuerdosVerificacion[1]) $vista->assign('acuerdoBloqueo',$acuerdosVerificacion[1]);
 
@@ -203,10 +204,10 @@ class AdmDeclaracionJurada extends Principal {
         $vista->assign('observaciones_ddjj',$functions->getObservaciones($_REQUEST["id_declaracion_jurada"]));
         $vista->display('declaracionJurada/Observaciones.tpl');
       } ;
-
+      $vista->assign('direccionTpl',$direccionRepresentanteTpl);
       $vista->display("declaracionJurada/FormDeclaracionJurada.tpl");
 
-      $vista->assign('direccionTpl',$direccionRepresentanteTpl);
+     
       $vista->assign('representanteEmpresa',$representanteEmpresa);
       $vista->assign('edition',true);
       $vista->assign('id','view_ddjj');
@@ -459,7 +460,8 @@ class AdmDeclaracionJurada extends Principal {
           '","descripcion_comercial":' . json_encode($resultado[$i]["denominacion_comercial"]) .
           ',"denominacion":' . json_encode($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
           ',"caracteristicas":' . json_encode($resultado[$i]["caracteristicas"]) .
-//          '","fecha_limite_revision":"' . substr($resultado[$i]["fecha_limite_revision"], 0, 11) .
+          ',"ruex":' . json_encode($resultado[$i]["ruex"]) .
+ //         '","fecha_limite_revision":"' . substr($resultado[$i]["fecha_limite_revision"], 0, 11) .
           ',"fecha_registro":"' . substr($resultado[$i]["fecha_registro"], 0, 11) .
           '","estadoddjj":"' . $resultado[$i]["estadoddjj"] . '"},';
 

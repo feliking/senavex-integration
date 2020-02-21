@@ -33,9 +33,7 @@
                 </div>
                 <div class="row-fluid">
                    {$direccionTpl}
-                </div>
-                
-                
+                </div>      
             </section>
             
             

@@ -76,10 +76,11 @@ class SQLDeclaracionJurada {
   }
 
   public function getListarDeclaracionesParaRevisar(DeclaracionJurada $declaracion_jurada, $certif){
-    $sql = "SELECT dj.*,ed.descripcion as estadoddjj
+    $sql = "SELECT em.ruex as ruex, dj.*,ed.descripcion as estadoddjj
                 FROM servicio_exportador se JOIN declaracion_jurada dj ON(se.id_servicio_exportador=dj.id_servicio_exportador)
                 JOIN sistema_colas sc ON(se.id_servicio_exportador=sc.id_servicio_exportador)
                 JOIN estado_ddjj ed on(dj.id_estado_ddjj=ed.id_estado_ddjj)
+                JOIN empresa em ON (dj.id_empresa= em.id_empresa)
                 WHERE sc.id_asistente=".$certif." AND sc.atendido=0 AND se.id_servicio=3 and dj.id_estado_ddjj =0";
     $connection = $declaracion_jurada->getDbConnection();
     $connection->Active = true;
@@ -90,9 +91,11 @@ class SQLDeclaracionJurada {
   }
 
   public function getListarDeclaracionesEstado(DeclaracionJurada $declaracion_jurada, $estado){
-    $sql = "SELECT dj.*,ed.descripcion as estadoddjj
-                FROM declaracion_jurada dj JOIN estado_ddjj ed on(dj.id_estado_ddjj=ed.id_estado_ddjj)
-                WHERE  dj.id_estado_ddjj = ".$estado;
+    $sql = "SELECT em.ruex as ruex, dj.*,ed.descripcion as estadoddjj
+            FROM declaracion_jurada dj 
+            JOIN estado_ddjj ed ON(dj.id_estado_ddjj=ed.id_estado_ddjj)
+            JOIN empresa em ON(dj.id_empresa=em.id_empresa)
+            WHERE  dj.id_estado_ddjj = ".$estado;
     $connection = $declaracion_jurada->getDbConnection();
     $connection->Active = true;
     $command = $connection->createCommand($sql);

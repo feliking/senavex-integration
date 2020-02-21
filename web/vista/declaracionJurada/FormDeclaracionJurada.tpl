@@ -19,23 +19,23 @@
                     <input type="hidden" name="id_arancel" value="{$arancel_vigente->id_arancel}"/>
                     <h2>I. DATOS DEL EXPORTADOR</h2>
                     <section class="ddjj-section">
-                        <div class="row-fluid form">
-                            <label class="span2 ddjj-section-label ">1.1 No. RUEX:</label>
-                            <div class="span2 ddjj-section-field">{$representanteEmpresa[1]->ruex}</div>
-                            <label class="span2 ddjj-section-label">1.2 No. NIT:</label>
-                            <div class="span2 ddjj-section-field">{$representanteEmpresa[1]->nit}</div>
-                        </div>
-                        <div class="row-fluid">
-                            <label class="span2 ddjj-section-label">1.3 Razón Social:</label>
-                            <div class="span10 ddjj-section-field">{$representanteEmpresa[1]->razon_social}</div>
-                        </div>
-                        <div class="row-fluid">
-                            <label class="span2 ddjj-section-label">1.4 Domicilio Fiscal:</label>
-                        </div>
-                        <div class="row-fluid">
-                            {$direccion}
-                        </div>
-                    </section>
+                <div class="row-fluid form">
+                    <label class="span2 ddjj-section-label">1.1 No. RUEX:</label>
+                    <div class="span2 ddjj-section-field">{$representanteEmpresa[1]->ruex}</div>
+                    <label class="span2 ddjj-section-label">1.2 No. NIT:</label>
+                    <div class="span2 ddjj-section-field">{$representanteEmpresa[1]->nit}</div>
+                </div>
+                <div class="row-fluid">
+                    <label class="span2 ddjj-section-label">1.3 Razón Social:</label>
+                    <div class="span10 ddjj-section-field">{$representanteEmpresa[1]->razon_social}</div>
+                </div>
+                <div class="row-fluid">
+                    <label class="span2 ddjj-section-label">1.4 Domicilio Fiscal:vista</label>
+                </div>
+                <div class="row-fluid">
+                    {$direccionTpl}
+                </div>
+            </section>
                     <h2>II. DATOS DEL PRODUCTOR</h2>
                     <section class="ddjj-section" >
                     <span class="ddjj-section-alert">
@@ -140,9 +140,7 @@
                                 <label class="span3 ddjj-section-label">
                                     3.8 Unidad de Medida Comercial:
                                 </label>
-                                <div class="span3 ddjj-section-field" id="unidadmedida">
-                                    {$ddjj->id_unidad_medida}
-                                </div>
+                                    <input type="text" id="unidad_medida_texto" name="unidad_medida_texto"/>                                
                             </div>
                         </div>
                     </section>

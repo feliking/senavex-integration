@@ -48,7 +48,7 @@
                     <div id="view_productor" {if !($edition || $ddjj->comercializador)}style="display: none" {/if}>
                         <section class="ddjj-section" >
                             <table class="ddjj-table">
-                                <thead><tr><th>2.1 Nombre o Razón Social del Productor</th><th>2.2 Domicilio Legal</th><th>2.3 Repr. Legal</th><th>2.4 CI o NIT</th><th>2.5 Teléfono y/o N° de celular</th><th>2.6 Precio Venta al Exportador en $us</th><th>2.7 Unidad de Medida</th><th>2.8 Cap. Producción Mensual</th><th>2.9 Dirección de Fábrica</th></tr></thead>
+                                <thead><tr><th>2.1 Nombre o Razón Social del Productor</th><th>2.2 Domicilio Legal</th><th>2.3 Repr. Legal</th><th>2.4 CI o NIT</th><th>2.5 Teléfono y/o N° de celular</th><th>2.6 Precio Venta al Exportador en $us</th><th></th><th>2.8 Cap. Producción Mensual</th><th>2.9 Dirección de Fábrica</th></tr></thead>
                                 <tbody>
                                 {foreach $ddjj->comercializadores as $productor}
                                     <tr>
@@ -151,9 +151,9 @@
                         {$ddjj->produccion_mensual}
                     </div>
                     <label class="span3 ddjj-section-label">
-                        3.8 Unidad de Medida Comercial:
+                        3.8 Unidad de Medida Comercial REVIEW:
                     </label>
-                    <div class="span3 ddjj-section-field" id="view_unidadmedida">
+                    <div class="span3 ddjj-section-field" id="unidad_medida_texto">
                         {$ddjj->id_unidad_medida}
                     </div>
                 </div>
@@ -441,7 +441,8 @@
 {*                    </div>*}
 {*                </section>*}
 {*            {/if}*}
-            {if $preview || $documentReview}
+            {* {if $preview || $documentReview || $ddjj->id_estado_ddjj==1}*}
+            {if $preview || $documentReview || $ddjj->id_estado_ddjj==1}
                 <h2>DETERMINACIÓN DEL CRITERIO DE ORIGEN</h2>
                 <section class="ddjj-section">
                     <div class="row-fluid  form" >
@@ -474,11 +475,6 @@
                         <li>
                             <button class="k-button btn-lg" id="aceptarDdjj" onclick="aceptarDdjj()" >Aceptar</button>
                         </li>
-{*                        {if $ddjj->acuerdo->sigla =="ACE36"}*}
-{*                            <li>*}
-{*                                <button class="k-button btn-lg" id="actualizarDdjj" onclick="actualizarDdjj()" >Actualizar MEC</button>*}
-{*                            </li>*}
-{*                        {/if}*}
                         <li>
                             <button class="k-button btn-lg " onclick="rechazarDdjj()">Rechazar</button>
                         </li>
@@ -520,7 +516,8 @@
             cambiar('view_ddjj','{$id}loading_ddjj');
             var datos='opcion=admDeclaracionJurada&tarea=saveDeclaracionJurada&';
             datos+=$("#alta_ddjj").serialize();
-            datos+='&unidadmedida='+$("#alta_ddjj #unidadmedida").text().trim();
+            //datos+='&unidadmedida='+$("#alta_ddjj #unidadmedida").text().trim();
+            datos+='&unidadmedida='+$("#unidad_medida_texto").val().trim();
             datos += '&id_partida=' + $('#alta_ddjj #ddjj_arancel').attr('id_partida');
             var values=genericUpdate();
 

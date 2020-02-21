@@ -1350,4 +1350,12 @@
     {/if}
     {/if}
 
+    $('#unidad_medida_texto').kendoDropDownList({
+                dataTextField: "descripcion",
+                dataValueField: "descripcion",
+                autoBind: false,
+                dataSource: dsumedida,                
+                open: solveDropdowns
+            });
+
 </script>

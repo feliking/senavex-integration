@@ -46,6 +46,7 @@
         },
         change: cambiarceldasddjj,
         columns: [
+            { field: "ruex", title: "Nº RUEX"},
             { field: "descripcion_comercial", title: "Descripción Comercial"},
             { field: "denominacion", title: "Clasificación Arancelaria"},
             { field: "caracteristicas", title: "Características"},
