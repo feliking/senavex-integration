@@ -58,7 +58,7 @@
                                         <td>{$productor->ci_nit}</td>
                                         <td>{$productor->telefono}</td>
                                         <td>{$productor->precio_venta}</td>
-                                        <td>{foreach $unidadmedida as $um}{if $um->id_unidad_medida==$productor->id_unidad_medida}{$um->descripcion}{/if}{/foreach}</td>
+                                        <td>{foreach $unidad_medida_texto as $um}{if $um->id_unidad_medida==$productor->id_unidad_medida}{$um->descripcion}{/if}{/foreach}</td>
                                         <td>{$productor->produccion_mensual}</td>
                                         <td>{$productor->direccion_fabrica}</td>
                                     </tr>
@@ -153,8 +153,8 @@
                     <label class="span3 ddjj-section-label">
                         3.8 Unidad de Medida Comercial REVIEW:
                     </label>
-                    <div class="span3 ddjj-section-field" id="unidad_medida_texto">
-                        {$ddjj->id_unidad_medida}
+                    <div class="span3 ddjj-section-field" id="view_unidadmedida">
+                        {{$ddjj->id_unidad_medida}}
                     </div>
                 </div>
 
@@ -442,34 +442,8 @@
 {*                </section>*}
 {*            {/if}*}
             {* {if $preview || $documentReview || $ddjj->id_estado_ddjj==1}*}
-            {if $preview || $documentReview || $ddjj->id_estado_ddjj==1}
-                <h2>DETERMINACIÓN DEL CRITERIO DE ORIGEN</h2>
-                <section class="ddjj-section">
-                    <div class="row-fluid  form" >
-                        <table class="ddjj-table">
-                            <thead><tr><th class="cell-lg">Acuerdo Comercial O Régimen Preferencial Seleccionado</th><th >Criterio de Origen, según Acuerdo Comercial o Régimen</th></tr></thead>
-                            <tbody>
-                            <tr>
-                                <td class="view_acuerdo_label">
-                                    {$ddjj->acuerdo->descripcion} ({$ddjj->acuerdo->sigla})
-                                </td>
-                                <td id="view_criterio_origen">
-                                    {foreach $criterios as $criterio}{$criterio}{if not $criterio@last}, {/if}{/foreach}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    {if $ddjj->complemento}
-                    <div class="row-fluid  form" >
-                        <label class="span2 ddjj-section-label">Complemento</label>
-                        <div class="span10 ddjj-section-area" id="view_complemento">
-                            {$ddjj->complemento}
-                        </div>
-                    </div>
-                    {/if}
-                </section>
-            {elseif $review}
+
+            {if $review}                
                 <div class="row-fluid form" >
                     <ul class="ul-buttons">
                         <li>
@@ -480,7 +454,36 @@
                         </li>
                     </ul>
                 </div>
-            {elseif $edition}
+            {/if}                    
+            {if $preview || $documentReview || $ddjj->id_estado_ddjj==1}
+                <h2>DETERMINACIÓN DEL CRITERIO DE ORIGEN</h2>
+                    <section class="ddjj-section">
+                        <div class="row-fluid  form" >
+                            <table class="ddjj-table">
+                                <thead><tr><th class="cell-lg">Acuerdo Comercial O Régimen Preferencial Seleccionado</th><th >Criterio de Origen, según Acuerdo Comercial o Régimen</th></tr></thead>
+                                <tbody>
+                                <tr>
+                                    <td class="view_acuerdo_label">
+                                        {$ddjj->acuerdo->descripcion} ({$ddjj->acuerdo->sigla})
+                                    </td>
+                                    <td id="view_criterio_origen">
+                                        {foreach $criterios as $criterio}{$criterio}{if not $criterio@last}, {/if}{/foreach}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {if $ddjj->complemento}
+                        <div class="row-fluid  form" >
+                            <label class="span2 ddjj-section-label">Complemento</label>
+                            <div class="span10 ddjj-section-area" id="view_complemento">
+                                {$ddjj->complemento}
+                            </div>
+                        </div>
+                        {/if}
+                    </section>
+            {/if}
+            {if $edition}
                 <div class="row-fluid form" >
                     <ul class="ul-buttons">
                         <li>
@@ -609,7 +612,7 @@
 
         $('#{$id} #view_descripcion_arancel').html($('#alta_ddjj #descripcion_arancel').text());
 
-        $('#{$id} #view_unidadmedida').html($('#alta_ddjj #unidadmedida').text());
+        $('#{$id} #view_unidadmedida').html($('#alta_ddjj #unidad_medida_texto').val().trim());
         //if($('#alta_ddjj #complemento_criterio_origen').val()){
         if($('#alta_ddjj input:radio[name="muestra"]:checked').val()=="true") $('#{$id} #view_muestra').html('SI');
         else $('#{$id} #view_muestra').html('NO');
