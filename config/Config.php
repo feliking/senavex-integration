@@ -34,4 +34,5 @@ define('NIT',$ini['app_nit']);
 define('EMAIL',$ini['app_email']);
 define('is_prod', $ini['is_prod']);
 
+
 ?>

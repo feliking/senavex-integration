@@ -649,6 +649,7 @@
             scrollable: false,
             resizable: true,
             selectable: "simple",
+            navigatable: true,
             columns: [
                 { field: "descripcion", title: "Descripción"},
                 { field: "nandinda", title: "Código NANDINA"},
@@ -663,7 +664,9 @@
                 { field: "valor", title: "Valor en $us"}
             ]
         });
-        
+
+
+
     });  
 
     function agregarfilacomercializador(){

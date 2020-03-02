@@ -69,7 +69,10 @@ class SQLSistemaColas {
         return $rows;
     }
     
-    
+    public function getListarColaAsistenteDeclaracionJurada(SistemaColas $sistema_colas) {
+        return $sistema_colas->finder()->findAll('id_asistente = ?', $sistema_colas->getId_Asistente());
+    }
+
     /*
     public function setGuardarColaAsistente(SistemaColas $sistema_colas){
         return $sistema_colas->save();
@@ -89,9 +92,14 @@ class SQLSistemaColas {
     public function setGuardarSistemaColas(SistemaColas $sistema_colas){
         return $sistema_colas->save();
     }
-    
+    public function getBuscarColaPorServicioExportadorAll(SistemaColas $sistema_colas) {
+        return $sistema_colas->finder()->findAll("id_servicio_exportador = ? ",$sistema_colas->getId_Servicio_Exportador());
+    }
     public function getBuscarColaPorServicioExportador(SistemaColas $sistema_colas) {
         return $sistema_colas->finder()->find("id_servicio_exportador = ?",$sistema_colas->getId_Servicio_Exportador());
+    }
+    public function getbyServicioExportadorIdAsistente(SistemaColas $sistema_colas) {
+        return $sistema_colas->finder()->find("id_servicio_exportador = ? and atendido=0",$sistema_colas->getId_Servicio_Exportador());
     }
     public function getListarColasAsistente(SistemaColas $sistema_colas) {
         return $sistema_colas->finder()->findAll('id_asistente = ? AND atendido < 2', $sistema_colas->getId_Asistente());

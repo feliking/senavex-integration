@@ -34,7 +34,8 @@ class TipoEmpresa extends Db {
     private $abreviatura;
      /** CP|TXT|Requisitos|0|F|F|-|-|10|F **/
     private $grupo_requisitos;
-    
+
+
     public function setId_tipo_empresa($id_tipo_empresa) {
         $this->id_tipo_empresa = $id_tipo_empresa;
     }

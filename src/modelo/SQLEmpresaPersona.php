@@ -80,8 +80,14 @@ class SQLEmpresaPersona {
         return $empresa_persona->finder()->count('id_persona = ? and activo=1', array($empresa_persona->getId_Persona()));
     }
     public function getListarCertificadoresSenavexParaDDJJ(EmpresaPersona $empresa_persona){
-        return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9))AND activo=1', $empresa_persona->getId_empresa_persona());
+        return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9)) AND activo=1', $empresa_persona->getId_empresa_persona());
     }
+  public function getListarCertificadoresSenavexParaDDJJRegional(EmpresaPersona $empresa_persona){
+    return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9)OR(id_perfil=19))AND activo=1 AND id_regional=?', $empresa_persona->getId_regional());
+  }
+  public function getListarCertificadoresSenavexParaDDJJRegionalLPEA(EmpresaPersona $empresa_persona){
+    return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=7)OR(id_perfil=9)OR(id_perfil=19))AND activo=1 AND (id_regional=1 or id_regional=2)     ');
+  }
     public function getListarCertificadoresSenavexParaRuex(EmpresaPersona $empresa_persona){
         return $empresa_persona->finder()->findAll('(id_empresa=0)AND((id_perfil=6)OR(id_perfil=9))AND activo=1', $empresa_persona->getId_empresa_persona());
     }
@@ -99,6 +105,18 @@ class SQLEmpresaPersona {
     
     public function getListPersonasPorPerfil(EmpresaPersona $empresa_persona){
         return $empresa_persona->finder()->findAll('id_empresa = ? AND id_perfil = ? AND activo = 1', array($empresa_persona->getId_empresa(),$empresa_persona->getId_Perfil()));
+    }
+
+    public function getPersonaObjPorPerfil(EmpresaPersona $empresa_persona) {
+      $sql = "SELECT p.* as persona
+                FROM empresa_persona ep JOIN persona p ON(ep.id_persona=p.id_persona)
+                WHERE ep.activo = 1 AND ep.id_perfil=".$empresa_persona->getId_Perfil()." AND p.estado=true";
+      $connection = $empresa_persona->getDbConnection();
+      $connection->Active = true;
+      $command = $connection->createCommand($sql);
+      $dataReader = $command->query();
+      $rows = $dataReader->readAll();
+      return $rows;
     }
 
 }

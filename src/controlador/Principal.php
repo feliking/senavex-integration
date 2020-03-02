@@ -20,10 +20,8 @@ class Principal {
     }
     if($_SESSION['rol']=='REGISTRO_IMPORTADOR')
     {
-        
         include_once( PATH_CONTROLADOR . DS . 'admImportTemporal' . DS . 'AdmImportTemporal.php');
             $AdmImportTemporal = new AdmImportTemporal();
-             
     }
     if($_SESSION['rol']=='root')
     {  
@@ -61,6 +59,9 @@ class Principal {
   }
   public static function getVistaInstance() {
     $vista = new Vista();
+    if($_REQUEST['tarea']=='cronJob'){
+      return $vista;
+    }
     //Declarar tarea y opcion
     $vista->assign('tarea', $_REQUEST['tarea']);
     $vista->assign('opcion', $_REQUEST['opcion']);

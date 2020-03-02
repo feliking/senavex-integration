@@ -6,14 +6,14 @@ include_once(PATH_BASE . DS . 'config' . DS . 'Db.php');
 defined('_ACCESO') or die('Acceso restringido');
 
 class Comercializador extends Db {
-        
+
     const TABLE = 'comercializador';
 
     public static $RELATIONS = array
     (
-        'unidad_medida' => array(self:: BELONGS_TO, 'UnidadMedida', 'id_unidad_medida'),
+      'unidad_medida' => array(self:: BELONGS_TO, 'UnidadMedida', 'id_unidad_medida'),
     );
-    
+
     public static function finder($className=__CLASS__) {
         return parent::finder($className);
     }
@@ -29,7 +29,7 @@ class Comercializador extends Db {
     private $precio_venta;
     private $id_unidad_medida;
     private $produccion_mensual;
-    
+
     public function setId_comercializador($id_comercializador) {
         $this->id_comercializador = $id_comercializador;
     }
@@ -50,7 +50,7 @@ class Comercializador extends Db {
     public function getRazon_social() {
         return $this->razon_social;
     }
-    
+
     public function setCi_nit($ci_nit) {
         $this->ci_nit = $ci_nit;
     }

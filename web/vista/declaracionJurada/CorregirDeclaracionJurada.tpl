@@ -219,7 +219,7 @@
                                 Capacidad de Producción Mensual:
                             </div>
                             <div class="span10" >
-                                <textarea class="k-textbox" rows="2" id="procesoproductivo" name="procesoproductivo" placeholder="Descripción del Proceso Productivo" required validationMessage="Por favor Especifique el Proceso Productivo">{$ddjj->getProceso_Productivo()}</textarea>
+                                <textarea class="k-textbox no-restriccion"  rows="2" id="procesoproductivo" name="procesoproductivo" placeholder="Descripción del Proceso Productivo" required validationMessage="Por favor Especifique el Proceso Productivo">{$ddjj->getProceso_Productivo()}</textarea>
                                 <!--<input type="text" class="k-textbox "  placeholder="Descripción del Proceso Productivo"  name="procesoproductivo" id="procesoproductivo" value="{$ddjj->getProceso_Productivo()}" required validationMessage="Por favor Especifique el Proceso Productivo" /> -->
                             </div>
                         </div>
