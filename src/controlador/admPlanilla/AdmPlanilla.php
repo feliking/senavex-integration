@@ -13,8 +13,8 @@ include_once(PATH_MODELO . DS . 'SQLTipoCertificadoOrigen.php');
 include_once(PATH_MODELO . DS . 'SQLEmpresa.php');
 include_once(PATH_MODELO . DS . 'SQLPlanillaEstado.php');
 include_once(PATH_MODELO . DS . 'SQLPlanillaTipoEmision.php');
-include_once(PATH_MODELO . DS . 'SQLCriterioOrigen.php');
-include_once(PATH_MODELO . DS . 'SQLArancel.php');
+include_once(PATH_MODELO . DS . 'SQLCriterioOrigen_pln.php');
+include_once(PATH_MODELO . DS . 'SQLArancel_pln.php');
 include_once(PATH_MODELO . DS . 'SQLDetalleArancel.php');
 include_once(PATH_MODELO . DS . 'SQLPais.php');
 include_once(PATH_MODELO . DS . 'SQLPlanillaTipoAnulacionCO.php');
@@ -25,7 +25,7 @@ include_once(PATH_MODELO . DS . 'SQLPlanillaCO_DDJJ.php');
 include_once(PATH_MODELO . DS . 'SQLPlanillaDDJJ.php');
 include_once(PATH_MODELO . DS . 'SQLPlanillaDDJJAcuerdo.php');
 include_once(PATH_MODELO . DS . 'SQLPlanillaCorrelativo.php');
-include_once(PATH_MODELO . DS . 'SQLAcuerdo.php');
+include_once(PATH_MODELO . DS . 'SQLAcuerdo_pln.php');
 include_once(PATH_MODELO . DS . 'SQLRegional.php');
 include_once(PATH_MODELO . DS . 'SQLServicio.php');
 include_once(PATH_MODELO . DS . 'SQLUnidadMedida.php');
@@ -41,8 +41,8 @@ include_once(PATH_TABLA . DS . 'TipoCertificadoOrigen.php');
 include_once(PATH_TABLA . DS . 'Empresa.php');
 include_once(PATH_TABLA . DS . 'PlanillaEstado.php');
 include_once(PATH_TABLA . DS . 'PlanillaTipoEmision.php');
-include_once(PATH_TABLA . DS . 'CriterioOrigen.php');
-include_once(PATH_TABLA . DS . 'Arancel.php');
+include_once(PATH_TABLA . DS . 'CriterioOrigen_pln.php');
+include_once(PATH_TABLA . DS . 'Arancel_pln.php');
 include_once(PATH_TABLA . DS . 'DetalleArancel.php');
 include_once(PATH_TABLA . DS . 'Pais.php');
 include_once(PATH_TABLA . DS . 'PlanillaAnulacionCO.php');
@@ -53,7 +53,7 @@ include_once(PATH_TABLA . DS . 'PlanillaCO_DDJJ.php');
 include_once(PATH_TABLA . DS . 'PlanillaDDJJ.php');
 include_once(PATH_TABLA . DS . 'PlanillaDDJJAcuerdo.php');
 include_once(PATH_TABLA . DS . 'PlanillaCorrelativo.php');
-include_once(PATH_TABLA . DS . 'Acuerdo.php');
+include_once(PATH_TABLA . DS . 'Acuerdo_pln.php');
 include_once(PATH_TABLA . DS . 'Regional.php');
 include_once(PATH_TABLA . DS . 'Servicio.php');
 include_once(PATH_TABLA . DS . 'UnidadMedida.php');
@@ -111,8 +111,8 @@ class AdmPlanilla extends Principal {
         }
        
         if($_REQUEST['tarea']=='listar_criterios'){
-            $criterio = new CriterioOrigen();
-            $sqlCriterio = new SQLCriterioOrigen();
+            $criterio = new CriterioOrigen_pln();
+            $sqlCriterio = new SQLCriterioOrigen_pln();
             $id_acuerdo =$_REQUEST['filter']['filters'][0]['value']; // $_REQUEST(filter[filters][0][value])
             $criterio->setId_Acuerdo($id_acuerdo);
             $listar = $sqlCriterio->getListarCriterioPorAcuerdo($criterio);
@@ -237,17 +237,16 @@ class AdmPlanilla extends Principal {
         }
         
         if($_REQUEST['tarea']=='list_tipo_arancel'){
-            $arancel = new Arancel();
-            $sql_arancel = new SQLArancel();
+            $arancel = new Arancel_pln();
+            $sql_arancel = new SQLArancel_pln();
 
             $id_acuerdo = $_REQUEST['filter']['filters'][0]['value'];
             // $id_acuerdo = 2;
-            $acuerdo = new Acuerdo();
-            $sqlAcuerdo = new SQLAcuerdo();
+            $acuerdo = new Acuerdo_pln();
+            $sqlAcuerdo = new SQLAcuerdo_pln();
             $acuerdo->setId_acuerdo($id_acuerdo);
             
             $listar1 = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
-            
             $id_arancel= $listar1->getId_arancel();
             $arancel->setId_arancel($id_arancel);
             $listar = $sql_arancel->getBuscarArancelPorId($arancel);
@@ -308,8 +307,8 @@ class AdmPlanilla extends Principal {
         }
 //change ed en funcio del tipo de planilla
         if($_REQUEST['tarea']=='list_acuerdo1'){
-            $acuerdo = new Acuerdo();
-            $sqlAcuerdo = new SQLAcuerdo();
+            $acuerdo = new Acuerdo_pln();
+            $sqlAcuerdo = new SQLAcuerdo_pln();
             $tipo_planilla = $_REQUEST['tipo_planilla'];
             $acuerdo->setId_tipo_co($tipo_planilla);
             $listar = $sqlAcuerdo->getListarAcuerdoPorTipoDdjj($acuerdo);
@@ -326,8 +325,8 @@ class AdmPlanilla extends Principal {
         }
 //change ed
         if($_REQUEST['tarea']=='list_acuerdo2'){
-            $acuerdo = new Acuerdo();
-            $sqlAcuerdo = new SQLAcuerdo();
+            $acuerdo = new Acuerdo_pln();
+            $sqlAcuerdo = new SQLAcuerdo_pln();
             $tipo_planilla = $_REQUEST['filter']['filters'][0]['value'];
             $acuerdo->setId_tipo_co($tipo_planilla);
             $listar = $sqlAcuerdo->getListarAcuerdoPorTipo($acuerdo);
@@ -335,7 +334,7 @@ class AdmPlanilla extends Principal {
             echo '[';
             $contador = 0;
             foreach ($listar as $value){
-                 $strJson.='{"id":"'.$value->getId_Acuerdo()  . 
+                     $strJson.='{"id":"'.$value->getId_Acuerdo()  . 
                             '", "descripcion":"'.$value->getSigla() . '"},';
             }
             $strJson = substr($strJson, 0, strlen($strJson) - 1);
@@ -345,8 +344,8 @@ class AdmPlanilla extends Principal {
 
 //listado para ddjj
         if($_REQUEST['tarea']=='list_acuerdo3'){
-            $acuerdo = new Acuerdo();
-            $sqlAcuerdo = new SQLAcuerdo();
+            $acuerdo = new Acuerdo_pln();
+            $sqlAcuerdo = new SQLAcuerdo_pln();
             $tipo_planilla = $_REQUEST['filter']['filters'][0]['value'];
             $acuerdo->setId_tipo_co($tipo_planilla);
             $listar = $sqlAcuerdo->getListarAcuerdoPorTipoDdjj($acuerdo);
@@ -363,8 +362,8 @@ class AdmPlanilla extends Principal {
         }
 //change ed        
         if($_REQUEST['tarea']=='list_acuerdo'){
-            $acuerdo = new Acuerdo();
-            $sqlAcuerdo = new SQLAcuerdo();
+            $acuerdo = new Acuerdo_pln();
+            $sqlAcuerdo = new SQLAcuerdo_pln();
             $listar = $sqlAcuerdo->getListarAcuerdo($acuerdo);
             
             echo '[';
@@ -687,8 +686,8 @@ class AdmPlanilla extends Principal {
         }
         
         if($_REQUEST['tarea']=='cargarcriterios'){
-            $criterio = new CriterioOrigen();
-            $sqlCriterio = new SQLCriterioOrigen();
+            $criterio = new CriterioOrige_pln();
+            $sqlCriterio = new SQLCriterioOrigen_pln();
             $listar = $sqlCriterio->getListarCriterioOrigen($criterio);
             $strJson="";
             echo "[";
@@ -738,9 +737,9 @@ class AdmPlanilla extends Principal {
                     $primero = !$primero;
                 }
                
-                $acuerdo = new Acuerdo();
-                $acuerdo->setId_Acuerdo($value->getId_acuerdo());
-                $sqlAcuerdo = new SQLAcuerdo();
+                $acuerdo = new Acuerdo_pln();
+                $acuerdo->setId_Acuerdo($value->getId_Acuerdo());
+                $sqlAcuerdo = new SQLAcuerdo_pln();
                 $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
                 
                 $PtipoEmision = new PlanillaTipoEmision();
@@ -1093,7 +1092,7 @@ class AdmPlanilla extends Principal {
                                 $planillaDDJJAcuerdo_acuerdo_clon->setId_arancel($value_acuerdo->getId_arancel());
                                 $id_arancel = $value_acuerdo->getId_detalle_arancel();
                                 $planillaDDJJAcuerdo_acuerdo_clon->setId_detalle_arancel($id_arancel);
-                                $planillaDDJJAcuerdo_acuerdo_clon->setId_acuerdo($value_acuerdo->getId_acuerdo());
+                                $planillaDDJJAcuerdo_acuerdo_clon->setId_acuerdo($value_acuerdo->getId_Acuerdo());
                                 $planillaDDJJAcuerdo_acuerdo_clon->setId_criterio($value_acuerdo->getId_criterio());
                                 $planillaDDJJAcuerdo_acuerdo_clon->setComplemento($value_acuerdo->getComplemento());
                                 $sqlPlanillaDDJJAcuerdo->save($planillaDDJJAcuerdo_acuerdo_clon);
@@ -1788,15 +1787,15 @@ class AdmPlanilla extends Principal {
                 foreach ($planillaDDJJAcuerdo as $value) {
                     $planillaDDJJAcuerdo1 = new PlanillaDDJJAcuerdo();
                     $sqlPlanillaDDJJAcuerdo1 = new SQLPlanillaDDJJAcuerdo();
-                    echo $value->getId_planilla_ddjj_acuerdo();
-                    $planillaDDJJAcuerdo1->setId_planilla_ddjj_acuerdo($value->getId_planilla_ddjj_acuerdo());
+                    echo $value->getId_planilla_ddjj_Acuerdo_pln();
+                    $planillaDDJJAcuerdo1->setId_planilla_ddjj_acuerdo($value->getId_planilla_ddjj_Acuerdo_pln());
                     $planillaDDJJAcuerdo1= $sqlPlanillaDDJJAcuerdo1->getPlanillaDDJJAcuerdo($planillaDDJJAcuerdo1);
                     print_r($planillaDDJJAcuerdo1);
                     $planillaDDJJAcuerdo1->setEstado('1');
                     //$planillaDDJJAcuerdo1 = $sqlPlanillaDDJJAcuerdo1->save($planillaDDJJAcuerdo1);
                     if($sqlPlanillaDDJJAcuerdo1->save($planillaDDJJAcuerdo1)){ 
                         echo 'si se pudo';
-                        $cad_acuerdos=$cad_acuerdos.$value->getId_planilla_ddjj_acuerdo().',';
+                        $cad_acuerdos=$cad_acuerdos.$value->getId_planilla_ddjj_Acuerdo_pln().',';
                     }
                     else{echo 'no si se pudo';}
                 }
@@ -1883,8 +1882,8 @@ class AdmPlanilla extends Principal {
             
             $detalle_arancel = new DetalleArancel();
             $sqlDetalleArancel = new SQLDetalleArancel();
-            $criterioOrigen = new CriterioOrigen();
-            $sqlCriterioOrigen = new SQLCriterioOrigen();
+            $criterioOrigen = new CriterioOrigen_pln();
+            $sqlCriterioOrigen = new SQLCriterioOrigen_pln();
             $criterio = '';
             
             $unidad_medida = new UnidadMedida();
@@ -1948,7 +1947,7 @@ class AdmPlanilla extends Principal {
 //            print("<pre>".print_r($value_acuerdo, true)."</pre>");
             $index++;
                     // print('<pre>'.print_r($value_acuerdo, true).'</pre>');
-            if($value_acuerdo->getId_planilla_ddjj_acuerdo()!= "" && $value_acuerdo->getId_detalle_arancel()!=""){
+            if($value_acuerdo->getId_planilla_ddjj_Acuerdo_pln()!= "" && $value_acuerdo->getId_detalle_arancel()!=""){
                 $detallearancel->setId_detalle_arancel($value_acuerdo->getId_detalle_arancel());
                 $detallearancel = $sql_detallearancel->getBuscarDescripcionPorId( $detallearancel );
 
@@ -1957,17 +1956,17 @@ class AdmPlanilla extends Principal {
             }
             
             $acuerdo_descripcion = '';
-            if($value_acuerdo->getId_acuerdo()!=''){
-                $acuerdo = new Acuerdo();
-                $sqlAcuerdo = new SQLAcuerdo();
-                $acuerdo->setId_Acuerdo($value_acuerdo->getId_acuerdo());
+            if($value_acuerdo->getId_Acuerdo()!=''){
+                $acuerdo = new Acuerdo_pln();
+                $sqlAcuerdo = new SQLAcuerdo_pln();
+                $acuerdo->setId_Acuerdo($value_acuerdo->getId_Acuerdo());
                 $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
                 $acuerdo_descripcion = $acuerdo->getDescripcion();
             }
             if($value_acuerdo->getId_criterio()!=NULL && $value_acuerdo->getId_criterio()!=''){
-                $criterio = new CriterioOrigen();
+                $criterio = new CriterioOrigen_pln();
                 $criterio->setId_criterio_origen($value_acuerdo->getId_criterio());
-                $sqlCriterio = new SQLCriterioOrigen();
+                $sqlCriterio = new SQLCriterioOrigen_pln();
                 $criterio = $sqlCriterio->getBuscarDescripcionPorId($criterio);
                 
                 $criterio_descripcion = $criterio->getDescripcion();
@@ -1976,27 +1975,27 @@ class AdmPlanilla extends Principal {
             $tipo_arancel = '';
            
             if($value_acuerdo->getId_arancel()!=''){
-                $ar = new Arancel();
-                $sql_ar = new SQLArancel();
+                $ar = new Arancel_pln();
+                $sql_ar = new SQLArancel_pln();
                 $ar->setId_arancel($value_acuerdo->getId_arancel());
                 $ar = $sql_ar->getBuscarArancelPorId($ar);
                 $id_tipo_arancel = $value_acuerdo->getId_arancel();
                 $tipo_arancel = $ar->getDenominacion();
             } else {
-                $ar = new Arancel();
-                $sql_ar = new SQLArancel();
+                $ar = new Arancel_pln();
+                $sql_ar = new SQLArancel_pln();
                 $ar->setId_arancel($value_acuerdo->getId_arancel());
                 $ar = $sql_ar->getBuscarArancelPorId($ar);
                 $id_tipo_arancel = $value_acuerdo->getId_arancel();
                 $tipo_arancel = 0;
                 $arancel='';
             }
-            $strJson2.='{"id_planilla_ddjj_acuerdo":"'.$value_acuerdo->getId_planilla_ddjj_acuerdo() . 
+            $strJson2.='{"id_planilla_ddjj_acuerdo":"'.$value_acuerdo->getId_planilla_ddjj_Acuerdo_pln() . 
                     '", "id_tipo_arancel":"'.$id_tipo_arancel.
                     '", "tipo_arancel":"'.$tipo_arancel.
                     '", "id_detalle_arancel":"'.$id_arancel.
                     '", "codigo_arancel":"'.$arancel.
-                    '", "id_acuerdo":"'.$value_acuerdo->getId_acuerdo().
+                    '", "id_acuerdo":"'.$value_acuerdo->getId_Acuerdo().
                     '", "acuerdo":"'. str_replace('"',"''",$acuerdo_descripcion) .
                     '", "id_criterio":"'.$value_acuerdo->getId_criterio().
                     '", "complemento":"'.$value_acuerdo->getComplemento().
