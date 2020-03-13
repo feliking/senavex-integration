@@ -37,7 +37,7 @@
                         {*<span class="tooltip" title="direccion descriptiva.">?</span>*}Piso
                     </div>
                     <div class="span1 " >
-                        <input type="text"  class="k-textbox " {literal} pattern="/^[0-9a-zA-Z]+$/"{/literal} id="ed_piso_{$de_id}" name="ed_piso_{$de_id}" placeholder="# Piso" validationMessage="Ingrese Número de Piso">
+                        <input type="text"  class="k-textbox " {literal} pattern="^[0-9a-zA-Z]+$"{/literal} id="ed_piso_{$de_id}" name="ed_piso_{$de_id}" placeholder="# Piso" validationMessage="Ingrese Número de Piso">
                     </div> 
                 </div>
 
