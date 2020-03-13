@@ -1161,13 +1161,13 @@
             var message;
             switch ($(target).attr('data-field')){
                 case 'descripcion':
-                    message = 'Indicar el nombre comercial del insumo utilizado. Por ejemplo: Tela   ';
+                    message = 'Indicar el nombre comercial del insumo utilizado. Ej: Tela   ';
                     break;
                 case 'nombre_tecnico':
-                    message = 'Indicar el nombre técnico del insumo, en relación al Sistema Armonizado de Designación y Codificación de Mercancías. Por ejemplo: Tela de punto, 60% algodón y 40% poliéster, para confección de prendas de vestir.';
+                    message = 'Indicar el nombre técnico del insumo, en relación al Sistema Armonizado de Designación y Codificación de Mercancías. Ej: Tela de punto, 60% algodón y 40% poliéster, para confección de prendas de vestir.';
                     break;
                 case 'subpartida':
-                    message = 'Indicar la sub partida arancelaria NANDINA, del insumo a 10 dígitos. Por ejemplo: 5210.29.00.00';
+                    message = 'Indicar la sub partida arancelaria NANDINA, del insumo a 10 dígitos. Ej: 5210.29.00.00';
                     break;
                 case 'fabricante':
                     message = 'Indicar el Nombre y Apellido o la Razón Social del productor del insumo.';
@@ -1206,13 +1206,13 @@
             var message;
             switch ($(target).attr('data-field')){
                 case 'descripcion':
-                    message = 'Indicar el nombre comercial del insumo utilizado. Por ejemplo: Tela   ';
+                    message = 'Indicar el nombre comercial del insumo utilizado. Ej: Tela   ';
                     break;
                 case 'nombre_tecnico':
-                    message = 'Indicar el nombre técnico del insumo, en relación al Sistema Armonizado de Designación y Codificación de Mercancías. Por ejemplo: Tela de punto, 60% algodón y 40% poliéster, para confección de prendas de vestir.';
+                    message = 'Indicar el nombre técnico del insumo, en relación al Sistema Armonizado de Designación y Codificación de Mercancías. Ej: Tela de punto, 60% algodón y 40% poliéster, para confección de prendas de vestir.';
                     break;
                 case 'subpartida':
-                    message = 'Indicar la sub partida arancelaria NANDINA, del insumo a 10 dígitos. Por ejemplo: 5210.29.00.00';
+                    message = 'Indicar la sub partida arancelaria NANDINA, del insumo a 10 dígitos. Ej: 5210.29.00.00';
                     break;
                 case 'fabricante':
                     message = 'Indicar el Nombre y Apellido o la Razón Social del productor del insumo.';

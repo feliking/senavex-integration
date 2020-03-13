@@ -78,7 +78,7 @@
                     <section class="ddjj-section">
                         <div class="row-fluid form">
                             <label class="span3 ddjj-section-label" >
-                                3.1 <span class=" tooltip" title="Indicar el nombre comercial de la mercancía o nombre de transacción entre el exportador y el importador, la cual será reflejada en el certificado de origen. Por ejemplo: Camisa de color azul ">?</span>Denominación Comercial:
+                                3.1 <span class=" tooltip" title="Indicar el nombre comercial de la mercancía o nombre de transacción entre el exportador y el importador, la cual será reflejada en el certificado de origen. Ej: Camisa de color azul ">?</span>Denominación Comercial:
                             </label>
                             <div class="span9 ddjj-input">
                                 <input type="text" class="k-textbox skip-restriccion"  name="denominacion_comercial" id="denominacion_comercial"
@@ -87,7 +87,7 @@
                         </div>
                         <div class="row-fluid form">
                             <label class="span3 ddjj-section-label" >
-                                3.2 <span class="tooltip" title="Indicar el uso y aplicación de la mercancía. Por ejemplo: Prenda de vestir que cubre el dorso del cuerpo para dama">?</span>Uso o aplicación:
+                                3.2 <span class="tooltip" title="Indicar el uso y aplicación de la mercancía. Ej: Prenda de vestir que cubre el dorso del cuerpo para dama">?</span>Uso o aplicación:
                             </label>
                             <div class="span9 ddjj-input" >
                                 <input type="text" class="k-textbox" name="aplicacion" id="aplicacion"
@@ -96,7 +96,7 @@
                         </div>
                         <div class="row-fluid form">
                             <label class="span3 ddjj-section-label" >
-                                3.3 <span class="tooltip" title="Indicar el nombre técnico de la mercancía, bajo las especificaciones técnicas. Por ejemplo: Madera de bambu">?</span>Nombre Técnico: (opcional)
+                                3.3 <span class="tooltip" title="Indicar el nombre técnico de la mercancía, bajo las especificaciones técnicas. Ej: Madera de bambu">?</span>Nombre Técnico: (opcional)
                             </label>
                             <div class="span9 ddjj-input" >
                                 <input type="text" class="k-textbox" name="nombre_tecnico" id="nombre_tecnico"/>
@@ -104,7 +104,7 @@
                         </div>
                         <div class="row-fluid form">
                             <label class="span4 ddjj-section-label" >
-                                3.4 <span class="tooltip" title="Registre las distinas especificaicones de su mercancia. Ejem. En caso quinua, registrar Rojo, Negro y Blanco" title="Indicar las características técnicas de la mercancía, en relación al Sistema Armonizado de Designación y Codificación de Mercancías. Por ejemplo: Camisa de punto para hombre, (60% algodón, 40% poliéster)">?</span>Especificaciones de la mercancia:
+                                3.4 <span class="tooltip" title="Registre las distinas especificaicones de su mercancia. Ejem. En caso quinua, registrar Rojo, Negro y Blanco" title="Indicar las características técnicas de la mercancía, en relación al Sistema Armonizado de Designación y Codificación de Mercancías. Ej: Camisa de punto para hombre, (60% algodón, 40% poliéster)">?</span>Especificaciones de la mercancia:
                             </label>
                             <div class="span8 ddjj-input" >
                                 <input type="text" class="k-textbox" name="caracteristicas" id="caracteristicas"
@@ -114,7 +114,7 @@
                         </div>
                         <div class="row-fluid form">
                             <label class="span3 ddjj-section-label">
-                                3.5 <span class="tooltip" title="Indicar la sub partida arancelaria de la mercancía a 10 dígitos conforme nomenclatura arancelaria vigente. Por ejemplo: 6105.10.00.00">?</span>Subpartida Arancelaria:
+                                3.5 <span class="tooltip" title="Indicar la sub partida arancelaria de la mercancía a 10 dígitos conforme nomenclatura arancelaria vigente. Ej: 6105.10.00.00">?</span>Subpartida Arancelaria:
                             </label>
                             <div class="span3 ddjj-input">
                                 <input id="ddjj_arancel" autofocus type="text" class="k-textbox" required validationMessage="Por favor Introduzca la Subpartida Arancelaria"/>
@@ -186,27 +186,29 @@
                         <div class="row-fluid fadein"><input type="hidden" name="hiddenvalidator" data-checkvalidator=""></div>
 
                         <span id="nota_aclaratoria_sgp" class="ddjj-section-alert_1 hidden fadein">Nota Aclaratoria En caso que la mercancía a exportar no figure en la lista de productos beneficiados, significa que la misma no se beneficia de las preferencias arancelarias del SGP solicitado. Consigueintemente, se sugiere seleccione en el campo 5.1 Terceros Paises, con la finalidad de poder acceder a la emisión del Certificado de Origen tipo Terceros Paises</span>
-                        {foreach $aranceles as $arancel}
-                            <div id="ddjj_arancel_{$arancel->id_arancel}" class="none">
-                                <div class="row-fluid form">
-                                    <label class="span2 ddjj-section-label ddjj-section-label-right">5.2 <span class="tooltip" title="Esta casilla indica la nomenclatura utilizada, la cual se encuentra es establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.">?</span>Clasificación Usada:</label>
-                                    <div id="denominacion_arancel_{$arancel->id_arancel}" class="span3 ddjj-ddjj-section-field">
-                                        {$arancel->denominacion}
+                        <span id="nota_aclaratoria_ac" class="ddjj-section-alert_1 hidden fadein">
+                            {foreach $aranceles as $arancel}
+                                <div id="ddjj_arancel_{$arancel->id_arancel}" class="none">
+                                    <div class="row-fluid form">
+                                        <label class="span2 ddjj-section-label ddjj-section-label-right">5.2 <span class="tooltip" title="Esta casilla indica la nomenclatura utilizada, la cual se encuentra es establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.">?</span>Clasificación Usada:</label>
+                                        <div id="denominacion_arancel_{$arancel->id_arancel}" class="span3 ddjj-ddjj-section-field">
+                                            {$arancel->denominacion}
+                                        </div>
+                                        <label class="span2 ddjj-section-label ddjj-section-label-right">5.3 <span class="tooltip" title="Indicar la sub partida arancelaria correspondiente a la nomenclatura establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.  Respecto a los Sistemas Generalizado de Preferencias, en caso de no encontrase la sub partida arancelaria correlacionada en el presente listado, refleja que esta no es beneficiada de un desgravamen arancelario, por lo tanto Declaración Jurada de Origen será emitida para Terceros Países.">?</span>Subpartida Arancelaria:</label>
+                                        <div class="span5 ddjj-input">
+                                            <input id="{$arancel->id_arancel}_ddjj_arancel" type="text" class="k-textbox" data-value="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->id_partida}{/if}{/foreach}"
+                                                data-text="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->partida}{/if}{/foreach}"/>
+                                        </div>
                                     </div>
-                                    <label class="span2 ddjj-section-label ddjj-section-label-right">5.3 <span class="tooltip" title="Indicar la sub partida arancelaria correspondiente a la nomenclatura establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.  Respecto a los Sistemas Generalizado de Preferencias, en caso de no encontrase la sub partida arancelaria correlacionada en el presente listado, refleja que esta no es beneficiada de un desgravamen arancelario, por lo tanto Declaración Jurada de Origen será emitida para Terceros Países.">?</span>Subpartida Arancelaria:</label>
-                                    <div class="span5 ddjj-input">
-                                        <input id="{$arancel->id_arancel}_ddjj_arancel" type="text" class="k-textbox" data-value="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->id_partida}{/if}{/foreach}"
-                                               data-text="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->partida}{/if}{/foreach}"/>
+                                    <div class="row-fluid form">
+                                        <label class="span2 ddjj-section-label ddjj-section-label-right">5.4 Descripción Arancel:</label>
+                                        <div class="span10 ddjj-section-field" id="descripcion_arancel_{$arancel->id_arancel}">
+                                            {foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->denominacion}{/if}{/foreach}
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row-fluid form">
-                                    <label class="span2 ddjj-section-label ddjj-section-label-right">5.4 Descripción Arancel:</label>
-                                    <div class="span10 ddjj-section-field" id="descripcion_arancel_{$arancel->id_arancel}">
-                                        {foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->denominacion}{/if}{/foreach}
-                                    </div>
-                                </div>
-                            </div>
-                        {/foreach}
+                            {/foreach}
+                        </span>
                         <input type="hidden" id="idArancelesacorp" name="hiddenvalidatoracorp" data-arancelesacorp="" class="k-invalid" aria-invalid="true">
                     </section>
                     <h2>VI. COMPONENTES QUE FORMAN PARTE DE LA ESTRUCTURA DE LA MERCANCÍA</h2>

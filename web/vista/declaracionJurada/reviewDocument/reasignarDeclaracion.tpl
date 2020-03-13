@@ -16,7 +16,7 @@
                 </div>
                 <div class="row-fluid form">
                     <label class="span3 ddjj-section-label">
-                        <span class="tooltip" title="Puede modificar la sub partida arancelaria de la mercancía a 10 dígitos conforme nomenclatura arancelaria vigente. Por ejemplo: 6105.10.00.00">?</span>Subpartida Arancelaria:
+                        <span class="tooltip" title="Puede modificar la sub partida arancelaria de la mercancía a 10 dígitos conforme nomenclatura arancelaria vigente. Ej: 6105.10.00.00">?</span>Subpartida Arancelaria:
                     </label>
                     <div class="span3 ddjj-input">
                         <input id="r_arancel" type="text" class="k-textbox"/>
