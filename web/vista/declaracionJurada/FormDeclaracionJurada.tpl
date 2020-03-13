@@ -186,29 +186,28 @@
                         <div class="row-fluid fadein"><input type="hidden" name="hiddenvalidator" data-checkvalidator=""></div>
 
                         <span id="nota_aclaratoria_sgp" class="ddjj-section-alert_1 hidden fadein">Nota Aclaratoria En caso que la mercancía a exportar no figure en la lista de productos beneficiados, significa que la misma no se beneficia de las preferencias arancelarias del SGP solicitado. Consigueintemente, se sugiere seleccione en el campo 5.1 Terceros Paises, con la finalidad de poder acceder a la emisión del Certificado de Origen tipo Terceros Paises</span>
-                        <span id="nota_aclaratoria_ac" class="ddjj-section-alert_1 hidden fadein">
-                            {foreach $aranceles as $arancel}
-                                <div id="ddjj_arancel_{$arancel->id_arancel}" class="none">
-                                    <div class="row-fluid form">
-                                        <label class="span2 ddjj-section-label ddjj-section-label-right">5.2 <span class="tooltip" title="Esta casilla indica la nomenclatura utilizada, la cual se encuentra es establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.">?</span>Clasificación Usada:</label>
-                                        <div id="denominacion_arancel_{$arancel->id_arancel}" class="span3 ddjj-ddjj-section-field">
-                                            {$arancel->denominacion}
-                                        </div>
-                                        <label class="span2 ddjj-section-label ddjj-section-label-right">5.3 <span class="tooltip" title="Indicar la sub partida arancelaria correspondiente a la nomenclatura establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.  Respecto a los Sistemas Generalizado de Preferencias, en caso de no encontrase la sub partida arancelaria correlacionada en el presente listado, refleja que esta no es beneficiada de un desgravamen arancelario, por lo tanto Declaración Jurada de Origen será emitida para Terceros Países.">?</span>Subpartida Arancelaria:</label>
-                                        <div class="span5 ddjj-input">
-                                            <input id="{$arancel->id_arancel}_ddjj_arancel" type="text" class="k-textbox" data-value="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->id_partida}{/if}{/foreach}"
-                                                data-text="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->partida}{/if}{/foreach}"/>
-                                        </div>
+                        
+                        {foreach $aranceles as $arancel}
+                            <div id="ddjj_arancel_{$arancel->id_arancel}" class="none">
+                                <div class="row-fluid form">
+                                    <label class="span2 ddjj-section-label ddjj-section-label-right">5.2 <span class="tooltip" title="Esta casilla indica la nomenclatura utilizada, la cual se encuentra es establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.">?</span>Clasificación Usada:</label>
+                                    <div id="denominacion_arancel_{$arancel->id_arancel}" class="span3 ddjj-ddjj-section-field">
+                                        {$arancel->denominacion}
                                     </div>
-                                    <div class="row-fluid form">
-                                        <label class="span2 ddjj-section-label ddjj-section-label-right">5.4 Descripción Arancel:</label>
-                                        <div class="span10 ddjj-section-field" id="descripcion_arancel_{$arancel->id_arancel}">
-                                            {foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->denominacion}{/if}{/foreach}
-                                        </div>
+                                    <label class="span2 ddjj-section-label ddjj-section-label-right">5.3 <span class="tooltip" title="Indicar la sub partida arancelaria correspondiente a la nomenclatura establecida en el Acuerdo Comercial o Sistema Generalizado de Preferencias.  Respecto a los Sistemas Generalizado de Preferencias, en caso de no encontrase la sub partida arancelaria correlacionada en el presente listado, refleja que esta no es beneficiada de un desgravamen arancelario, por lo tanto Declaración Jurada de Origen será emitida para Terceros Países.">?</span>Subpartida Arancelaria:</label>
+                                    <div class="span5 ddjj-input">
+                                        <input id="{$arancel->id_arancel}_ddjj_arancel" type="text" class="k-textbox" data-value="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->id_partida}{/if}{/foreach}"
+                                            data-text="{foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->partida}{/if}{/foreach}"/>
                                     </div>
                                 </div>
-                            {/foreach}
-                        </span>
+                                <div class="row-fluid form">
+                                    <label class="span2 ddjj-section-label ddjj-section-label-right">5.4 Descripción Arancel:</label>
+                                    <div class="span10 ddjj-section-field" id="descripcion_arancel_{$arancel->id_arancel}">
+                                        {foreach $partidas as $partida}{if $partida->id_arancel==$arancel->id_arancel}{$partida->denominacion}{/if}{/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                        {/foreach}
                         <input type="hidden" id="idArancelesacorp" name="hiddenvalidatoracorp" data-arancelesacorp="" class="k-invalid" aria-invalid="true">
                     </section>
                     <h2>VI. COMPONENTES QUE FORMAN PARTE DE LA ESTRUCTURA DE LA MERCANCÍA</h2>
