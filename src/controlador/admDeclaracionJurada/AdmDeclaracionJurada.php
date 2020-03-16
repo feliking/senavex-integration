@@ -635,6 +635,9 @@ class AdmDeclaracionJurada extends Principal {
         $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
         $correos=explode(',',$correos);
 
+          //añadir para facturar
+          AdmSistemaColas::generarServicioExportadorParaDdjjPago($_SESSION["id_persona"],80, $declaracion_jurada->getId_Servicio_Exportador());
+
         if(trim($correos[0])==trim($correos[1]))
         {
           AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);
