@@ -19,6 +19,7 @@ private $id_autorizacion_previa_detalle;
 private $codigo_nandina;
 private $descripcion_arancelaria;
 private $descripcion_comercial;
+private $pais_origen;
 private $cantidad;
 private $unidad_medida;
 private $peso;
@@ -36,6 +37,8 @@ function setDescripcion_arancelaria($descripcion_arancelaria) { $this->descripci
 function getDescripcion_arancelaria() { return $this->descripcion_arancelaria; }
 function setDescripcion_comercial($descripcion_comercial) { $this->descripcion_comercial = $descripcion_comercial; }
 function getDescripcion_comercial() { return $this->descripcion_comercial; }
+function setPais_origen($pais_origen) { $this->pais_origen = $pais_origen; }
+function getPais_origen() { return $this->pais_origen; }
 function setCantidad($cantidad) { $this->cantidad = $cantidad; }
 function getCantidad() { return $this->cantidad; }
 function setUnidad_medida($unidad_medida) { $this->unidad_medida = $unidad_medida; }

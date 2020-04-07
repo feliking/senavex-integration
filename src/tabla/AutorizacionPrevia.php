@@ -56,6 +56,10 @@ function setTipo_cuenta($tipo_cuenta) { $this->tipo_cuenta = $tipo_cuenta; }
 function getTipo_cuenta() { return $this->tipo_cuenta; }
 function setTipo_cambio($tipo_cambio) { $this->tipo_cambio = $tipo_cambio; }
 function getTipo_cambio() { return $this->tipo_cambio; }
+    function setTipo_divisa($tipo_divisa) { $this->tipo_divisa = $tipo_divisa; }
+    function getTipo_divisa() { return $this->tipo_divisa; }
+    function setTipo_cambio_divisa($tipo_cambio_divisa) { $this->tipo_cambio_divisa = $tipo_cambio_divisa; }
+    function getTipo_cambio_divisa() { return $this->tipo_cambio_divisa; }
 function setPersona_autorizada($persona_autorizada) { $this->persona_autorizada = $persona_autorizada; }
 function getPersona_autorizada() { return $this->persona_autorizada; }
 function setFecha_registro($fecha_registro) { $this->fecha_registro = $fecha_registro; }

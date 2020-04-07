@@ -93,9 +93,10 @@
                 <div class="row-fluid " >
                     <div class="span12" >
                         <b>(*) SUBIR EL ARCHIVO CON LOS ITEMS LLENADOS:</b>
-                        <input id="archivoex" type="file" name="archivo" required="required" />Excel
-                        <span style="float: right">
-                            <button type="button" class="k-primary k-button" id="loadexcel" ><i class="fas fa-tasks"></i> <i class="fas fa-file-excel"></i> Importar Excel</button>
+                        <input id="archivoex" type="file" name="archivo" />Excel
+                        <span>
+                            <span id="loadinggif" style="display: none;"> <img style="margin-left: 0%; " width="20%" src="styles/img/cargando.gif"> </span>
+                            <button type="button" class="k-primary k-button" id="loadexcel" style="float: right;"><i class="fas fa-tasks"></i> <i class="fas fa-file-excel"></i> Importar Excel</button>
                         </span>
                     </div>
                 </div>
@@ -113,13 +114,14 @@
                                 <td>SUBPARTIDA NANDINA</td>
                                 <td>DESCRIPCIÓN ARANCELARIA</td>
                                 <td>DESCRIPCIÓN COMERCIAL</td>
+                                <td>PAÍS ORIGEN</td>
                                 <td>CANTIDAD</td>
                                 <td>UNIDAD DE MEDIDA</td>
                                 <td>PESO BRUTO (KG.)</td>
                                 <td>PRECIO UNITARIO ($us)</td>
-                                <td>VALOR TOTAL ($us)</td>
+                                <td>VALOR FOB TOTAL ($us)</td>
                                 <td>PRECIO UNITARIO (En divisa correspondiente)</td>
-                                <td>VALOR TOTAL (En divisa correspondiente)</td>
+                                <td>VALOR FOB TOTAL (En divisa correspondiente)</td>
                             </tr>
                             </thead>
                             <tbody>
@@ -127,26 +129,35 @@
                                 <td class="col-sm-1">
                                     <span name="num">1</span>
                                 </td>
-                                <td class="col-sm-1">
-                                    <select id="subpartida1" class="k-dropdown-wrap k-state-default k-state-hover" name="1" onchange="changedesc(this)">
+                                <td class="col-sm-2">
+                                    <select id="subpartida1" class="select2" name="1" onchange="changedesc(this)" style="width: 100%; height:30px;">
                                         <option value=""></option>
                                         {foreach  key=key item=item from=$nandina}
                                             <option value="{$item}">{$key}</option>
                                             {/foreach}
                                     </select>
                                 </td>
-                                <td class="col-sm-1">
+                                <td class="col-sm-2">
                                     <div id="desc_arancelaria1" name="desc_arancelaria" class="span12 campo">
                                     </div>
                                 </td>
                                 <td class="col-sm-1">
-                                    <input type="text" name="desc_comercial" size="90" class="k-textbox"/>
+                                    <input type="text" name="desc_comercial" size="90" class="k-textbox no-restriccion-all"/>
                                 </td>
                                 <td class="col-sm-1">
-                                    <input type="text" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid('cantidad')" class="k-textbox"/>
+                                    <select id="pais_origen_grid" name="pais_origen_grid" class="select2" style="width: 100%; height:30px;">
+                                        {foreach  key=key item=item from=$paises_array}
+                                            {if $key != 1 } {*hidden bolivia*}
+                                                <option value="{$key}">{$item}</option>
+                                            {/if}
+                                        {/foreach}
+                                    </select>
                                 </td>
                                 <td class="col-sm-1">
-                                    <select id="unidad_medida" name="unidad_medida" class="k-dropdown-wrap k-state-default k-state-hover">
+                                    <input type="text" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid('cantidad'); sumarow(this);" class="k-textbox"/>
+                                </td>
+                                <td class="col-sm-1">
+                                    <select id="unidad_medida1" name="unidad_medida" class="select2" style="width: 100%; height:30px; pointer-events:none;">
                                         <option value=""></option>
                                         {foreach  key=key item=item from=$umedida}
                                             <option value="{$key}">{$item}</option>
@@ -154,19 +165,19 @@
                                     </select>
                                 </td>
                                 <td class="col-sm-1">
-                                    <input type="text" name="peso_bruto"  class="k-textbox" onkeyup="sumagrid('peso_bruto')"/>
+                                    <input type="text" name="peso_bruto"  onkeypress="validate(event)" class="k-textbox" onkeyup="sumagrid('peso_bruto')"/>
                                 </td>
                                 <td class="col-sm-1">
-                                    <input type="text" name="precio_unitario_sus"  class="k-textbox"/>
+                                    <input type="text" name="precio_unitario_sus"  onkeypress="validate(event)" onkeyup="sumarow(this);" class="k-textbox"/>
                                 </td>
                                 <td class="col-sm-1">
-                                    <input type="text" name="valor_total_sus"  class="k-textbox" onkeyup="sumagrid('valor_total_sus')"/>
+                                    <input type="text" name="valor_total_sus"  class="k-textbox" onkeypress="validate(event)" onkeyup="sumagrid('valor_total_sus')" readonly/>
                                 </td>
                                 <td class="col-sm-1">
-                                    <input type="text" name="precio_unitario_div"  class="k-textbox"/>
+                                    <input type="text" name="precio_unitario_div"  onkeyup="sumarow1(this);" onkeypress="validate(event)" class="k-textbox"/>
                                 </td>
                                 <td class="col-sm-1">
-                                    <input type="text" name="valor_total_div"  class="k-textbox"/>
+                                    <input type="text" name="valor_total_div"  onkeypress="validate(event)" class="k-textbox"/>
                                 </td>
                                 <td class="col-sm-1"><a class="deleteRow"></a>
                                 </td>
@@ -185,116 +196,172 @@
                     </div>
                 </div>
                 <div class="row-fluid " >
-                    <div class="span3">
+                    <div class="span2">
                         <label>Cantidad Total</label>
                         <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  readonly  name="cantidad" id="cantidad" required validationMessage="Ingrese cantidad" />
-                    </div>  
-                    <div class="span3" >
+                    </div>
+                    <div class="span2" >
                         <label>Peso Bruto Total Kg</label>
                         <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  readonly  name="peso_bruto" id="peso_bruto" required validationMessage="Ingrese descripción Arancelaria" />
-                    </div> 
+                    </div>
                     <div class="span3" >
                         <label>Valor FOB total (valor en $us)</label>
                         <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  readonly  name="fob" id="fob" required validationMessage="Ingrese descripción Comercial" />
 
                       <!--   <input type="text" onkeypress="return isNumeric(event)"  style="width:100%;" class="k-textbox no-restriccion"  placeholder="Cantidad Total"  name="cantidad" id="cantidad"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese cantidad" />
-                    </div>  
+                    </div>
                     <div class="span3" >
                         <input type="text" onkeypress="return isNumeric(event)" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Peso Bruto Total Kg"  name="peso_bruto" id="peso_bruto"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese descripción Arancelaria" />
-                    </div> 
+                    </div>
                     <div class="span3" >
                         <input type="text" onkeypress="return isNumeric(event)" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Valor FOB total (valor en $us)"  name=fob" id="fob"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese descripción Comercial" /> -->
 
-                    </div>     
+                    </div>
+                    <div class="span2">
+                        <label>Tipo de Divisa</label>
+                        <select id="tipo_divisa" class="select2" name="tipo_divisa" class="s2_multi_paises_s2" style="width: 100%; height:30px;" >
+                            <option value=""></option>
+                            <option value="Euro">Euro</option>
+                            <option value="Libra">Libra</option>
+                            <option value="Yen">Yen</option>
+                            <option value="Real">Real</option>
+                            <option value="Franco">Franco</option>
+                            <option value="Yuan">Yuan</option>
+                        </select>
+                    </div>
+                    <div class="span3">
+                        <label>Tipo de Cambio Divisa a Dólar</label>
+                        <input type="number" id="tipo_cambio_divisa" name="tipo_cambio_divisa" min="0" value="" style="width:100%;" class="k-textbox no-restriccion"  placeholder=""  onkeypress="validate(event)"  required validationMessage="Ingrese el tipo de cambio divisa" />
+                    </div>
                 </div>
                 <div class="row-fluid " >
                     <div class="span3" >
                         <br>
-                    </div>  
-                </div> 
+                    </div>
+                </div>
+{*                <div class="row-fluid form" >*}
+{*                    <div class="span12 " >*}
+{*                        <input type="hidden" name="paises_values" id="paises_values" value="{$paises_valores}" />*}
+{*                        <input style="width:100%;" id="paises" name=" ">*}
+{*                    </div>*}
+{*                </div>*}
+                <div class="row-fluid form" style="display:none;">
+                   <div class="span12">
+                        <select id="paises" class="s2_multi_paises_s2" name="paises" style="width: 100%" multiple="multiple">
+                            {foreach  key=key item=item from=$paises}
+                                <option value="{$item->id_pais}">{$item->nombre}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+{*                <div class="row-fluid form" >*}
+{*                    <div class="span3 " >*}
+{*                        <input type="hidden" name="paises_values1" id="paises_values1" value="{$paises_valores1}" />*}
+{*                        <input style="width:100%;" id="pais_proc" name="pais_proc">*}
+{*                    </div>*}
+{*                </div>*}
+                <div class="row-fluid form" >
+                    <div class="span3" >
+                        <select id="pais_proc" class="select2" name="pais_proc" style="width: 100%" >
+                            <option value="">Seleccione El pais de Procedencia</option>
+                            {foreach  key=key item=item from=$paises}
+                                <option value="{$item->id_pais}">{$item->nombre}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+{*                <div class="row-fluid form" >*}
+{*                    <div class="span12 " >*}
+{*                        <input type="hidden" name="depto_valores" id="depto_valores" value="{$depto_valores}" />*}
+{*                        <input style="width:100%;" id="depto" name="depto">*}
+{*                    </div> *}
+{*                </div>*}
                 <div class="row-fluid form" >
                     <div class="span12 " >
-                        <input type="hidden" name="paises_values" id="paises_values" value="{$paises_valores}" />
-                        <input style="width:100%;" id="paises" name="paises">
-                    </div> 
+                        <select id="depto" class="s2_multi_deptos_s2" name="depto" style="width: 100%" multiple="multiple">
+                            {foreach  key=key item=item from=$deptos2}
+                                <option value="{$item->id_departamento}">{$item->nombre}</option>
+                            {/foreach}
+                        </select>
+                    </div>
                 </div>
-                <div class="row-fluid form" >
-                    <div class="span3 " >
-                        <input type="hidden" name="paises_values1" id="paises_values1" value="{$paises_valores1}" />
-                        <input style="width:100%;" id="pais_proc" name="pais_proc">
-                    </div> 
+                <div class="row-fluid " >
                 </div>
-                <div class="row-fluid form" >
-                    <div class="span12 " >
-                        <input type="hidden" name="depto_valores" id="depto_valores" value="{$depto_valores}" />
-                        <input style="width:100%;" id="depto" name="depto">
-                    </div> 
-                </div>
-                    <div class="row-fluid " >
-                </div>  
 
-            </fieldset>    
+            </fieldset>
         </div>
         <fieldset >
-            <legend>III. DATOS FINANCIEROS</legend>                           
+            <legend>III. DATOS FINANCIEROS</legend>
             <div class="row-fluid " >
                 <div class="span3 " >
                     <input type="text" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Origen de los recursos para la adquisición de divisas"  name="orig_divisas" id="orig_divisas"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese Origen de los recursos para la adquisición de divisas" />
-                </div>     
+                </div>
                 <div class="span3 " >
                     <input type="text" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Entidad Bancaria para la adquisición de divisas"  name="ent_bancaria" id="ent_bancaria"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese Entidad Bancaria para la adquisición de divisas" />
-                </div> 
+                </div>
                 <div class="span3" >
                     <input type="text" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Número de Cuenta Bancaria para la adquisición de divisas"  name="num_cuenta" id="num_cuenta"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese el Número de Cuenta Bancaria" />
-                </div>     
+                </div>
                 <div class="span3 " >
-                    <input type="text" style="width:100%;"  placeholder="Tipo de Cuenta:"  name="tipo_cuenta" id="tipo_cuenta"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese el tipo de Cuenta" />
-                </div>  
+{*                    <input type="text" style="width:100%;"  placeholder="Tipo de Cuenta:"  name="tipo_cuenta" id="tipo_cuenta"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese el tipo de Cuenta" />*}
+                    <select id="tipo_cuenta" class="select2" name="tipo_cuenta" style="width: 100%">
+                        <option value="">Seleccione Tipo de Cuenta</option>
+                        {foreach  key=key item=item from=$tipo_cuentas2}
+                            <option value="{$key}">{$item}</option>
+                        {/foreach}
+                    </select>
+                </div>
             </div>
             <div class="row-fluid " >
                 <div class="span3 " >
-                    <input type="number" min="0" value="6.96" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Tipo de cambio empleado"  name="cambio_empleado" id="cambio_empleado"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese el tipo de cambio empleado" />
-                </div>     
+                    <input type="number" min="0" value="6.96" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Tipo de cambio empleado"  onkeypress="validate(event)" name="cambio_empleado" id="cambio_empleado"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese el tipo de cambio empleado" />
+                </div>
             </div>
         </fieldset>
-                
+
         <fieldset >
-            <legend>IV. DATOS DE AUTORIZACION</legend>                           
+            <legend>IV. DATOS DE AUTORIZACION</legend>
             <div class="row-fluid " >
                 <div class="span9 " >
-                    <input type="text" style="width:100%;" placeholder="Persona Autorizada el trámite y recojo de la Autorización Previa"  name="pers_autorizada" id="pers_autorizada"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese Persona Autorizada el trámite y recojo de la Autorización Previa" />
-                </div>     
+{*                    <input type="text" style="width:100%;" placeholder="Persona Autorizada el trámite y recojo de la Autorización Previa"  name="pers_autorizada" id="pers_autorizada"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese Persona Autorizada el trámite y recojo de la Autorización Previa" />*}
+                    <select id="pers_autorizada" class="select2" name="pers_autorizada" style="width: 100%">
+                        <option value="">Seleccione Tipo de Cuenta</option>
+                        {foreach  key=key item=item from=$personas2}
+                            <option value="{$item['id_persona']}">{$item['nombres']}</option>
+                        {/foreach}
+                    </select>
+                </div>
             </div>
         </fieldset>
         <div class="row-fluid form" >
-            <div class="barra" >                                         
-            </div> 
+            <div class="barra" >
+            </div>
         </div>
         <div class="row-fluid  form" >
             <div id="detalle" class="fadein">
             </div>
         </div>
-                                   
-        <fieldset >                       
+
+        <fieldset >
             <div class="row-fluid" id="notificacionobservacionr{$id}">
                 <div class="span4 " >
                 </div>
-                 <div class="span4 " > 
-                     
-                </div> 
-                <div class="span4 " > 
+                 <div class="span4 " >
+
+                </div>
+                <div class="span4 " >
                 </div>
                 <div class="span3" >
                     <input id="cancelarrui" type="{if $revisar=='2'}hidden{else}button{/if}" value="Cancelar" class="k-primary" style="width:100%"/> <br><br>
                 </div>
                 <div class="span3" >
-                    <input id="guardarsolicitud" type="button"  value="Enviar" class="k-primary" style="width:100%"/> 
+                    <input id="guardarsolicitud" type="button"  value="Enviar" class="k-primary" style="width:100%"/>
                 </div>
             </div>
         </fieldset>
-        
-    </form>        
-    </div>    
+
+    </form>
+    </div>
 </div>
 
 <div id="aviso1" class="span10 fadein"  >
@@ -306,37 +373,69 @@
                                             <p> Aseg&uacute;rese de que los datos introducidos son los correctos ya que no se podra volver a editar cuando la solicitud se guarde
                                                 <br>Si desea volver al formulario para verificar los datos presione<span class="letrarelevante"> Cancelar</span><br>
 						<br>Si presiona Registrar se guardan los registros y lo podra imprimir en el listado de Solicitudes que se mostrar� a continuaci�n<br>
-                                                
-                                          </p> 
-                                        </div>  
+
+                                          </p>
+                                        </div>
                                         <div class="span1 hidden-phone" ></div>
-                        </div> 
+                        </div>
                         <div class="row-fluid  form" >
                             <div class="span4 hidden-phone" >
                             </div>
                             <div class="span2 " >
                                 <input id="cancelar" type="button" value="Cancelar" class="k-primary" style="width:100%"/> <br> <br>
-                            </div> 
+                            </div>
                             <div class="span2 " >
                                 <input id="aceptar" type="button"  value="Registrar" class="k-primary" style="width:100%"/>
-                            </div> 
+                            </div>
                             <div class="span4 hidden-phone" >
                             </div>
-                        </div> 
+                        </div>
                 </div>
-               
+
             </div>
 
 <script>
     var counter = 2;
     var counterrow = 2;
+
+    $('#pais_proc').select2({
+        width: 'resolve' // need to override the changed default
+    });
+    $('#depto').select2({
+        width: 'resolve' // need to override the changed default
+    });
+    $('#tipo_cuenta').select2({
+        width: 'resolve' // need to override the changed default
+    });
+    // $('.select2').select2({
+    //     width: 'resolve' // need to override the changed default
+    // });
+    $('#pers_autorizada').select2({
+        placeholder: "Persona Autorizada en el trámite y recojo de la Autorización Previa",
+        allowClear: true,
+        width: 'resolve' // need to override the changed default
+    });
+    $('.s2_multi_paises_s2').select2({
+        placeholder: "País de Origen",
+        allowClear: true,
+        width: 'resolve' // need to override the changed default
+    });
+
+    $('.s2_multi_deptos_s2').select2({
+        placeholder: "Departamentos Destino",
+        allowClear: true,
+        width: 'resolve' // need to override the changed default
+    });
+
     $('#archivoex').on("change", function(){
         $("#loadexcel").show();
         $('#resumen').html('');
     });
-
     function importExcel() {
         var file_data = $("#archivoex").prop("files")[0];
+        if (file_data == undefined) {
+            return false;
+        }
         var form_data = new FormData();
         form_data.append("file", file_data);
 
@@ -347,18 +446,27 @@
             processData: false,
             dataType: "json",
             data: form_data,
+            beforeSend: function() {
+                //mostrar GIF
+                $('#loadinggif').show();
+                $("#loadexcel").hide();
+                $('#response').html("<img src='styles/img/cargando.gif' />");
+            },
             success: function (data) {
+                // $('#mySelect2').append(newOption).trigger('change');
                 var success = data['success']['rows'];
                 var sucess_count = data['success']['count'];
                 var error = data['error']['rows'];
                 var error_count = data['error']['count'];
                 var total_grid = data['total'];
-                $("#loadexcel").hide();
+                $('#tipo_divisa').val(data['tipo_divisa']);
+                $('#tipo_cambio_divisa').val(data['tipo_cambio_divisa']);
+                // $("#loadexcel").hide();
+                $('#loadinggif').hide();
                 var divs = "";
-                divs += '<div class="span12 campo" id="resumengenerated" style="text-align: left;"><span style="color: #006400;" >  Correctos: <b>'+sucess_count+'</b> Filas: '+success+'</span></br><span style="color: #FF0000;">  Errores: <b>'+error_count+'</b> Filas: '+error+'</span></div>';
+                divs += '<div class="span12 campo" id="resumengenerated" style="text-align: left;"><span style="color: #006400;" >  Correctos: <b>'+sucess_count+'</b> </span></br><span style="color: #FF0000;">  Errores: <b>'+error_count+'</b> Fila(s): '+error+'</span></div>';
                 $('#resumen').html(divs);
                     $.each(data, function( index, value ) {
-                    // console.log('value:', value);
                     if(index == 1) {
                         var $tblrows = $("#myTable tbody tr");
                         var count = 1;
@@ -373,6 +481,11 @@
                                 var sda = $tblrow.find("[name=desc_arancelaria]");
                                 sda[0].innerText = value['desc_arancelaria'];
                                 $tblrow.find("[name=desc_comercial]").val(value['desc_comercial']);
+                                var idp = '';
+                                $tblrow.find('[name=pais_origen_grid] > option').each(function() {
+                                    if (value['pais_origen_grid'].substr(0,2) == $(this).text().substr(0,2)) idp = $(this).val();
+                                });
+                                $tblrow.find("[name=pais_origen_grid]").val(idp);
                                 $tblrow.find("[name=cantidadgrid]").val(value['cantidadgrid']);
                                 $tblrow.find("[name=peso_bruto]").val(value['peso_bruto']);
                                 $tblrow.find("[name=precio_unitario_sus]").val(value['precio_unitario_sus']);
@@ -380,28 +493,42 @@
                                 $tblrow.find("[name=precio_unitario_div]").val(value['precio_unitario_div']);
                                 $tblrow.find("[name=valor_total_div]").val(value['valor_total_div']);
                                 $tblrow.find("[name="+value['num']+"]").val(value['desc_arancelaria']);
-                                $tblrow.find("[name=unidad_medida] option:contains("+value['unidad_medida']+")").attr('selected', 'selected');
+                                if (value['unidad_medida'] == 'u') $tblrow.find("[name=unidad_medida]").val(1);
+                                if (value['unidad_medida'] == '2u') $tblrow.find("[name=unidad_medida]").val(2);
+                                if (value['unidad_medida'].toLowerCase() == 'kg' ) $tblrow.find("[name=unidad_medida]").val(3);
+                                if (value['unidad_medida'] == 'm2') $tblrow.find("[name=unidad_medida]").val(4);
+                                /*$tblrow.find("[name=unidad_medida] option:contains("+value['unidad_medida']+")").attr('selected', 'selected');*/
+                                var arr = {$nandina|@json_encode};
+                                $('#'+'subpartida1').empty();
+                                $('#'+'subpartida1').append($('<option></option>').val('').html(''));
+                                $.each(arr, function(i, p) {
+                                    var da = '';
+                                    if (value['subpartida'] == i) da = 'selected';
+                                    $('#'+'subpartida1').append($('<option '+da+'></option>').val(p).html(i));
+                                });
                             }
                         });
                     }
                     else {
-                        if(index != 'success' && index != 'error' && index != 'total') {
+                        if(index != 'success' && index != 'error' && index != 'total' && index != 'tipo_divisa' && index != 'tipo_cambio_divisa') {
                             var index = value['num'];
                             var newRow = $("<tr>");
                             var cols = "";
                             var arr = {$nandina|@json_encode};
                             var arrum = {$umedida|@json_encode};
+                            var paises_array = {$paises_array|@json_encode};
                             cols += '<td><span name="num">' + index + '</span></td>';
-                            cols += '<td><select id="subpartida' + index + '" class="k-dropdown-wrap k-state-default k-state-hover" name="'+index+'" onchange="changedesc(this)"></td>';
+                            cols += '<td><select id="subpartida' + index + '" class="select2" name="'+index+'" onchange="changedesc(this)" style="width: 100%; height:30px;"></td>';
                             cols += '<td><div id="desc_arancelaria' + index + '" name="desc_arancelaria" class="span12 campo" > ' + value['desc_arancelaria'] + ' </div></td>';
-                            cols += '<td><input type="text" class="k-textbox" name="desc_comercial" size="90" value="' + value['desc_comercial'] + '"/></td>';
-                            cols += '<td><input type="text" class="k-textbox" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid(\'cantidad\')" value="' + value['cantidadgrid'] + '" /></td>';
-                            cols += '<td><select id="unidad_medida' + index + '" name="unidad_medida" class="k-dropdown-wrap k-state-default k-state-hover"></select></td>';
-                            cols += '<td><input type="text" class="k-textbox" name="peso_bruto" onkeyup="sumagrid(\'peso_bruto\')" value="' + value['peso_bruto'] + '"/></td>';
-                            cols += '<td><input type="text" class="k-textbox" name="precio_unitario_sus" value="' + value['precio_unitario_sus'] + '"/></td>';
-                            cols += '<td><input type="text" class="k-textbox" name="valor_total_sus" onkeyup="sumagrid(\'valor_total_sus\')" value="' + value['valor_total_sus'] + '"/></td>';
-                            cols += '<td><input type="text" class="k-textbox" name="precio_unitario_div" value="' + value['precio_unitario_div'] + '"/></td>';
-                            cols += '<td><input type="text" class="k-textbox" name="valor_total_div" value="' + value['valor_total_div'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox no-restriccion-all" name="desc_comercial" size="90" value="' + value['desc_comercial'] + '"/></td>';
+                            cols += '<td><select id="pais_origen_grid' + index + '" name="pais_origen_grid" class="select2" style="width: 100%; height:30px;"></select></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid(\'cantidad\'); sumarow(this);" value="' + value['cantidadgrid'] + '" /></td>';
+                            cols += '<td><select id="unidad_medida' + index + '" name="unidad_medida" class="select2" style="width: 100%; height:30px; pointer-events:none;"></select></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="peso_bruto" onkeypress="validate(event)" onkeyup="sumagrid(\'peso_bruto\')" value="' + value['peso_bruto'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="precio_unitario_sus" onkeypress="validate(event)" value="' + value['precio_unitario_sus'] + '" onkeyup="sumarow(this);"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="valor_total_sus" onkeypress="validate(event)" onkeyup="sumagrid(\'valor_total_sus\')" value="' + value['valor_total_sus'] + '" readonly/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="precio_unitario_div" onkeyup="sumarow1(this);" onkeypress="validate(event)" value="' + value['precio_unitario_div'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="valor_total_div" onkeypress="validate(event)" value="' + value['valor_total_div'] + '"/></td>';
 
                             cols += '<td> <span class="ibtnDel" style="color: #FF0000;"> <i class="fa fa-trash"></i> </span></td>';
                             newRow.append(cols);
@@ -410,15 +537,23 @@
                             $('#'+'subpartida'+index).append($('<option></option>').val('').html(''));
                             $.each(arr, function(i, p) {
                                 var da = '';
-                                if (value['desc_arancelaria'] == p) da = 'selected';
+                                if (value['subpartida'] == i) da = 'selected';
                                 $('#'+'subpartida'+index).append($('<option '+da+'></option>').val(p).html(i));
                             });
                             $('#'+'unidad_medida'+index).empty();
                             $('#'+'unidad_medida'+index).append($('<option></option>').val('').html(''));
                             $.each(arrum, function(i, p) {
                                 var um = '';
-                                if (value['unidad_medida'] == p) um = 'selected';
+                                if (value['unidad_medida'].toLowerCase() == p.toLowerCase()) um = 'selected';
                                 $('#'+'unidad_medida'+index).append($('<option '+um+'></option>').val(i).html(p));
+                            });
+                            $('#'+'pais_origen_grid'+index).empty();
+                            $('#'+'pais_origen_grid'+index).append($('<option></option>').val('').html(''));
+                            $.each(paises_array, function(i, p) {
+                                var um = '';
+                                if (value['pais_origen_grid'].substr(0,2) == p.substr(0,2)) um = 'selected';
+                                if (i != 1)
+                                    $('#'+'pais_origen_grid'+index).append($('<option '+um+'></option>').val(i).html(p));
                             });
                         }
                     }
@@ -435,21 +570,36 @@
     });
 
     $("#addrow").on("click", function () {
+        var $tblrows = $("#myTable tbody tr");
+        var count = 1;
+        var eachrow = 0;
+        var array_paises = [];
+        var subpartida = '';
+        var subpartidaname = '';
+        $tblrows.each(function (index) {
+            eachrow++;
+            var $tblrow = $(this);
+            subpartida = $tblrow.find("[id^='subpartida']");
+        });
+        counter = subpartida[0].name + 1;
+        counterrow = eachrow + 1;
         var newRow = $("<tr>");
         var cols = "";
         var arr = {$nandina|@json_encode};
         var arrum = {$umedida|@json_encode};
+        var paises_array = {$paises_array|json_encode};
         cols += '<td><span name="num">' + counterrow + '</span></td>';
-        cols += '<td><select id="subpartida' + counter + '" class="k-dropdown-wrap k-state-default k-state-hover" name="'+counter+'" onchange="changedesc(this)"></td>';
-        cols += '<td><div id="desc_arancelaria' + counter + '" name="desc_arancelaria' + counter + '" class="span12 campo"></div></td>';
-        cols += '<td><input type="text" class="k-textbox" name="desc_comercial' + counter + '" size="90"/></td>';
-        cols += '<td><input type="text" class="k-textbox" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid(\'cantidad\')"/></td>';
-        cols += '<td><select id="unidad_medida' + counter + '" name="unidad_medida' + counter + '" class="k-dropdown-wrap k-state-default k-state-hover"></select></td>';
-        cols += '<td><input type="text" class="k-textbox" name="peso_bruto" onkeyup="sumagrid(\'peso_bruto\')"/></td>';
-        cols += '<td><input type="text" class="k-textbox" name="precio_unitario_sus"/></td>';
-        cols += '<td><input type="text" class="k-textbox" name="valor_total_sus" onkeyup="sumagrid(\'valor_total_sus\')"/></td>';
-        cols += '<td><input type="text" class="k-textbox" name="precio_unitario_div"/></td>';
-        cols += '<td><input type="text" class="k-textbox" name="valor_total_div"/></td>';
+        cols += '<td><select id="subpartida' + counter + '" class="select2" name="'+counter+'" onchange="changedesc(this)" style="width: 100%; height:30px;"></td>';
+        cols += '<td><div id="desc_arancelaria' + counter + '" name="desc_arancelaria" class="span12 campo"></div></td>';
+        cols += '<td><input type="text" class="k-textbox no-restriccion-all" name="desc_comercial" size="90"/></td>';
+        cols += '<td><select id="pais_origen_grid' + counter + '" name="pais_origen_grid" class="select2" style="width: 100%; height:30px;"></select></td>';
+        cols += '<td><input type="text" class="k-textbox" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid(\'cantidad\'); sumarow(this);"/></td>';
+        cols += '<td><select id="unidad_medida' + counter + '" name="unidad_medida" class="select2" style="width: 100%; height:30px; pointer-events:none;"></select></td>';
+        cols += '<td><input type="text" class="k-textbox" name="peso_bruto" onkeypress="validate(event)" onkeyup="sumagrid(\'peso_bruto\')"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="precio_unitario_sus" onkeypress="validate(event)" onkeyup="sumarow(this);"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="valor_total_sus" onkeypress="validate(event)" onkeyup="sumagrid(\'valor_total_sus\')" readonly/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="precio_unitario_div" onkeypress="validate(event)"  onkeyup="sumarow1(this);"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="valor_total_div" onkeypress="validate(event)" readonly/></td>';
 
         cols += '<td> <span class="ibtnDel" style="color: #FF0000;"> <i class="fa fa-trash"></i> </span></td>';
         newRow.append(cols);
@@ -463,6 +613,12 @@
         $('#'+'unidad_medida'+counter).append($('<option></option>').val('').html(''));
         $.each(arrum, function(i, p) {
             $('#'+'unidad_medida'+counter).append($('<option></option>').val(i).html(p));
+        });
+        $('#'+'pais_origen_grid'+counter).empty();
+        $('#'+'pais_origen_grid'+counter).append($('<option></option>').val('').html(''));
+        $.each(paises_array, function(i, p) {
+            if (i != 1)
+            $('#'+'pais_origen_grid'+counter).append($('<option></option>').val(i).html(p));
         });
         counter++;
         counterrow++;
@@ -491,8 +647,41 @@
     function changedesc(selectObject) {
         var value = selectObject.value;
         var count = selectObject.name;
-        $('#desc_arancelaria'+count).text(value);
+        var tmp = value.split('|');
+        $('#desc_arancelaria'+count).text(tmp[0]);
+        if(tmp[1] == 'u')
+            $('#unidad_medida'+count).val(1);
+        if(tmp[1] == '2u')
+            $('#unidad_medida'+count).val(2);
+        if(tmp[1] == 'Kg')
+            $('#unidad_medida'+count).val(3);
+        if(tmp[1] == 'm2')
+            $('#unidad_medida'+count).val(4);
         // $('#desc_arancelaria'+count).val(value);
+    }
+    function sumarow(row) {
+        var cantidad =$(row).parent().parent().find('input[name=\'cantidadgrid\']').val();
+        var precio = $(row).parent().parent().find('input[name=\'precio_unitario_sus\']').val();
+        if (cantidad.length > 0 && precio.length > 0) {
+            let multi = cantidad * precio;
+            $(row).parent().parent().find('input[name=\'valor_total_sus\']').val(multi);
+        }
+        else {
+            $(row).parent().parent().find('input[name=\'valor_total_sus\']').val('');
+        }
+        sumagrid('valor_total_sus');
+    }
+    function sumarow1(row) {
+        var cantidad =$(row).parent().parent().find('input[name=\'cantidadgrid\']').val();
+        var precio = $(row).parent().parent().find('input[name=\'precio_unitario_div\']').val();
+        if (cantidad.length > 0 && precio.length > 0) {
+            let multi = cantidad * precio;
+            $(row).parent().parent().find('input[name=\'valor_total_div\']').val(multi);
+        }
+        else {
+            $(row).parent().parent().find('input[name=\'valor_total_div\']').val('');
+        }
+        // sumagrid('valor_total_sus');
     }
     function validate(evt) {
         var theEvent = evt || window.event;
@@ -524,14 +713,14 @@
             if (field == 'valor_total_sus')
                 var num =  $tblrow.find("[name=valor_total_sus]").val();
             if (num != '')
-                qty = parseInt(qty) + parseInt(num);
+                qty = parseFloat(qty) + parseFloat(num);
         });
         if (field == 'cantidad')
-            $('#cantidad').val(qty);
+            $('#cantidad').val(qty.toFixed(2));
         if (field == 'peso_bruto')
-            $('#peso_bruto').val(qty);
+            $('#peso_bruto').val(qty.toFixed(2));
         if (field == 'valor_total_sus')
-            $('#fob').val(qty);
+            $('#fob').val(qty.toFixed(2));
     }
  ocultar('aviso1');
 // $("#detalle").kendoGrid({
@@ -617,8 +806,8 @@ var cancelarrui = $("#cancelarrui").data("kendoButton");
 
 
 aprobar.bind("click", function(e){   
-        $('#paises').val(multiSelect.value());
-       $('#depto').val(multiSelect3.value());
+        // $('#paises').val(multiSelect.value());
+      // $('#depto').val(multiSelect3.value());
        // if(validator.validate())
        // { 
            
@@ -639,17 +828,34 @@ cancelar.bind("click", function(e){
 
 	 $("#aceptar").data("kendoButton").enable(false);
         var file_data = $("#archivoex").prop("files")[0];
-        var paisp = $("#pais_proc").data("kendoDropDownList");
+        // var paisp = $("#pais_proc").data("kendoDropDownList");
         var tipoc = $("#tipo_cuenta").data("kendoDropDownList");
         var persa = $("#pers_autorizada").data("kendoDropDownList");
-            var form_data = new FormData();
+
+        var $tblrows = $("#myTable tbody tr");
+        var count = 1;
+
+        var array_paises = [];
+        $tblrows.each(function (index) {
+            var $tblrow = $(this);
+            $tblrow.find('[name=pais_origen_grid] > option:selected').each(function() {
+                array_paises.push($(this).val());
+            });
+        });
+        var newpaises = array_paises.filter(function(elem, index, self) {
+            return index === self.indexOf(elem);
+        });
+        $("#paises").val(newpaises);
+        var form_data = new FormData();
         form_data.append("file", file_data);
 
         form_data.append('paises', $("#paises").val());
-        form_data.append('pais_proc', paisp.value());
+        form_data.append('pais_proc', $("#pais_proc").val());
         form_data.append('depto', $("#depto").val());
         form_data.append('cantidad', $("#cantidad").val());
         form_data.append('peso_bruto', $("#peso_bruto").val());
+        form_data.append('tipo_divisa', $("#tipo_divisa").val());
+        form_data.append('tipo_cambio_divisa', $("#tipo_cambio_divisa").val());
         form_data.append('fob', $("#fob").val());
         form_data.append('orig_divisas', $("#orig_divisas").val());
         form_data.append('ent_bancaria', $("#ent_bancaria").val());
@@ -667,6 +873,7 @@ cancelar.bind("click", function(e){
             var subpartida = $tblrow.find("select[id^='subpartida'] option:selected");
             var desc_arancelaria = $tblrow.find("[name=desc_arancelaria]");
             var desc_comercial = $tblrow.find("[name=desc_comercial]").val();
+            var pais_origen_grid = $tblrow.find("[name=pais_origen_grid] option:selected");
             var unidad_medida = $tblrow.find("[name=unidad_medida] option:selected");
             var cantidadgrid = $tblrow.find("[name=cantidadgrid]").val();
             var peso_bruto = $tblrow.find("[name=peso_bruto]").val();
@@ -678,7 +885,7 @@ cancelar.bind("click", function(e){
                 'subpartida': subpartida.text(),
                 'desc_arancelaria':desc_arancelaria.text(),
                 'desc_comercial': desc_comercial,
-                'cantidadgrid': cantidadgrid,
+                'pais_origen_grid': pais_origen_grid.val(),
                 'unidad_medida': unidad_medida.val(),
                 'cantidadgrid': cantidadgrid,
                 'peso_bruto': peso_bruto,
@@ -723,33 +930,33 @@ cancelar.bind("click", function(e){
         detalle.dataSource.remove(dataRow);
         }
     //-----------------------para la elecion de paises de origen-----------------------------------
-    $("#paises").kendoMultiSelect({
-        placeholder:"Pais de Origen",
-        dataTextField: "nombre",
-        dataValueField: "id_pais",
-        dataSource: {
-            transport: {
-                read: {
-                    dataType: "json",
-                    url: "index.php?opcion=admRegistroApi&tarea=listar_pais"
-                }
-            }
-        },
-    });
+    // $("#paises").kendoMultiSelect({
+    //     placeholder:"Pais de Origen",
+    //     dataTextField: "nombre",
+    //     dataValueField: "id_pais",
+    //     dataSource: {
+    //         transport: {
+    //             read: {
+    //                 dataType: "json",
+    //                 url: "index.php?opcion=admRegistroApi&tarea=listar_pais"
+    //             }
+    //         }
+    //     },
+    // });
    
-    var multiSelect = $("#paises").data("kendoMultiSelect"),
-            setValue = function(e) {
-                if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {
-                    multiSelect.dataSource.filter({}); //clear applied filter before setting value
+    {*var multiSelect = $("#paises").data("kendoMultiSelect"),*}
+    {*        setValue = function(e) {*}
+    {*            if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {*}
+    {*                multiSelect.dataSource.filter({}); //clear applied filter before setting value*}
 
-                    multiSelect.value($("#paises_values").val().split(","));
-                }
-            },
-            setSearch = function (e) {
-                if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {
-                    multiSelect.search($("#word").val());
-                }
-            };
+    {*                multiSelect.value($("#paises_values").val().split(","));*}
+    {*            }*}
+    {*        },*}
+    {*        setSearch = function (e) {*}
+    {*            if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {*}
+    {*                multiSelect.search($("#word").val());*}
+    {*            }*}
+    {*        };*}
               //this.onload(setValue('1'));
 
     //-----------------------para la elecion de paises de proc-----------------------------------
@@ -819,19 +1026,19 @@ cancelar.bind("click", function(e){
 
     
    
-    var multiSelect3 = $("#depto").data("kendoMultiSelect"),
-            setValue = function(e) {
-                if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {
-                    multiSelect.dataSource.filter({}); //clear applied filter before setting value
+    {*var multiSelect3 = $("#depto").data("kendoMultiSelect"),*}
+    {*        setValue = function(e) {*}
+    {*            if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {*}
+    {*                multiSelect.dataSource.filter({}); //clear applied filter before setting value*}
 
-                    multiSelect.value($("#depto_valores").val().split(","));
-                }
-            },
-            setSearch = function (e) {
-                if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {
-                    multiSelect.search($("#word").val());
-                }
-            };
+    {*                multiSelect.value($("#depto_valores").val().split(","));*}
+    {*            }*}
+    {*        },*}
+    {*        setSearch = function (e) {*}
+    {*            if (e.type != "keypress" || kendo.keys.ENTER == e.keyCode) {*}
+    {*                multiSelect.search($("#word").val());*}
+    {*            }*}
+    {*        };*}
 
     function ValorNumeric (container, options) {
         $('<input data-bind="value:' + options.field + '"/>')

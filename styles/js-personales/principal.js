@@ -317,6 +317,10 @@ $(document).on("keypress", 'input[type="text"],textarea', function(e) {
         var regex = new RegExp("^[a-zA-Z0-9_, \b@.áéíóúÁÉÍÓÚ/ñÑ-]+$");
         var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
     }
+    if($(e.target).hasClass('no-restriccion-all')){
+        var regex = new RegExp("^[a-zA-Z0-9\\\\p{all}]{0,50}");
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    }
     if(e.keyCode == 9) return true;	
         if (regex.test(str)) {
             return true;
