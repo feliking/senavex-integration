@@ -91,21 +91,111 @@
                     </div>
                 </div>
                 <div class="row-fluid " >
-                    <div class="span10" >
+                    <div class="span12" >
                         <b>(*) SUBIR EL ARCHIVO CON LOS ITEMS LLENADOS:</b>
                         <input id="archivoex" type="file" name="archivo" required="required" />Excel
-
-                    </div>  
+                        <span style="float: right">
+                            <button type="button" class="k-primary k-button" id="loadexcel" ><i class="fas fa-tasks"></i> <i class="fas fa-file-excel"></i> Importar Excel</button>
+                        </span>
+                    </div>
                 </div>
                 <div class="row-fluid " >
-                    <div class="span3" >
-                        <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Cantidad Total"  name="cantidad" id="cantidad" required validationMessage="Ingrese cantidad" />
+                    <div class="span12" >
+                        <div id="resumen"></div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <table id="myTable" class=" table order-list">
+                            <thead>
+                            <tr>
+                                <td>Nº</td>
+                                <td>SUBPARTIDA NANDINA</td>
+                                <td>DESCRIPCIÓN ARANCELARIA</td>
+                                <td>DESCRIPCIÓN COMERCIAL</td>
+                                <td>CANTIDAD</td>
+                                <td>UNIDAD DE MEDIDA</td>
+                                <td>PESO BRUTO (KG.)</td>
+                                <td>PRECIO UNITARIO ($us)</td>
+                                <td>VALOR TOTAL ($us)</td>
+                                <td>PRECIO UNITARIO (En divisa correspondiente)</td>
+                                <td>VALOR TOTAL (En divisa correspondiente)</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="col-sm-1">
+                                    <span name="num">1</span>
+                                </td>
+                                <td class="col-sm-1">
+                                    <select id="subpartida1" class="k-dropdown-wrap k-state-default k-state-hover" name="1" onchange="changedesc(this)">
+                                        <option value=""></option>
+                                        {foreach  key=key item=item from=$nandina}
+                                            <option value="{$item}">{$key}</option>
+                                            {/foreach}
+                                    </select>
+                                </td>
+                                <td class="col-sm-1">
+                                    <div id="desc_arancelaria1" name="desc_arancelaria" class="span12 campo">
+                                    </div>
+                                </td>
+                                <td class="col-sm-1">
+                                    <input type="text" name="desc_comercial" size="90" class="k-textbox"/>
+                                </td>
+                                <td class="col-sm-1">
+                                    <input type="text" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid('cantidad')" class="k-textbox"/>
+                                </td>
+                                <td class="col-sm-1">
+                                    <select id="unidad_medida" name="unidad_medida" class="k-dropdown-wrap k-state-default k-state-hover">
+                                        <option value=""></option>
+                                        {foreach  key=key item=item from=$umedida}
+                                            <option value="{$key}">{$item}</option>
+                                            {/foreach}
+                                    </select>
+                                </td>
+                                <td class="col-sm-1">
+                                    <input type="text" name="peso_bruto"  class="k-textbox" onkeyup="sumagrid('peso_bruto')"/>
+                                </td>
+                                <td class="col-sm-1">
+                                    <input type="text" name="precio_unitario_sus"  class="k-textbox"/>
+                                </td>
+                                <td class="col-sm-1">
+                                    <input type="text" name="valor_total_sus"  class="k-textbox" onkeyup="sumagrid('valor_total_sus')"/>
+                                </td>
+                                <td class="col-sm-1">
+                                    <input type="text" name="precio_unitario_div"  class="k-textbox"/>
+                                </td>
+                                <td class="col-sm-1">
+                                    <input type="text" name="valor_total_div"  class="k-textbox"/>
+                                </td>
+                                <td class="col-sm-1"><a class="deleteRow"></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="5" style="text-align: left;">
+                                    <button type="button" class="k-primary k-button" id="addrow" ><i class="fas fa-plus-square"></i> Añadir fila</button>
+                                </td>
+                            </tr>
+                            <tr>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="row-fluid " >
+                    <div class="span3">
+                        <label>Cantidad Total</label>
+                        <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  readonly  name="cantidad" id="cantidad" required validationMessage="Ingrese cantidad" />
                     </div>  
                     <div class="span3" >
-                        <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Peso Bruto Total Kg"  name="peso_bruto" id="peso_bruto" required validationMessage="Ingrese descripción Arancelaria" />
+                        <label>Peso Bruto Total Kg</label>
+                        <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  readonly  name="peso_bruto" id="peso_bruto" required validationMessage="Ingrese descripción Arancelaria" />
                     </div> 
                     <div class="span3" >
-                        <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Valor FOB total (valor en $us)"  name=fob" id="fob" required validationMessage="Ingrese descripción Comercial" />
+                        <label>Valor FOB total (valor en $us)</label>
+                        <input type="number" min="0" style="width:100%;" class="k-textbox no-restriccion"  readonly  name="fob" id="fob" required validationMessage="Ingrese descripción Comercial" />
 
                       <!--   <input type="text" onkeypress="return isNumeric(event)"  style="width:100%;" class="k-textbox no-restriccion"  placeholder="Cantidad Total"  name="cantidad" id="cantidad"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese cantidad" />
                     </div>  
@@ -215,7 +305,7 @@
                                         <div class="span10" >
                                             <p> Aseg&uacute;rese de que los datos introducidos son los correctos ya que no se podra volver a editar cuando la solicitud se guarde
                                                 <br>Si desea volver al formulario para verificar los datos presione<span class="letrarelevante"> Cancelar</span><br>
-						<br>Si presiona Registrar se guardan los registros y lo podra imprimir en el listado de Solicitudes que se mostrar� a continuaci�n<br>
+						<br>Si presiona Registrar se guardan los registros y lo podra imprimir en el listado de Solicitudes que se mostrar� a continuaci�n<br>
                                                 
                                           </p> 
                                         </div>  
@@ -236,8 +326,213 @@
                 </div>
                
             </div>
-                        
+
 <script>
+    var counter = 2;
+    var counterrow = 2;
+    $('#archivoex').on("change", function(){
+        $("#loadexcel").show();
+        $('#resumen').html('');
+    });
+
+    function importExcel() {
+        var file_data = $("#archivoex").prop("files")[0];
+        var form_data = new FormData();
+        form_data.append("file", file_data);
+
+        $.ajax({
+            type: 'post',
+            url: 'index.php?opcion=admAutorizacionPrevia&tarea=loadExcel',
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            data: form_data,
+            success: function (data) {
+                var success = data['success']['rows'];
+                var sucess_count = data['success']['count'];
+                var error = data['error']['rows'];
+                var error_count = data['error']['count'];
+                var total_grid = data['total'];
+                $("#loadexcel").hide();
+                var divs = "";
+                divs += '<div class="span12 campo" id="resumengenerated" style="text-align: left;"><span style="color: #006400;" >  Correctos: <b>'+sucess_count+'</b> Filas: '+success+'</span></br><span style="color: #FF0000;">  Errores: <b>'+error_count+'</b> Filas: '+error+'</span></div>';
+                $('#resumen').html(divs);
+                    $.each(data, function( index, value ) {
+                    // console.log('value:', value);
+                    if(index == 1) {
+                        var $tblrows = $("#myTable tbody tr");
+                        var count = 1;
+                        $tblrows.each(function (index) {
+                            if (index > 0) {
+                                $(this).closest("tr").remove();
+                            }
+                            else {
+                                var $tblrow = $(this);
+                                var snum = $tblrow.find("[name=num]");
+                                snum[0].innerText = value['num'];
+                                var sda = $tblrow.find("[name=desc_arancelaria]");
+                                sda[0].innerText = value['desc_arancelaria'];
+                                $tblrow.find("[name=desc_comercial]").val(value['desc_comercial']);
+                                $tblrow.find("[name=cantidadgrid]").val(value['cantidadgrid']);
+                                $tblrow.find("[name=peso_bruto]").val(value['peso_bruto']);
+                                $tblrow.find("[name=precio_unitario_sus]").val(value['precio_unitario_sus']);
+                                $tblrow.find("[name=valor_total_sus]").val(value['valor_total_sus']);
+                                $tblrow.find("[name=precio_unitario_div]").val(value['precio_unitario_div']);
+                                $tblrow.find("[name=valor_total_div]").val(value['valor_total_div']);
+                                $tblrow.find("[name="+value['num']+"]").val(value['desc_arancelaria']);
+                                $tblrow.find("[name=unidad_medida] option:contains("+value['unidad_medida']+")").attr('selected', 'selected');
+                            }
+                        });
+                    }
+                    else {
+                        if(index != 'success' && index != 'error' && index != 'total') {
+                            var index = value['num'];
+                            var newRow = $("<tr>");
+                            var cols = "";
+                            var arr = {$nandina|@json_encode};
+                            var arrum = {$umedida|@json_encode};
+                            cols += '<td><span name="num">' + index + '</span></td>';
+                            cols += '<td><select id="subpartida' + index + '" class="k-dropdown-wrap k-state-default k-state-hover" name="'+index+'" onchange="changedesc(this)"></td>';
+                            cols += '<td><div id="desc_arancelaria' + index + '" name="desc_arancelaria" class="span12 campo" > ' + value['desc_arancelaria'] + ' </div></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="desc_comercial" size="90" value="' + value['desc_comercial'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid(\'cantidad\')" value="' + value['cantidadgrid'] + '" /></td>';
+                            cols += '<td><select id="unidad_medida' + index + '" name="unidad_medida" class="k-dropdown-wrap k-state-default k-state-hover"></select></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="peso_bruto" onkeyup="sumagrid(\'peso_bruto\')" value="' + value['peso_bruto'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="precio_unitario_sus" value="' + value['precio_unitario_sus'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="valor_total_sus" onkeyup="sumagrid(\'valor_total_sus\')" value="' + value['valor_total_sus'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="precio_unitario_div" value="' + value['precio_unitario_div'] + '"/></td>';
+                            cols += '<td><input type="text" class="k-textbox" name="valor_total_div" value="' + value['valor_total_div'] + '"/></td>';
+
+                            cols += '<td> <span class="ibtnDel" style="color: #FF0000;"> <i class="fa fa-trash"></i> </span></td>';
+                            newRow.append(cols);
+                            $("table.order-list").append(newRow);
+                            $('#'+'subpartida'+index).empty();
+                            $('#'+'subpartida'+index).append($('<option></option>').val('').html(''));
+                            $.each(arr, function(i, p) {
+                                var da = '';
+                                if (value['desc_arancelaria'] == p) da = 'selected';
+                                $('#'+'subpartida'+index).append($('<option '+da+'></option>').val(p).html(i));
+                            });
+                            $('#'+'unidad_medida'+index).empty();
+                            $('#'+'unidad_medida'+index).append($('<option></option>').val('').html(''));
+                            $.each(arrum, function(i, p) {
+                                var um = '';
+                                if (value['unidad_medida'] == p) um = 'selected';
+                                $('#'+'unidad_medida'+index).append($('<option '+um+'></option>').val(i).html(p));
+                            });
+                        }
+                    }
+                });
+                sumagrid('cantidad');
+                sumagrid('peso_bruto');
+                sumagrid('valor_total_sus');
+            }
+        });
+    }
+
+    $("#loadexcel").on("click", function () {
+        importExcel();
+    });
+
+    $("#addrow").on("click", function () {
+        var newRow = $("<tr>");
+        var cols = "";
+        var arr = {$nandina|@json_encode};
+        var arrum = {$umedida|@json_encode};
+        cols += '<td><span name="num">' + counterrow + '</span></td>';
+        cols += '<td><select id="subpartida' + counter + '" class="k-dropdown-wrap k-state-default k-state-hover" name="'+counter+'" onchange="changedesc(this)"></td>';
+        cols += '<td><div id="desc_arancelaria' + counter + '" name="desc_arancelaria' + counter + '" class="span12 campo"></div></td>';
+        cols += '<td><input type="text" class="k-textbox" name="desc_comercial' + counter + '" size="90"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="cantidadgrid" onkeypress="validate(event)" onkeyup="sumagrid(\'cantidad\')"/></td>';
+        cols += '<td><select id="unidad_medida' + counter + '" name="unidad_medida' + counter + '" class="k-dropdown-wrap k-state-default k-state-hover"></select></td>';
+        cols += '<td><input type="text" class="k-textbox" name="peso_bruto" onkeyup="sumagrid(\'peso_bruto\')"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="precio_unitario_sus"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="valor_total_sus" onkeyup="sumagrid(\'valor_total_sus\')"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="precio_unitario_div"/></td>';
+        cols += '<td><input type="text" class="k-textbox" name="valor_total_div"/></td>';
+
+        cols += '<td> <span class="ibtnDel" style="color: #FF0000;"> <i class="fa fa-trash"></i> </span></td>';
+        newRow.append(cols);
+        $("table.order-list").append(newRow);
+        $('#'+'subpartida'+counter).empty();
+        $('#'+'subpartida'+counter).append($('<option></option>').val('').html(''));
+        $.each(arr, function(i, p) {
+            $('#'+'subpartida'+counter).append($('<option></option>').val(p).html(i));
+        });
+        $('#'+'unidad_medida'+counter).empty();
+        $('#'+'unidad_medida'+counter).append($('<option></option>').val('').html(''));
+        $.each(arrum, function(i, p) {
+            $('#'+'unidad_medida'+counter).append($('<option></option>').val(i).html(p));
+        });
+        counter++;
+        counterrow++;
+    });
+
+    function reordernum() {
+        var $tblrows = $("#myTable tbody tr");
+        var count = 1;
+        $tblrows.each(function (index) {
+            var $tblrow = $(this);
+            var span = $tblrow.find("[name=num]");
+            span[0].innerText = count;
+            count = parseInt(count) + 1;
+        });
+        counterrow = count;
+    }
+
+    $("table.order-list").on("click", ".ibtnDel", function (event) {
+        $(this).closest("tr").remove();
+        reordernum();
+        sumagrid('cantidad');
+        sumagrid('peso_bruto');
+        sumagrid('valor_total_sus');
+        //counter -= 1
+    });
+    function changedesc(selectObject) {
+        var value = selectObject.value;
+        var count = selectObject.name;
+        $('#desc_arancelaria'+count).text(value);
+        // $('#desc_arancelaria'+count).val(value);
+    }
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if( !regex.test(key) ) {
+            theEvent.returnValue = false;
+            if(theEvent.preventDefault) theEvent.preventDefault();
+        }
+    }
+
+    function sumagrid(field) {
+        var qty = 0;
+        var $tblrows = $("#myTable tbody tr");
+        $tblrows.each(function (index) {
+            var $tblrow = $(this);
+            if (field == 'cantidad')
+                var num =  $tblrow.find("[name=cantidadgrid]").val();
+            if (field == 'peso_bruto')
+                var num =  $tblrow.find("[name=peso_bruto]").val();
+            if (field == 'valor_total_sus')
+                var num =  $tblrow.find("[name=valor_total_sus]").val();
+            if (num != '')
+                qty = parseInt(qty) + parseInt(num);
+        });
+        if (field == 'cantidad')
+            $('#cantidad').val(qty);
+        if (field == 'peso_bruto')
+            $('#peso_bruto').val(qty);
+        if (field == 'valor_total_sus')
+            $('#fob').val(qty);
+    }
  ocultar('aviso1');
 // $("#detalle").kendoGrid({
 //     editable: true,
@@ -267,7 +562,7 @@
 //         { d_unidad_medida: 1, descripcion: "u" },
 //         { d_unidad_medida: 2, descripcion: "2u" }
 //     ];
-    
+
 function getDescripcionUnidadMedida(unidad_medida)
 {
     for(var i=0, length = unidadmedida.length; i< length;i++)
@@ -347,7 +642,7 @@ cancelar.bind("click", function(e){
         var paisp = $("#pais_proc").data("kendoDropDownList");
         var tipoc = $("#tipo_cuenta").data("kendoDropDownList");
         var persa = $("#pers_autorizada").data("kendoDropDownList");
-        var form_data = new FormData();
+            var form_data = new FormData();
         form_data.append("file", file_data);
 
         form_data.append('paises', $("#paises").val());
@@ -363,23 +658,52 @@ cancelar.bind("click", function(e){
         form_data.append('cambio_empleado', $("#cambio_empleado").val());
         form_data.append('pers_autorizada', persa.value());
 
-            $.ajax({             
+        var tabledata = [];
+        var $tblrows = $("#myTable tbody tr");
+        var count = 1;
+        var arrayvalue = [];
+        $tblrows.each(function (index, value) {
+            var $tblrow = $(this);
+            var subpartida = $tblrow.find("select[id^='subpartida'] option:selected");
+            var desc_arancelaria = $tblrow.find("[name=desc_arancelaria]");
+            var desc_comercial = $tblrow.find("[name=desc_comercial]").val();
+            var unidad_medida = $tblrow.find("[name=unidad_medida] option:selected");
+            var cantidadgrid = $tblrow.find("[name=cantidadgrid]").val();
+            var peso_bruto = $tblrow.find("[name=peso_bruto]").val();
+            var precio_unitario_sus = $tblrow.find("[name=precio_unitario_sus]").val();
+            var valor_total_sus = $tblrow.find("[name=valor_total_sus]").val();
+            var precio_unitario_div = $tblrow.find("[name=precio_unitario_div]").val();
+            var valor_total_div = $tblrow.find("[name=valor_total_div]").val();
+            arrayvalue.push({
+                'subpartida': subpartida.text(),
+                'desc_arancelaria':desc_arancelaria.text(),
+                'desc_comercial': desc_comercial,
+                'cantidadgrid': cantidadgrid,
+                'unidad_medida': unidad_medida.val(),
+                'cantidadgrid': cantidadgrid,
+                'peso_bruto': peso_bruto,
+                'precio_unitario_sus': precio_unitario_sus,
+                'valor_total_sus': valor_total_sus,
+                'precio_unitario_div':precio_unitario_div,
+                'valor_total_div': valor_total_div
+            });
+        });
+        var tabledata = JSON.stringify(arrayvalue);
+        form_data.append('arrayvalue', tabledata);
+        $.ajax({
                    type: 'post',
                    url: 'index.php?opcion=admAutorizacionPrevia&tarea=guardaSolicitud',
                     contentType: false,
                     processData: false,
                    data: form_data,
                    success: function (data) {
-                   
                      if(data == 2)
                      {
                         alert("Formato de documento invalido, o no se subio la plantilla Excel");
-			$("#aceptar").data("kendoButton").enable(true);
+			            $("#aceptar").data("kendoButton").enable(true);
                      } else {
                         cerraractualizartab('Autorizaciones Previas','admAutorizacionPrevia','ListarColaApiEmpresa');
                      }
-                     
-
                    }
                });
     });

@@ -1657,7 +1657,7 @@ class AdmReportesEstadisticas extends Principal {
             $objPHPExcel->setActiveSheetIndex($sheet)->getStyle('g8:g'.$fila)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_CONSECUTES);
             $objPHPExcel->setActiveSheetIndex($sheet)->getStyle('k8:k'.$fila)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_DDMMYYYY);
             $objPHPExcel->setActiveSheetIndex($sheet)->getStyle('l8:l'.$fila)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_DDMMYYYY);
-            //$objPHPExcel->setActiveSheetIndex($sheet)->getStyle('h8:h'.$fila)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_CONSECUTE);
+            $objPHPExcel->setActiveSheetIndex($sheet)->getStyle('h8:h'.$fila)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_CONSECUTE);
             $objPHPExcel->setActiveSheetIndex($sheet)->getStyle('m8:m'.$fila)->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_DDMMYYYY);
             $objPHPExcel->getProperties()->setCreator($_SESSION['nombrecompleto']);
             $objPHPExcel->getProperties()->setLastModifiedBy($_SESSION['nombrecompleto']);
