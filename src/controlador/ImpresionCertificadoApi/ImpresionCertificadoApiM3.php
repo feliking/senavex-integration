@@ -151,14 +151,14 @@ class PDF extends FPDF
         //////////////////////////TITULO//////////////////
         
         $this->SetFont('Arial','B',15);
-        $this->SetXY(140, 24);
+        $this->SetXY(140, 30);
         $this->Ln(38);
         $this->Cell(0,10,utf8_decode('AUTORIZACIÓN PREVIA DE IMPORTACIÓN'),0,0,'C');
         $this->SetFont('Arial','',10);
         // $this->SetXY(120, 58);
         $this->Ln(10);
         $this->Cell(12,10,' ',0,0,'C');
-        $this->MultiCell(170,5,utf8_decode('En el marco de lo dispuesto en el Art. 118 parágrafo I del Reglamento a la Ley General de Aduanas aprobado mediante Decreto Supremo Nº 25870 de fecha 11/08/2000, Decreto Supremo Nº 2752 de fecha 01/05/2016 que aprueba la emisión de Autorizaciones Previas de Importación, , Decreto Supremo Nº 4010 de fecha 14/08/2019 que sustituye el Anexo del Decreto Supremo Nº 2752, Decreto Supremo Nº 4183 del 12/03/2020, que incorpora nuevas subpartidas arancelarias al Anexo del Decreto Supremo Nº 2752, Decreto Supremo Nº 4192 de fecha 16/03/2020 que "establece medidas de prevención y contingencia para la emergencia nacional  contra  el  brote  del  Coronavirus  (COVID-19) en todo el territorio nacional",  Resolución  Ministerial  0063/2020  de  fecha 24/03/2020 que establece el tratamiento en el marco del Decreto Supremo Nº 4192  y otras afines; el SENAVEX procede a la Emisión de Autorización Previa de Importación de acuerdo al siguiente detalle: '),0,'J');
+        $this->MultiCell(170,5,utf8_decode('En el marco de lo dispuesto en el Art. 118 parágrafo I del Reglamento a la Ley General de Aduanas aprobado mediante Decreto Supremo Nº 25870 de fecha 11/08/2000, Decreto Supremo Nº 2752 de fecha 01/05/2016 que aprueba la emisión de Autorizaciones Previas de Importación, Decreto Supremo Nº 4010 de fecha 14/08/2019 que sustituye el Anexo del Decreto Supremo Nº 2752, Decreto Supremo Nº 4183 del 12/03/2020, que incorpora nuevas subpartidas arancelarias al Anexo del Decreto Supremo Nº 2752, Decreto Supremo Nº 4199 de fecha 21/03/2020 que "declara emergencia sanitaria nacional y cuarentena en todo del  territorio del Estado Plurinacional de Bolivia contra  el  brote  del  Coronavirus  (COVID-19)", Resolución Ministerial Nº 0064/2020 de fecha 24/03/2020 que establece el tratamiento en el marco del Decreto Supremo Nº 4199 y otras afines; el SENAVEX procede a la Emisión de Autorización Previa de Importación de acuerdo al siguiente detalle: '),0,'J');
         //$this->Ln(5);
        
         //-----------codigoQR-----------
@@ -260,11 +260,11 @@ $pdf->AddPage();
 $pdf->CodigoQR($autorizacionPrevia->getId_empresa_importador());
 
 
-$pdf->SetXY(22, 125);
+$pdf->SetXY(22, 133);
 $pdf->SetFont('Arial','BU',10);
 $pdf->Cell(45,6,utf8_decode('DESCRIPCIÓN DEL IMPORTADOR'),0,0,'L'); 
 ////////////// EMPRESA ////////////////////////
-$pdf->SetXY(22, 130);
+$pdf->SetXY(22, 138);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Empresa'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -286,14 +286,14 @@ $pdf->SetFont('Arial','',10);
 // $pdf->Cell(140,6,utf8_decode($empresaImportador->getRazon_social()),0,0,'L');
 
 ////////////// NIT ////////////////////////
-$pdf->SetXY(22, 136);
+$pdf->SetXY(22, 144);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('NIT'),0,0,'L');
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->Cell(50,6,utf8_decode($empresaImportador->getNit()),0,0,'L');
 ////////////// REPRESENTACION LEGAL ////////////////////////
-$pdf->SetXY(22, 142);
+$pdf->SetXY(22, 150);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Representante Legal'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -301,11 +301,11 @@ $pdf->Cell(5,6,':',0,0,'L');
 $pdf->MultiCell(140,6,utf8_decode($persona->getNombres().' '.$persona->getPaterno().' '.$persona->getMaterno()),'','L');
 $pdf->SetFont('Arial','B',10);
 
-$pdf->SetXY(22, 151);
+$pdf->SetXY(22, 159);
 $pdf->SetFont('Arial','BU',10);
 $pdf->Cell(45,6,utf8_decode('MERCANCIA AUTORIZADA'),0,0,'L'); 
 ///////////// PARA CANTIDAD U/2U /////////////////////////
-$pdf->SetXY(22, 157);
+$pdf->SetXY(22, 165);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Cantidad'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -313,15 +313,15 @@ $pdf->Cell(5,6,':',0,0,'L');
 $pdf->MultiCell(120,6,utf8_decode(round($autorizacionPrevia->getCantidad_total())),'','L');
 $pdf->SetFont('Arial','B',10);
 /////////// PARA PESO NETO KG ///////////////////////
-$pdf->SetXY(22, 163);
+$pdf->SetXY(22, 171);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Peso'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(5,6,':',0,0,'L');
 $pdf->MultiCell(140,6,utf8_decode(round($autorizacionPrevia->getPeso_total(),2)).' Kg.','','L');
 $pdf->SetFont('Arial','B',10);
-/////////// PARA VALOR FOB $US ///////////////////////
-$pdf->SetXY(22, 169);
+/////////// PARA 7ALOR FOB $US ///////////////////////
+$pdf->SetXY(22, 177);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Valor FOB'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -330,7 +330,7 @@ $pdf->MultiCell(140,6,utf8_decode(round($autorizacionPrevia->getValor_total(),2)
 $pdf->SetFont('Arial','B',10);
 
 /////////// NRO ITEMS///////////////////////
-$pdf->SetXY(22, 175);
+$pdf->SetXY(22, 183);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('N° de Ítems autorizados'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -340,7 +340,7 @@ $pdf->SetFont('Arial','',10);
 
 
 /////////// PAIS DE ORIGEN///////////////////////
-$pdf->SetXY(22, 181);
+$pdf->SetXY(22, 189);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('País de origen'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -380,7 +380,7 @@ foreach ($paises as &$paiss) {
 $pdf->MultiCell(120,$y,utf8_decode(strtoupper($arrayPais)),'','L');
 $pdf->SetFont('Arial','',10);
 /////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(22, 187);
+$pdf->SetXY(22, 195);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Departamento destino'),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -388,13 +388,13 @@ $pdf->Cell(5,6,':',0,0,'L');
 $y=6;
     if(count($departamentos)>5)
     {
-        $pdf->SetFont('Arial','',10);
+        $pdf->SetFont('Arial','',7);
         $y=6;
     }
    
     if(count($departamentos)>7)
     {
-        $pdf->SetFont('Arial','',8);
+        $pdf->SetFont('Arial','',7);
         $y=4;
     }
    
@@ -414,7 +414,7 @@ $pdf->SetFont('Arial','B',10);
  
 
 /////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(22, 193);
+$pdf->SetXY(22, 201);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Fecha de emisión   '),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -426,7 +426,7 @@ $date_registro = strtotime($date);
 $pdf->MultiCell(140,6,date("d/m/y",$date_registro),'','L');
 $pdf->SetFont('Arial','',10);
 /////////// DEPARTAMENTO DESTINO///////////////////////
-$pdf->SetXY(22, 199);
+$pdf->SetXY(22, 207);
 $pdf->SetFont('Arial','B',10);
 $pdf->Cell(45,6,utf8_decode('Fecha de vencimiento   '),0,0,'L'); 
 $pdf->SetFont('Arial','',10);
@@ -436,7 +436,7 @@ $mod_date = strtotime($date."+ 60 days");
 $pdf->MultiCell(140,6,date("d/m/y",$mod_date),'','L');
 $pdf->SetFont('Arial','',8);
 /////////// LEYENDA NOTA ACLARATORIA///////////////////////
-$pdf->SetXY(22, 206);
+$pdf->SetXY(22, 214);
 $pdf->SetFont('Arial','',7);
 $pdf->Cell(45,6,utf8_decode('Nota Aclaratoria: La Autorización Previa de Importación no acredita que estas mercancías sean aptas para su uso y/o consumo.'),0,0,'L'); 
 // $pdf->SetFont('Arial','',7);
