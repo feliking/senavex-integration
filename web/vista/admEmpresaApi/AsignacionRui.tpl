@@ -306,6 +306,9 @@
         $.ajax({
             type: 'post',
             url: 'index.php',
+	    beforeSend: function( xhr ) {
+ 		    $("#asignarrui").prop('disabled', true);
+		},
             data: 'id_empresa_importador={$empresaRevision->id_empresa_importador}&opcion=admRegistroApi&tarea=asignarRuiEmpresa',
             success: function (data) {
                     cerraractualizartab('Revisión API','admRegistroApi','revisionApi');

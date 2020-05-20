@@ -299,7 +299,10 @@ $("#registrar").on("click", function () {
         $.ajax({             
                 type: 'post',
                 url: 'index.php',
-                data: $("#importadorempresa").serialize()+'&id_persona='+ swcustomers+'&id_apoderado='+ swcustomers2,
+                beforeSend: function( xhr ) { 
+			$("#registrar").prop('disabled', true);
+		},
+		data: $("#importadorempresa").serialize()+'&id_persona='+ swcustomers+'&id_apoderado='+ swcustomers2,
                 success: function (data) { 
                 ocultar('formuimp');
                 $("#div_aviso").load('index.php?opcion=admEmpresaImport&tarea=aviso&id_empresa='+ data);

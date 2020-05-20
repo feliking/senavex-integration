@@ -14,7 +14,7 @@
 <link href="styles/css/kendo.uniform.min.css" rel="stylesheet">
 
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" type="text/css" href="styles/css-personales/principal.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="styles/css-personales/principal.css?v=123" media="screen" />
 <link rel="stylesheet" type="text/css" href="styles/css-personales/bootstrap.min.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="styles/css-personales/bootstrap-responsive.min.css" media="screen" />
 <link href="styles/css-personales/k-window-bienvenida.css" rel="stylesheet">

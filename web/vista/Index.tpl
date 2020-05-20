@@ -28,7 +28,10 @@
                     <div class="span4 boxlogin fadein" >
                         <div class="row-fluid" >
                             <div class="span12" >                                        
-                                <div class="titulo">Ingresar</div><br>        
+                                <div class="titulo">Ingresar</div>   
+                                <div class="span12">
+                                    <center> <span class="letrarelevanteroja" >Exportadores - Importadores</span></center><br>
+                                </div>          
                             </div>
                         </div>
                         <form name="iniciarsesion" method="post" id="iniciarsesion" action="index.php" onsubmit="return valida();">
@@ -43,10 +46,10 @@
                                 </div>
                             </div>
                             <div class="row-fluid form fadein" >
-                                <div class="span6" >
+                                <div class="span6" style="display:none" >
                                     <input id="cancelar" type="button"  value="Cancelar" class="k-primary" style="width:100%"/><br>    
                                 </div>
-                                <div class="span6" >
+                                <div class="span12" >
                                     <input id="ingresar" type="submit"  value="Ingresar" class="k-primary" style="width:100%"/><br>  
                                 </div>
                             </div>
@@ -98,7 +101,7 @@
                 </div>  
             </div>
             <div class="row-fluid fadein" id="inicioprincipal">           
-                <div class="row-fluid fadein form">
+                <div class="row-fluid fadein form" style="display:none">
                     <div class="span5 hidden-phone"> 
                     </div>
                     <div class="span2"> 
@@ -363,7 +366,7 @@ function ayuda(controlador)
 </script>
 {*--------------------------------------------------esto es para el login------------------------------------*}
 <script>
-ocultar('login');
+//ocultar('login');
 $("#ingresarp").kendoButton();
 var ingresarp = $("#ingresarp").data("kendoButton");
 ingresarp.bind("click", function(e){ 
@@ -640,6 +643,7 @@ start: "century"
 $("#cancelarregistrate").kendoButton();
 var cancelarregistrate = $("#cancelarregistrate").data("kendoButton");
 cancelarregistrate.bind("click", function(e){ 
+    mostrar('login');
     $('#containercaja').removeClass('hover'); 
     $('#logo_intro').removeClass('hoveri');
     cambiar('registrate','inicioprincipal');
@@ -647,6 +651,7 @@ cancelarregistrate.bind("click", function(e){
 
 function enviarregistrate()
 {
+    ocultar('login');
     $('#logo_intro').addClass('hoveri');
     $('#containercaja').addClass('hover');
     cambiar('inicioprincipal','registrate');

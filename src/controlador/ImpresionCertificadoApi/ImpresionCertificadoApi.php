@@ -388,13 +388,13 @@ $pdf->Cell(5,6,':',0,0,'L');
 $y=6;
     if(count($departamentos)>5)
     {
-        $pdf->SetFont('Arial','',10);
+        $pdf->SetFont('Arial','',7);
         $y=6;
     }
    
     if(count($departamentos)>7)
     {
-        $pdf->SetFont('Arial','',8);
+        $pdf->SetFont('Arial','',7);
         $y=4;
     }
    
