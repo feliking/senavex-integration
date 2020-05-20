@@ -402,6 +402,27 @@ class AdmRegistroApi extends Principal {
             exit;
     }
 
+    if($_REQUEST['tarea']=='reimp'){
+          $vista->display("importTemporal/FormReimpresion.tpl");
+          exit;
+    }
+
+    if($_REQUEST['tarea']=='reimRue'){
+        $empresaImportador = new EmpresaImportador();
+        $sqlEmpresaImportador = new SQLEmpresaImportador();
+        $empresaImportador->setNit($_REQUEST['nit']);
+        $empresaImportador->setMatricula_fundempresa($_REQUEST['fundempresa']);
+        $empresaImportador = $sqlEmpresaImportador->getEmpresaPorNitMatricula($empresaImportador);
+        if($empresaImportador){
+            echo $empresaImportador->getId_empresa_importador();
+        }else{
+            echo 0;
+        }
+        exit;
+    }
+
+
+
     if($_REQUEST['tarea']=='VerificarNIT'){
             $empresaImportador = new EmpresaImportador();
             $sqlEmpresaImportador = new SQLEmpresaImportador();

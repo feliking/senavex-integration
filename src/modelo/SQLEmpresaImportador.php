@@ -34,4 +34,8 @@ class SQLEmpresaImportador {
         return $empresai->finder()->find('nit = ? and estado <> 17 and estado <> 18 ', $empresai->getNit());
     }
 
+    public function getEmpresaPorNitMatricula(EmpresaImportador $empresai){
+        return $empresai->finder()->find("nit = ? and matricula_fundempresa = ? and estado = 1 ",  array($empresai->getNit(),$empresai->getMatricula_fundempresa()));
+    }
+
 }

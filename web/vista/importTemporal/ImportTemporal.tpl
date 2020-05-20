@@ -13,7 +13,10 @@
                     <div class="k-block fadein">
                         <div class="k-header"><div class="titulonegro">Registro Único del Importador RUI-SENAVEX</div></div>
                         <div class="k-cuerpo">
-			<Center><b><a href="https://drive.google.com/open?id=19XJ2zoH6tZ2maJOg8c-SdZjT_95TdSU7" target="_blank">DESCARGUE AQUI LA GUIA<img src="styles/img/Ico_Terminos.png"></img></a></b></Center>
+                            <div style="display:inline-block; vertical-align:middle; "><b><a href="https://drive.google.com/open?id=19XJ2zoH6tZ2maJOg8c-SdZjT_95TdSU7" target="_blank">DESCARGUE AQUI LA GUIA<img src="styles/img/Ico_Terminos.png"></img></a></b></div>
+                            <div style="display:inline-block; vertical-align:middle; float:right; " ><b><a href="index.php?opcion=admRegistroApi&tarea=reimp"  >REIMPRIMIR FORMULARIO RUI<img src="styles/img/imp.png"></img></a></b></div>
+
+                            <hr>
                             <fieldset >
                                 <legend>1. DATOS DE LA EMPRESA</legend>
                                 <div class="row-fluid  form"  >
