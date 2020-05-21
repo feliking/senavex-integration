@@ -197,7 +197,13 @@ class AdmRegistroApi extends Principal {
             $persona->setId_departamento($_REQUEST['ed_dpto_2']);
             $persona->setEmail($_REQUEST['emailrp']);
             $persona->setId_pais_origen($_REQUEST['idpais']);
-            $persona->setExpedido($_REQUEST['dpto_exp']);
+            if($_REQUEST['dpto_exp']){
+                $persona->setExpedido($_REQUEST['dpto_exp']);
+            } else {
+                $persona->setExpedido(2);
+            }
+
+
             $persona->setFecha_creacion(Date('Y-m-d H:i:s'));
             $persona->setEstado(true);//para el estado activo
             $persona->setId_usuario_creacion($_SESSION['id_usuario']);
