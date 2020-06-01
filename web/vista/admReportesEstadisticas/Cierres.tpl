@@ -13,10 +13,12 @@
                             <legend>EXCEL</legend>
                             <div id="tablas_general">
                                  <div class="span5 fadein" >
-                                    <div class="radio"><strong>CIERRES FACTURACION</strong></div> 
-                                    <div class="radio"><input type="radio" name="tipo_rpte" checked value="1" id="tipo_rpte" data-radio required>Reporte General</div>
-                                    <div class="radio"><input type="radio" name="tipo_rpte" value="2" id="tipo_rpte" data-radio required>Reporte Detallado</div>
-                                    <div class="radio"><strong>REPORTES FACTURACION</strong></div> 
+                                    <div class="radio"><strong>CIERRES FACTURACION</strong></div>
+                                     <div class="radio"><input type="radio" name="tipo_rpte" checked value="1" id="tipo_rpte" data-radio required>Reporte General</div>
+                                     <div class="radio"><input type="radio" name="tipo_rpte" checked value="21" id="tipo_rpte" data-radio required>Reporte General (XLS)</div>
+                                     <div class="radio"><input type="radio" name="tipo_rpte" value="2" id="tipo_rpte" data-radio required>Reporte Detallado</div>
+                                     <div class="radio"><input type="radio" name="tipo_rpte" value="22" id="tipo_rpte" data-radio required>Reporte Detallado (XLS)</div>
+                                     <div class="radio"><strong>REPORTES FACTURACION</strong></div>
                                     <div class="radio"><input type="radio" name="tipo_rpte" value="3" id="tipo_rpte" data-radio required>Libro de Ventas</div>
                                     <div class="radio"><input type="radio" name="tipo_rpte" value="4" id="tipo_rpte" data-radio required>Conciliaci&oacute;n</div>
                                     <div class="radio"><input type="radio" name="tipo_rpte" value="5" id="tipo_rpte" data-radio required>Recaudaciones</div>

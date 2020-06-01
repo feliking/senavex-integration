@@ -1236,8 +1236,7 @@ class AdmProForma extends Principal {
 	     $val = explode("-", $lista[3]);
             $num = explode("_",$val[1]);
             $id_servicio = $_REQUEST['servicio-'.$num[0]];
-
-            if($id_servicio>79 && $id_servicio<91){
+            if($id_servicio>79 && $id_servicio<92){
                 $facturaSenavexManual->setId_tipo(3); 
             } else {   //TODO OPTIMIZAR UN ELSE IF
                 $facturaSenavexManual->setId_tipo(2); 

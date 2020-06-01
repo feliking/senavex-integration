@@ -590,8 +590,14 @@ class AdmReportesEstadisticas extends Principal {
             if($tipo_reporte == 1){
                 $this->CierreGeneral($_SESSION['id_empresa_persona'], $fecha_ini, $fecha_fin, $_REQUEST['regional_reporte'], $_REQUEST['id_tipo_servicio']);
             }
+            if($tipo_reporte == 21){
+                $this->CierreGeneralXls($_SESSION['id_empresa_persona'], $fecha_ini, $fecha_fin, $_REQUEST['regional_reporte'], $_REQUEST['id_tipo_servicio']);
+            }
             if($tipo_reporte == 2){
                 $this->CierreDetallado($_SESSION['id_empresa_persona'],$fecha_ini, $fecha_fin, $_REQUEST['regional_reporte'], $_REQUEST['id_tipo_servicio']);
+            }
+            if($tipo_reporte == 22){
+                $this->CierreDetalladoXls($_SESSION['id_empresa_persona'],$fecha_ini, $fecha_fin, $_REQUEST['regional_reporte'], $_REQUEST['id_tipo_servicio']);
             }
             if($tipo_reporte == 3){
                 $this->getLibroVentasIVA($_SESSION['id_empresa_persona'],$fecha_ini, $fecha_fin, $_REQUEST['regional_reporte'], $_REQUEST['id_tipo_servicio']);
@@ -941,6 +947,127 @@ class AdmReportesEstadisticas extends Principal {
         $pdf->Output("Reporte.pdf",'I');
     }
 
+    public function CierreGeneralXls($id_empresa_persona, $fecha_ini, $fecha_fin, $id_regional, $id_tipo){
+
+        $regional = new Regional();
+        $empresa_persona = new EmpresaPersona();
+
+        $sqlRegional = new SQLRegional();
+        $sqlEmpresa_persona = new SQLEmpresaPersona();
+        $empresa_persona->setId_empresa_persona($id_empresa_persona);
+        $empresa_persona=$sqlEmpresa_persona->getEmpresaPersonaPorID($empresa_persona);
+        $facturaSenavexTipo = new FacturaSenavexTipo();
+        $sqlFacturaSenavexTipo = new SQLFacturaSenavexTipo();
+
+        if($id_tipo>0 && $id_tipo<11){
+            $facturaSenavexTipo->setId($id_tipo);
+        } else {
+            $id_tipo = -1;
+        }
+
+        if($id_regional!=null && $id_regional!='-1' && $id_regional!=''){
+            $regional->setId_regional($id_regional);
+        }else{
+            $regional->setId_regional($empresa_persona->getId_regional());
+        }
+//        $regional->setId_regional($empresa_persona->getId_regional());
+        $regional=$sqlRegional->getBuscarRegionalPorId($regional);
+//         print('<pre>'.print_r($regional,true).'</pre>');
+
+        $servicio = new Servicio();
+        $sqlServicio = new SQLServicio();
+        $servicio->setId_Categoria_Servicio('6,7,8');
+        $listaServicios = $sqlServicio->getListaServiciosPorCategoria($servicio);
+        $lista = array();
+        $sqlFSM = new SQLFacturaSenavexManual();
+        $fsm = new FacturaSenavexManual();
+        $fsm->setId_regional($regional->getId_regional());
+        $fsm->setEstado(2);
+        $facturas1 = $sqlFSM->ListFacturaManualFecha2($fsm, $fecha_ini, $fecha_fin, $id_tipo);
+        $fsm->setId_regional($regional->getId_regional());
+        $fsm->setEstado(5);
+        $facturas2 = $sqlFSM->ListFacturaManualFecha2($fsm, $fecha_ini, $fecha_fin, $id_tipo);
+
+        //DO EXCEL
+        $inputFileName = "styles".DS."documentos".DS."cierre_general.xlsx";
+        try{
+            $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($inputFileName);
+            $row = 3;
+            $col = 1;
+            $facturas = array_merge($facturas1,$facturas2);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow($col ,$row , "REGIONAL: " . $regional->getCiudad());
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow($col ,$row + 1 , "Total Facturas: " . count($facturas));
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow($col+2 ,$row + 1 , "Del " .  date('d/m/Y',strtotime($fecha_ini) ) . " - Al ".  date('d/m/Y',strtotime($fecha_fin) ) );
+            $row = 6;
+            $cantidadt = 0;
+            $sumat = 0;
+            foreach ($listaServicios as $value) {
+
+                $fsmDetalle = new FacturaSenavexManualDetalle();
+                $fsmDetalle->setId_servicio($value->getId_servicio());
+                $sqlFSMDetalle = new SQLFacturaSenavexManualDetalle();
+                $listaDetalle = $sqlFSMDetalle->getListFacturaDetallePorServicioFecha($fsmDetalle,$regional->getId_regional(), $fecha_ini, $fecha_fin, $id_tipo);
+                $suma = 0;
+                $del = -1;
+                $al = -1;
+                $cantidad = 0;
+                // echo 3,$id_tipo;  die;
+                if(count($listaDetalle)>0){
+                    foreach ($listaDetalle as $value2) {
+                        $fsmdServicio = new FacturaSenavexManualDetalleServicio();
+                        /*$fsmdServicio->getNro_ctrl_1();
+                        $fsmdServicio->getNro_ctrl_2();
+                        $fsmdServicio->getFOB(); */
+
+                        $sqlFSMDServicio = new SQLFacturaSenavexManualDetalleServicio();
+                        $fsmdServicio->setId_factura_senavex_manual_detalle($value2['id_factura_senavex_manual_detalle']);
+                        $fsmdServicio=$sqlFSMDServicio->getFacturaDetallePorDetalle($fsmdServicio);
+                        $suma += $value2['cantidad'] * $value2['precio'];
+                        $cantidad += $value2['cantidad'];
+
+                        if(($value->getId_servicio()>= 11 && $value->getId_servicio() <= 46) || ($value->getId_servicio()>= 75 && $value->getId_servicio() <= 78)){
+                            $del = ($del==-1 ?  $fsmdServicio->getNro_ctrl_1():( $del > $fsmdServicio->getNro_ctrl_1()?  $fsmdServicio->getNro_ctrl_1() : $del));
+                            if($value->getId_servicio()>= 22 && $value->getId_servicio() <= 46){
+                                $al = ($al==-1 ?  $fsmdServicio->getNro_ctrl_1():( $al < $fsmdServicio->getNro_ctrl_1()?  $fsmdServicio->getNro_ctrl_1() : $al));
+                            }else{
+                                $al = ($al==-1 ? $fsmdServicio->getNro_ctrl_2():( $al < $fsmdServicio->getNro_ctrl_2()? $fsmdServicio->getNro_ctrl_2() : $al));
+                            }
+                        }else{
+                            $del = 0; $al = 0;
+                        }
+                    }
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1 ,$row , $value->getDescripcion());
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2 ,$row , $cantidad);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(3 ,$row , $del);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4 ,$row , $al);
+                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5 ,$row , $suma);
+                    $cantidadt = $cantidadt + $cantidad;
+                    $sumat = $sumat + $suma;
+                    $row ++;
+//                    array_push($lista, [$value->getDescripcion(), $cantidad, $del, $al, $suma]);
+                }else{
+
+                }
+
+            }
+            $objPHPExcel->getActiveSheet()->getStyle('B'.$row .':F'.$row )->getFont()->setBold(true);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(1 ,$row , "TOTALES");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(2 ,$row , $cantidadt);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5 ,$row , $sumat);
+
+            header('Content-Disposition: attachment; filename="Cierre_General.xls"');
+            $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel,'Excel2007');
+            ob_end_clean();
+            $objWriter->save('php://output');
+
+        } catch(Exception $e) {
+    // die('<br>Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+        }
+
+    }
+
     public function CierreDetallado($id_empresa_persona, $fecha_ini, $fecha_fin, $id_regional, $id_tipo){
 //print("<pre>".print_r($_REQUEST, true)."</pre>");
         try{
@@ -1092,6 +1219,168 @@ class AdmReportesEstadisticas extends Principal {
         }
     }
 
+    public function CierreDetalladoXls($id_empresa_persona, $fecha_ini, $fecha_fin, $id_regional, $id_tipo){
+//print("<pre>".print_r($_REQUEST, true)."</pre>");
+        try{
+            $regional = new Regional();
+            $empresa_persona = new EmpresaPersona();
+
+            $sqlRegional = new SQLRegional();
+            $sqlEmpresa_persona = new SQLEmpresaPersona();
+            $empresa_persona->setId_empresa_persona($id_empresa_persona);
+            $empresa_persona=$sqlEmpresa_persona->getEmpresaPersonaPorID($empresa_persona);
+            $facturaSenavexTipo = new FacturaSenavexTipo();
+            $sqlFacturaSenavexTipo = new SQLFacturaSenavexTipo();
+
+            if($id_tipo>0 && $id_tipo<11){
+                $facturaSenavexTipo->setId($id_tipo);
+            } else {
+                $id_tipo = -1;
+            }
+
+            if($id_regional!=null && $id_regional!='-1' && $id_regional!=''){
+                $regional->setId_regional($id_regional);
+            }else{
+                $regional->setId_regional($empresa_persona->getId_regional());
+            }
+            $regional=$sqlRegional->getBuscarRegionalPorId($regional);
+            $lista = array();
+
+            $facturaSenavexManual = new FacturaSenavexManual();
+            $sqlFacturaSenavexManual = new SQLFacturaSenavexManual();
+            $facturaSenavexManual->setId_regional($regional->getId_regional());
+            $facturaSenavexManual->setEstado(2);
+            $listaFacturas1 = $sqlFacturaSenavexManual->ListFacturaManualFecha($facturaSenavexManual, $fecha_ini, $fecha_fin, $id_tipo);
+            $facturaSenavexManual->setEstado(5);
+            $listaFacturas2 = $sqlFacturaSenavexManual->ListFacturaManualFecha($facturaSenavexManual, $fecha_ini, $fecha_fin, $id_tipo);
+
+            $listaFacturas = array_merge($listaFacturas1,$listaFacturas2);
+            $total=0;
+            $cantidad =0;
+            $inputFileName = "styles".DS."documentos".DS."cierre_detallado.xlsx";
+            $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($inputFileName);
+            $sheet=0;
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(0 ,4, "Del ". date('d/m/Y',strtotime($fecha_ini) ). " - Al " . date('d/m/Y',strtotime($fecha_fin)) );
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(0 ,3, "REGIONAL :" . $regional->getCiudad());
+
+            $row = 6;
+            $index = 0;
+            $cantidadt = 0;
+            $sumat = 0;
+            foreach ($listaFacturas as $factura) {
+
+                $fsmDetalle = new FacturaSenavexManualDetalle();
+                $sqlFSMDetalle = new SQLFacturaSenavexManualDetalle();
+                $fsmDetalle->setId_factura_senavex_manual($factura->getId_factura_senavex_manual());
+                $listaDetalle = $sqlFSMDetalle->getListFacturaDetallePorIdFactura($fsmDetalle);
+                $del = -1;
+                $al = -1;
+
+                $nombre = '';
+                $nit = '';
+                $ruex = '';
+                if($factura->getVortex()=='1'){
+                    $empresa = new Empresa();
+                    $sqlEmpresa = new SQLEmpresa();
+                    $empresa->setId_empresa($factura->getId_empresa());
+                    $empresa = $sqlEmpresa->getEmpresaPorID($empresa);
+                    $nombre = $empresa->getRazon_Social();
+                    $ruex = $empresa->getRuex();
+                    $nit = $empresa->getNit();
+                }elseif($factura->getVortex()=='2'){
+                    $sqlFSEmpresa = new SQLFacturaSenavexEmpresaImport();
+                    $fsEmpresa = new FacturaSenavexEmpresaImport();
+                    $fsEmpresa->setId_factura_senavex_empresa_import($factura->getId_empresa());
+                    $fsEmpresa= $sqlFSEmpresa->getEmpresa($fsEmpresa);
+                    $nombre = $fsEmpresa->getNombre();
+                    $nit = $fsEmpresa->getNit();
+                    $ruex = '';
+                }else{
+                    $sqlFSEmpresa = new SQLFacturaSenavexEmpresa();
+                    $fsEmpresa = new FacturaSenavexEmpresa();
+                    $fsEmpresa->setId_factura_senavex_empresa($factura->getId_empresa());
+                    $fsEmpresa= $sqlFSEmpresa->getEmpresa($fsEmpresa);
+                    $nombre = $fsEmpresa->getNombre();
+                    $nit = $fsEmpresa->getNit();
+                    $ruex = $fsEmpresa->getRuex();
+                }
+
+                foreach ($listaDetalle as $detalle) {
+                    $del = -1;
+                    $al = -1;
+                    $sqlFSMDServicio = new SQLFacturaSenavexManualDetalleServicio();
+                    $fsmdServicio = new FacturaSenavexManualDetalleServicio();
+
+                    $fsmdServicio->setId_factura_senavex_manual_detalle($detalle->getId_factura_senavex_manual_detalle());
+                    $fsmdServicio=$sqlFSMDServicio->getFacturaDetallePorDetalle($fsmdServicio);
+
+                    $sqlServicio = new SQLServicio();
+                    $servicio = new Servicio();
+
+                    if($detalle->getVortex()==1){
+                        $del = 0;
+                        $al = 0;
+                        $servicioExportador = new ServicioExportador();
+                        $sqlServicioExportador = new SQLServicioExportador();
+                        $servicioExportador->setId_servicio_exportador($detalle->getId_servicio());
+                        $servicioExportador = $sqlServicioExportador->getBuscarServicioExportadorPorId($servicioExportador);
+                        //print('<pre>'.print_r($servicioExportador,true).'</pre>');
+
+                        $servicio->setId_servicio($servicioExportador->getId_Servicio());
+                        $servicio = $sqlServicio->getBuscarServicioPorId($servicio);
+                    }else{
+                        $servicio->setId_servicio($detalle->getId_servicio());
+                        $servicio = $sqlServicio->getBuscarServicioPorId($servicio);
+
+                        if(($detalle->getId_servicio()>= 11 && $detalle->getId_servicio() <= 48) || ($detalle->getId_servicio()>= 75 && $detalle->getId_servicio() <= 78) ){
+                            $del = ($del==-1 ?  $fsmdServicio->getNro_ctrl_1():( $del > $fsmdServicio->getNro_ctrl_1()? $fsmdServicio->getNro_ctrl_1() : $del));
+                            if($detalle->getId_servicio()>= 22 && $detalle->getId_servicio() <= 46){
+                                $al = ($al==-1 ? $fsmdServicio->getNro_ctrl_1():( $al < $fsmdServicio->getNro_ctrl_1()? $fsmdServicio->getNro_ctrl_1() : $al));
+                            }else{
+                                $al = ($al==-1 ? $fsmdServicio->getNro_ctrl_2():( $al < $fsmdServicio->getNro_ctrl_2()? $fsmdServicio->getNro_ctrl_2() : $al));
+                            }
+                        }else{
+                            $del = 0; $al = 0;
+                        }
+                    }
+
+                    $cantidad+=$detalle->getCantidad();
+                    $total+=$detalle->getPrecio() * $detalle->getCantidad();
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(0 ,$row + $index, $factura->getFecha_emision());
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(1 ,$row + $index, $factura->getNumero_factura());
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(2 ,$row + $index, $servicio->getDescripcion());
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(3 ,$row + $index, $ruex);
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,$row + $index, $nombre);
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(5 ,$row + $index, $lista[$factura->getId_factura_senavex_manual().''.$servicio->getId_servicio()]['cantidad'] + $detalle->getCantidad());
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(6 ,$row + $index, $del);
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(7 ,$row + $index, $al);
+                    $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(8 ,$row + $index, $lista[$factura->getId_factura_senavex_manual().''.$servicio->getId_servicio()]['total'] + ($detalle->getPrecio() * $detalle->getCantidad()));
+
+                    $cantidadt = $cantidadt + $lista[$factura->getId_factura_senavex_manual().''.$servicio->getId_servicio()]['cantidad'] + $detalle->getCantidad();
+                    $sumat = $sumat + $lista[$factura->getId_factura_senavex_manual().''.$servicio->getId_servicio()]['total'] + ($detalle->getPrecio() * $detalle->getCantidad());
+                }
+                $row++;
+            }
+
+
+            $objPHPExcel->getActiveSheet()->getStyle('B'.$row .':I'.$row )->getFont()->setBold(true);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(4 ,$row , "TOTALES");
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5 ,$row , $cantidadt);
+            $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8 ,$row , $sumat);
+
+            $objPHPExcel->getProperties()->setDescription("Cierre_Detallado ".$fecha_ini.' al '.$fecha_fin);
+            header('Content-Disposition: attachment; filename="Cierre_detallado.xls"');
+            $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel,'Excel2007');
+            ob_end_clean();
+            $objWriter->save('php://output');
+
+        } catch (Exception $e){
+            print('<pre>'.print_r($e,true).'</pre>');
+        }
+    }
+
     public function getLibroVentasIVA($id_empresa_persona, $fecha_ini, $fecha_fin, $id_regional, $id_tipo){
         $empresa_persona = new EmpresaPersona();
         $sqlEmpresa_persona = new SQLEmpresaPersona();
@@ -1159,7 +1448,7 @@ class AdmReportesEstadisticas extends Principal {
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(5 ,$row + $index, ($estado == 1 || $estado == 6)? 'A': ($estado == 2? 'V':'C'));
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(6 ,$row + $index, $nit);
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(7 ,$row + $index, ($estado == 1 || $estado == 6)? 'ANULADO' : $nombre);
-                $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8 ,$row + $index, $list[$index]['total']);
+                $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(8 ,$row + $index, ($estado == 1 || $estado == 6)? 0 : $list[$index]['total'] );
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(9 ,$row + $index, 0);
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(10 ,$row + $index, 0);
                 $objPHPExcel->setActiveSheetIndex(0)->setCellValueByColumnAndRow(11 ,$row + $index, 0);
