@@ -1360,8 +1360,9 @@ class AdmReportesEstadisticas extends Principal {
 
                     $cantidadt = $cantidadt + $lista[$factura->getId_factura_senavex_manual().''.$servicio->getId_servicio()]['cantidad'] + $detalle->getCantidad();
                     $sumat = $sumat + $lista[$factura->getId_factura_senavex_manual().''.$servicio->getId_servicio()]['total'] + ($detalle->getPrecio() * $detalle->getCantidad());
+                    $row++;
                 }
-                $row++;
+
             }
 
 
