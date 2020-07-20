@@ -1,3 +1,8 @@
+<style type="text/css">
+    .griderror {
+        border-color: red;
+    }
+</style>
 <div class="row-fluid fadein"  id="formularioapi" >
     <div class="k-block">
 
@@ -252,6 +257,7 @@
                                     <option value="{$item->id_pais}">{$item->nombre}</option>
                                 {/foreach}
                             </select>
+                            <span id="pais_proc_error" style="color: red; display: none;">Campo requerido</span>
                         </div>
                     </div>
                     {*                <div class="row-fluid form" >*}
@@ -267,6 +273,7 @@
                                     <option value="{$item->id_departamento}">{$item->nombre}</option>
                                 {/foreach}
                             </select>
+                            <span id="depto_error" style="color: red; display: none;">Campo requerido</span>
                         </div>
                     </div>
                     <div class="row-fluid " >
@@ -279,12 +286,15 @@
                 <div class="row-fluid " >
                     <div class="span3 " >
                         <input type="text" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Origen de los recursos para la adquisición de divisas"  name="orig_divisas" id="orig_divisas"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese Origen de los recursos para la adquisición de divisas" />
+                        <span id="orig_divisas_error" style="color: red; display: none;">Campo requerido</span>
                     </div>
                     <div class="span3 " >
                         <input type="text" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Entidad Bancaria para la adquisición de divisas"  name="ent_bancaria" id="ent_bancaria"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese Entidad Bancaria para la adquisición de divisas" />
+                        <span id="ent_bancaria_error" style="color: red; display: none;">Campo requerido</span>
                     </div>
                     <div class="span3" >
                         <input type="text" style="width:100%;" class="k-textbox no-restriccion"  placeholder="Número de Cuenta Bancaria para la adquisición de divisas"  name="num_cuenta" id="num_cuenta"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese el Número de Cuenta Bancaria" />
+                        <span id="num_cuenta_error" style="color: red; display: none;">Campo requerido</span>
                     </div>
                     <div class="span3 " >
                         {*                    <input type="text" style="width:100%;"  placeholder="Tipo de Cuenta:"  name="tipo_cuenta" id="tipo_cuenta"  onkeyup="javascript:this.value=this.value.toUpperCase();" required validationMessage="Ingrese el tipo de Cuenta" />*}
@@ -294,6 +304,7 @@
                                 <option value="{$key}">{$item}</option>
                             {/foreach}
                         </select>
+                        <span id="tipo_cuenta_error" style="color: red; display: none;">Campo requerido</span>
                     </div>
                 </div>
                 <div class="row-fluid " >
@@ -314,6 +325,7 @@
                                 <option value="{$item['id_persona']}">{$item['nombres']}</option>
                             {/foreach}
                         </select>
+                        <span id="pers_autorizada_error" style="color: red; display: none;">Campo requerido</span>
                     </div>
                 </div>
             </fieldset>
@@ -782,17 +794,177 @@
 
 
     aprobar.bind("click", function(e){
-        // $('#paises').val(multiSelect.value());
-        // $('#depto').val(multiSelect3.value());
-        // if(validator.validate())
-        // {
+        let valid = true;
+        if ($('#pais_proc').val() == '') {
+            $('#pais_proc_error').show();
+            valid = false;
+        }
+        else {
+            $('#pais_proc_error').hide();
+        }
 
-        cambiar('formularioapi','aviso1');
-        // }
-        // else
-        // {
-        //     window.scrollTo(0, 0);
-        // }
+        if ($('#depto').val() == null) {
+            $('#depto_error').show();
+            valid = false;
+        }
+        else {
+            $('#depto_error').hide();
+        }
+
+        if ($('#tipo_cuenta').val() == '') {
+            $('#tipo_cuenta_error').show();
+            valid = false;
+        }
+        else {
+            $('#tipo_cuenta_error').hide();
+        }
+
+        if ($('#pers_autorizada').val() == '') {
+            $('#pers_autorizada_error').show();
+            valid = false;
+        }
+        else {
+            $('#pers_autorizada_error').hide();
+        }
+
+        if ($('#num_cuenta').val() == '') {
+            $('#num_cuenta_error').show();
+            valid = false;
+        }
+        else {
+            $('#num_cuenta_error').hide();
+        }
+        if ($('#ent_bancaria').val() == '') {
+            $('#ent_bancaria_error').show();
+            valid = false;
+        }
+        else {
+            $('#ent_bancaria_error').hide();
+        }
+        if ($('#orig_divisas').val() == '') {
+            $('#orig_divisas_error').show();
+            valid = false;
+        }
+        else {
+            $('#orig_divisas_error').hide();
+        }
+
+        //valid grid if excel not loaded
+        if($('#archivoex').val() == '') {
+            var $tblrows = $("#myTable tbody tr");
+            $tblrows.each(function (index) {
+                var $tblrow = $(this);
+                var sub = $tblrow.find("[id^='subpartida']");
+                var desc_comercial = $tblrow.find("[name=desc_comercial]");
+                var pais_origen_grid = $tblrow.find("[name=pais_origen_grid]");
+                var cantidadgrid = $tblrow.find("[name=cantidadgrid]");
+                var unidad_medida = $tblrow.find("[name=unidad_medida]");
+                var peso_bruto = $tblrow.find("[name=peso_bruto]");
+                var precio_unitario_sus = $tblrow.find("[name=precio_unitario_sus]");
+                var precio_unitario_div = $tblrow.find("[name=precio_unitario_div]");
+                if (cantidadgrid.val() == '') {
+                        cantidadgrid.addClass('griderror');
+                        valid = false;
+                }
+                else {
+                    cantidadgrid.removeClass('griderror');
+                }
+                if (desc_comercial.val() == '') {
+                    desc_comercial.addClass('griderror');
+                    valid = false;
+                }
+                else {
+                    desc_comercial.removeClass('griderror');
+                }
+                if (pais_origen_grid.val() == '') {
+                    pais_origen_grid.addClass('griderror');
+                    valid = false;
+                }
+                else {
+                    pais_origen_grid.removeClass('griderror');
+                }
+                if (unidad_medida.val() == '') {
+                    unidad_medida.addClass('griderror');
+                    valid = false;
+                }
+                else {
+                    unidad_medida.removeClass('griderror');
+                }
+                if (peso_bruto.val() == '') {
+                    peso_bruto.addClass('griderror');
+                    valid = false;
+                }
+                else {
+                    peso_bruto.removeClass('griderror');
+                }
+                if (precio_unitario_sus.val() == '') {
+                    precio_unitario_sus.addClass('griderror');
+                    valid = false;
+                }
+                else {
+                    precio_unitario_sus.removeClass('griderror');
+                }
+                if (precio_unitario_div.val() == '') {
+                    precio_unitario_div.addClass('griderror');
+                    valid = false;
+                }
+                else {
+                    precio_unitario_div.removeClass('griderror');
+                }
+                if (sub.val() == '') {
+                    sub.addClass('griderror');
+                    valid = false;
+                }
+                else {
+                    sub.removeClass('griderror');
+                }
+             });
+
+        }
+        else {
+            //clearing
+            var $tblrows = $("#myTable tbody tr");
+            $tblrows.each(function (index) {
+                var $tblrow = $(this);
+                var sub = $tblrow.find("[id^='subpartida']");
+                var desc_comercial = $tblrow.find("[name=desc_comercial]");
+                var pais_origen_grid = $tblrow.find("[name=pais_origen_grid]");
+                var cantidadgrid = $tblrow.find("[name=cantidadgrid]");
+                var unidad_medida = $tblrow.find("[name=unidad_medida]");
+                var peso_bruto = $tblrow.find("[name=peso_bruto]");
+                var precio_unitario_sus = $tblrow.find("[name=precio_unitario_sus]");
+                var precio_unitario_div = $tblrow.find("[name=precio_unitario_div]");
+
+                    cantidadgrid.removeClass('griderror');
+
+                    desc_comercial.removeClass('griderror');
+
+                    pais_origen_grid.removeClass('griderror');
+
+                    unidad_medida.removeClass('griderror');
+
+                    peso_bruto.removeClass('griderror');
+
+                    precio_unitario_sus.removeClass('griderror');
+
+                    precio_unitario_div.removeClass('griderror');
+
+                    sub.removeClass('griderror');
+            });
+        }
+
+
+
+
+        //$('#depto').val(multiSelect3.value());
+        if(valid)
+        {
+            cambiar('formularioapi','aviso1');
+        }
+        else
+        {
+            window.scrollTo(0, 0);
+        }
     });
 
     cancelar.bind("click", function(e){
@@ -1021,7 +1193,7 @@
                 decimals: 4
             });
     }
-    this.onload(setValue('1'));
+    // this.onload(setValue('1'));
     // function isNumeric (evt) {
     //     var theEvent = evt || window.event;
     //     var key = theEvent.keyCode || theEvent.which;
