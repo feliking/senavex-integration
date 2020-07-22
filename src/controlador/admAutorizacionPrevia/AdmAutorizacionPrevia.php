@@ -507,10 +507,10 @@ class AdmAutorizacionPrevia extends Principal {
                                            $data[$i]['cantidadgrid']=$Row[6];
                                            $data[$i]['unidad_medida']=$Row[7];
                                            $data[$i]['peso_bruto']=$Row[8];
-                                           $data[$i]['precio_unitario_sus']=preg_replace('([^0-9.])', '', $Row[9]);;
-                                           $data[$i]['valor_total_sus']=preg_replace('([^0-9.])', '', $Row[10]);;
-                                           $data[$i]['precio_unitario_div']=$Row[12];
-                                           $data[$i]['valor_total_div']=$Row[13];
+                                           $data[$i]['precio_unitario_sus']=preg_replace('([^0-9.])', '', $Row[9]);
+                                           $data[$i]['valor_total_sus']=preg_replace('([^0-9.])', '', $Row[10]);
+                                           $data[$i]['precio_unitario_div']=preg_replace('([^0-9.])', '', $Row[12]);
+                                           $data[$i]['valor_total_div']=preg_replace('([^0-9.])', '', $Row[13]);
                                            $i++;
                                            $key_success[] = $Key+1;
                                        }

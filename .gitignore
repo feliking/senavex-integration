@@ -9,3 +9,5 @@ node_modules
 styles/solicitudes/*
 styles/img/firmas/*
 styles/img/personal/*
+src/controlador/ImpresionCertificadoApi/*
+WS_SNVX/config_ws.php

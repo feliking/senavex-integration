@@ -1731,8 +1731,8 @@ class AdmReportesEstadisticas extends Principal {
             $list = $sqlReportesEstadisticas->sgc_ruex($empresa_persona->getId_regional(), $fecha_ini, $fecha_fin);
             $regional->setId_regional($empresa_persona->getId_regional());
         }
-        
-        
+
+        $fecha_corte = strtotime('2020-07-01 00:00:00');
         
         $regional = $sqlRegional->getBuscarRegionalPorId($regional);
         //print('<pre>'.print_r($list ,true).'</pre>');   die;
@@ -1772,10 +1772,20 @@ class AdmReportesEstadisticas extends Principal {
                     $fines_semana= $this->getWeke($value['fecha_inicio_revision'], $value['fecha_fin_revision']);
                     $horas_respuesta = $horas - ($fines_semana * 48);
                     $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(13 ,$row + $index, $horas_respuesta);
-                    if($horas_respuesta > 4){
-                        $en_plazo = 'NO ESTA EN PLAZO';
+                    if(strtotime($value['fecha_inicio_revision']) > $fecha_corte){
+                        if($horas_respuesta > 2 ){
+                            $en_plazo = 'NO ESTA EN PLAZO';
+                        } else {
+                            $en_plazo = 'SI';
+                        }
+
                     } else {
-                        $en_plazo = 'SI';
+                        if($horas_respuesta > 4){
+                            $en_plazo = 'NO ESTA EN PLAZO';
+                        } else {
+                            $en_plazo = 'SI';
+                        }
+
                     }
                     $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(14 ,$row + $index, $en_plazo);
                     $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(15 ,$row + $index, $value['rep_legal'] );
@@ -2326,7 +2336,7 @@ class AdmReportesEstadisticas extends Principal {
             $regional->setId_regional($empresa_persona->getId_regional());
         }
 
-
+        $fecha_corte = strtotime('2020-07-01 00:00:00');
         $regional = $sqlRegional->getBuscarRegionalPorId($regional);
         $inputFileName = "styles".DS."documentos".DS."sgc_resumen.xlsx";
         try {
@@ -2340,18 +2350,24 @@ class AdmReportesEstadisticas extends Principal {
             $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(1 ,3, date('d/m/Y',strtotime($fecha_ini)));
             $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(1 ,4, date('d/m/Y',strtotime($fecha_fin)));
             $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(5 ,4, $regional->getCiudad());
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,9, $this->replaceGeneric($concilia));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,10, $this->replaceGeneric($anulados));
+//            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,9, $this->replaceGeneric($concilia));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,8, $this->replaceGeneric($anulados));
             $acount = 0;
             foreach ($list1 as $value) {
                     $horas= $this->getHoras($value['fecha_inicio_revision'], $value['fecha_fin_revision']);
                     $fines_semana= $this->getWeke($value['fecha_inicio_revision'], $value['fecha_fin_revision']);
                     $horas_respuesta = $horas - ($fines_semana * 48);
-                    if($horas_respuesta <= 4){
-                        $acount = $acount + 1;
+                    if(strtotime($value['fecha_inicio_revision']) > $fecha_corte){
+                        if($horas_respuesta <= 2 ){
+                            $acount = $acount + 1;
+                        }
+                    } else {
+                        if($horas_respuesta <= 4){
+                            $acount = $acount + 1;
+                        }
                     }
             }
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,14, $acount);
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,12, $acount);
             $acount = 0;
             foreach ($list2 as $value) {
                     $horas= $this->getHoras($value['fecha_registro'], $value['fecha_revision']);
@@ -2361,7 +2377,7 @@ class AdmReportesEstadisticas extends Principal {
                         $acount = $acount + 1;
                     } 
             }
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,18, $acount);
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,16, $acount);
             $acount = 0;
             foreach ($list3 as $value) {
                     $horas= $this->getHoras($value['fecha_recepcion'], $value['fecha_revision']);
@@ -2371,19 +2387,19 @@ class AdmReportesEstadisticas extends Principal {
                         $acount = $acount + 1;
                     } 
             }
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,22, $acount);
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,20, $acount);
             
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,11, $this->replaceGeneric($facturas));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,12, $this->replaceGeneric($respuestos));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,13, $this->replaceGeneric($aprobados));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,9, $this->replaceGeneric($facturas));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,10, $this->replaceGeneric($respuestos));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,11, $this->replaceGeneric($aprobados));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,13, $this->replaceGeneric($ruex));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,14, $this->replaceGeneric($rruex));
             $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,15, $this->replaceGeneric($ruex));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,16, $this->replaceGeneric($rruex));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,17, $this->replaceGeneric($ruex));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,19, $this->replaceGeneric($tddjj));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,21, $this->replaceGeneric($addjj));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,17, $this->replaceGeneric($tddjj));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,19, $this->replaceGeneric($addjj));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,21, $this->replaceGeneric($emitidos));
+            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,22, $this->replaceGeneric($rechazados));
             $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,23, $this->replaceGeneric($emitidos));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,24, $this->replaceGeneric($rechazados));
-            $objPHPExcel->setActiveSheetIndex($sheet)->setCellValueByColumnAndRow(4 ,25, $this->replaceGeneric($emitidos));     
             $objPHPExcel->setActiveSheetIndex(0)->getStyle('e8:e25')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
             $objPHPExcel->getProperties()->setCreator($_SESSION['nombrecompleto']);
             $objPHPExcel->getProperties()->setLastModifiedBy($_SESSION['nombrecompleto']);
