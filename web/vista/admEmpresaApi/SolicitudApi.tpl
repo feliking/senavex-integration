@@ -904,13 +904,7 @@
                 else {
                     precio_unitario_sus.removeClass('griderror');
                 }
-                if (precio_unitario_div.val() == '') {
-                    precio_unitario_div.addClass('griderror');
-                    valid = false;
-                }
-                else {
-                    precio_unitario_div.removeClass('griderror');
-                }
+
                 if (sub.val() == '') {
                     sub.addClass('griderror');
                     valid = false;
@@ -933,7 +927,6 @@
                 var unidad_medida = $tblrow.find("[name=unidad_medida]");
                 var peso_bruto = $tblrow.find("[name=peso_bruto]");
                 var precio_unitario_sus = $tblrow.find("[name=precio_unitario_sus]");
-                var precio_unitario_div = $tblrow.find("[name=precio_unitario_div]");
 
                     cantidadgrid.removeClass('griderror');
 
@@ -946,8 +939,6 @@
                     peso_bruto.removeClass('griderror');
 
                     precio_unitario_sus.removeClass('griderror');
-
-                    precio_unitario_div.removeClass('griderror');
 
                     sub.removeClass('griderror');
             });
