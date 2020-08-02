@@ -1315,7 +1315,6 @@ class AdmRegistroApi extends Principal {
         $vista->assign('tipo_cuentas2', array('1'=>'M/N', '2'=>'M/E'));
         $vista->assign('personas2', $arrayPerson);
         $vista->assign('nandina', array(
-                '3923.10.90.00.0'=>'- - Los demás|u',
                 '6101.20.00.00.0'=>'- De algodón|u',
                 '6101.30.00.00.0'=>'- De fibras sintéticas o artificiales|u',
                 '6101.90.10.00.0'=>'- - De lana o pelo fino|u',
@@ -1676,19 +1675,11 @@ class AdmRegistroApi extends Principal {
                 '6907.23.00.90.0'=>'- - - Las demás|m2',
                 '6907.30.00.10.0'=>'- - Sin esmaltar ni barnizar, en los que la superficie mayor pueda inscribirse en un cuadrado de lado superior a 7 cm|m2',
                 '6907.40.00.10.0'=>'- - Sin esmaltar ni barnizar, en los que la superficie mayor pueda inscribirse en un cuadrado de lado superior a 7 cm|m2',
-                '7010.90.10.00.0'=>'- - De capacidad superior a 1 l |u',
-                '7010.90.10.00.1'=>'- - BOMBONAS Y BOTELLAS|u',
-                '7010.90.20.00.0'=>'- - De capacidad superior a 0,33 l pero inferior o igual a 1 l|u',
-                '7010.90.20.00.1'=>'- - BOMBONAS Y BOTELLAS|u',
-                '7010.90.30.00.0'=>'- - De capacidad superior a 0,15 l pero inferior o igual a 0,33 l|u',
-                '7010.90.30.00.1'=>'- - BOMBONAS Y BOTELLAS|u',
                 '7210.41.00.00.0'=>'- - Ondulados|Kg',
                 '7210.49.00.00.0'=>'- - Los demás|Kg',
                 '7210.61.00.00.0'=>'- - Revestidos de aleaciones de aluminio y cinc|Kg',
                 '7210.69.00.00.0'=>'- - Los demás|Kg',
                 '7210.70.10.00.0'=>'- - Revestidos previamente de aleaciones de aluminio-cinc|Kg',
-                '7310.21.00.00.0'=>'- - Latas o botes para ser cerrados por soldadura o rebordeado|u',
-                '7612.10.00.00.0'=>'- Envases tubulares flexibles|u',
                 '9403.30.00.00.0'=>'- Muebles de madera de los tipos utilizados en oficinas|u',
                 '9403.40.00.00.0'=>'- Muebles de madera de los tipos utilizados en cocinas|u',
                 '9403.50.00.00.0'=>'- Muebles de madera de los tipos utilizados en dormitorios|u',
