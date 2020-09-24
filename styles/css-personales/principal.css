@@ -494,7 +494,7 @@ input[type="text"],input[type="password"] ,input[type="date"],input[type="email"
 {
     position: absolute;
     background:white;
-    width:240px;
+    width:360px;
     max-height: 340px;
     overflow-y: auto;
     top:70px;
@@ -527,7 +527,7 @@ input[type="text"],input[type="password"] ,input[type="date"],input[type="email"
 .menucf { 
     position:relative;
     height:75px;
-    width:33%;
+    width:25%;
     margin:0 auto;
 	display:block;
 	float: left;

@@ -7,13 +7,17 @@
  */
 
 class SQLComercializador {
-    
-    public function getBuscarComercializadorPorDdjj(Comercializador $comercializador) {
-        return $comercializador->finder()->findAll('id_ddjj = '.$comercializador->getId_ddjj());
-    }
-    
-    public function setGuardarComercializador(Comercializador $comercializador){
-        return $comercializador->save();
-    }
 
+  public function getBuscarComercializadorPorDdjj(Comercializador $comercializador) {
+    return $comercializador->finder()->findAll('id_ddjj = '.$comercializador->getId_ddjj());
+  }
+
+  public function setGuardarComercializador(Comercializador $comercializador){
+    return $comercializador->save();
+  }
+  public function setEliminarComercializador(Comercializador
+                                             $comercializador){
+    return $comercializador->deleteAll('id_ddjj =
+   '.$comercializador->getId_ddjj());
+  }
 }

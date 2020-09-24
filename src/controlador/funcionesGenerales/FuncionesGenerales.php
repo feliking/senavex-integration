@@ -543,7 +543,7 @@ class FuncionesGenerales extends Principal {
    
     $sqlAcceso->setGuardarAcceso($acceso);
   }
-  
+
   public static function fechaConDiayMesLiteral($fecha){
     $dias = array('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo');
     $array_fecha = explode("-", $fecha);
@@ -566,5 +566,58 @@ class FuncionesGenerales extends Principal {
     $fecha_transformada = $dia.' '. substr($array_fecha[2],0,2).' de '.$mes_literal.' de '.$array_fecha[0];
     
     return $fecha_transformada;
+  }
+  public static function addDate($date,$days) {
+      $dateObject = new DateTime($date);
+      $dateObject->add(new DateInterval('P'.$days.'D'));
+      return date_format($dateObject,'Y-m-d');
+  }
+  public static function getPersona($id_persona){
+    $persona = new Persona();
+    $sqlPersona = new SQLPersona();
+
+    $persona->setId_persona($id_persona);
+    $persona=$sqlPersona->getDatosPersonaPorId($persona);
+
+    return $persona;
+  }
+  public static function setNumeric($number){
+    $number=($number==''?0:$number);
+    $number=str_replace(',', '.',$number);
+    return $number;
+  }
+    public static function setInverseComma($number){
+        $number=($number==''?0:$number);
+        $number=str_replace('.', ',',$number);
+        return $number;
+    }
+  public static function formatoFecha($fecha){
+    return date('d/m/y',strtotime($fecha));
+  }
+  public static function formatoFechaDDMMYYY($fecha){
+    return date('d/m/Y',strtotime($fecha));
+  }
+  public static function validateStringArancel($string){
+      return trim(str_replace('"', '\"', preg_replace( "/\r|\n/", "", $string)));
+  }
+  public static function validateNumberArancel($string){
+      return trim(str_replace('"', '\"', preg_replace( "/\r|\n/", "", $string==''?0:(int)$string)));
+  }
+  public static function diffDiasHoy($fecha){
+      $date=new DateTime(date('Y-m-d',strtotime($fecha)));
+      $hoy=new DateTime(date("Y-m-d"));
+      $diff= $date->diff($hoy);
+      return (int)$diff->days;
+
+  }
+  public static function setFechaToBd($fecha){
+    $fecha_formato=explode("/",$fecha);
+    return $fecha_formato[2].'-'.$fecha_formato[1].'-'.$fecha_formato[0];
+  }
+
+  public static function getNumberFormat($number){
+    $number =  number_format($number, 4, ',', '');
+    $number = rtrim($number, '0');
+    return rtrim($number, ',');
   }
 }

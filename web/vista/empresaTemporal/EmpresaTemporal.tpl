@@ -100,11 +100,11 @@
                                     <div class="span2" >
                                         <input  placeholder="Año de Inicio de Operaciones"  name="inicio_empresa" id="inicio_empresa"  style="width:100%;"required validationMessage="Ingrese Año de Inicio de Operaciones" />
                                     </div>
-                                    <div class="span2" >
-                                        <input type="number" step="0.000001"  name="coordenadas_lat" id="coordenadas_lat" class="k-textbox "style="width:100%;" placeholder="Latitud(Coordenadas)"    required validationMessage="Ingrese la latidud de sus coordenadas(google maps)" />
+                                    <div class="span4" >
+                                        <input type="number" step="0.000001"  name="coordenadas_lat" id="coordenadas_lat" class="k-textbox "style="width:100%;" placeholder="Latitud(Coordenadas) Ej: -21.215447"    required validationMessage="Ingrese la latidud de sus coordenadas(google maps)" />
                                     </div>
-                                    <div class="span2" >
-                                        <input type="number" step="0.000001"  name="coordenadas_lon" id="coordenadas_lon" class="k-textbox "style="width:100%;" placeholder="Longitud(Coordenadas)"    required validationMessage="Ingrese la longitud de sus coordenadas(google maps)" />
+                                    <div class="span4" >
+                                        <input type="number" step="0.000001"  name="coordenadas_lon" id="coordenadas_lon" class="k-textbox "style="width:100%;" placeholder="Longitud(Coordenadas) Ej: -64.654521"    required validationMessage="Ingrese la longitud de sus coordenadas(google maps)" />
                                     </div>
                                 </div> 
                                 

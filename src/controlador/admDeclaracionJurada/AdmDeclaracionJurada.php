@@ -1,17 +1,16 @@
 <?php
-/**
- * @sistema     Sistema de Certificación de Origen - SICO
- * @version     Login.php v1.0 23-09-2014
- * @autor       José Alfredo Arroyo Santa Cruz
- * @copyright	Copyright (C) 2014 Servicio Nacional de Verificación de Exportaciones
- */
-
-/* Controlar el acceso de los usuarios*/
 defined('_ACCESO') or die('Acceso restringido');
 
 include_once(PATH_CONTROLADOR . DS . 'funcionesGenerales' . DS . 'FuncionesGenerales.php');
 include_once(PATH_CONTROLADOR . DS . 'admSistemaColas' . DS . 'AdmSistemaColas.php');
+include_once(PATH_CONTROLADOR . DS .'admDeclaracionJurada'. DS .'AdmDeclaracionJuradaFunctions.php');
+include_once(PATH_CONTROLADOR . DS .'admVerificaciones'. DS .'AdmVerificaciones.php');
 include_once(PATH_CONTROLADOR . DS . 'admCorreo' . DS . 'AdmCorreo.php');
+include_once(PATH_CONTROLADOR . DS . 'admDireccion' . DS . 'AdmDireccion.php');
+include_once(PATH_CONTROLADOR . DS . 'admUploader' . DS . 'AdmUploader.php');
+include_once(PATH_CONTROLADOR . DS . 'admAnalisisRiesgo' . DS . 'AdmAnalisisFormula.php');
+include_once(PATH_CONTROLADOR . DS . 'admEmpresa' . DS . 'AdmEmpresa.php');
+include_once(PATH_CONTROLADOR . DS . 'middleware' . DS . 'Middleware.php');
 
 include_once(PATH_TABLA . DS . 'DeclaracionJurada.php');
 include_once(PATH_TABLA . DS . 'DdjjAcuerdo.php');
@@ -24,14 +23,26 @@ include_once(PATH_TABLA . DS . 'InsumosNacionales.php');
 include_once(PATH_TABLA . DS . 'InsumosImportados.php');
 include_once(PATH_TABLA . DS . 'Comercializador.php');
 include_once(PATH_TABLA . DS . 'EstadoDdjj.php');
-include_once(PATH_TABLA . DS . 'Asesoramiento.php');
-include_once(PATH_TABLA . DS . 'AsesoramientoHistorico.php');
 include_once(PATH_TABLA . DS . 'Servicio.php');
 include_once(PATH_TABLA . DS . 'Pais.php');
 include_once(PATH_TABLA . DS . 'Fabrica.php');
 include_once(PATH_TABLA . DS . 'SistemaColas.php');
 include_once(PATH_TABLA . DS . 'Persona.php');
 include_once(PATH_TABLA . DS . 'ObservacionesDdjj.php');
+include_once(PATH_TABLA . DS . 'TipoAcuerdo.php');
+include_once(PATH_TABLA . DS . 'EstadoAcuerdo.php');
+include_once(PATH_TABLA . DS . 'TipoValorInternacional.php');
+include_once(PATH_TABLA . DS . 'Arancel.php');
+include_once(PATH_TABLA . DS . 'AcuerdoArancel.php');
+include_once(PATH_TABLA . DS . 'ZonasEspeciales.php');
+include_once(PATH_TABLA . DS . 'DeclaracionJuradaZonasEspeciales.php');
+include_once(PATH_TABLA . DS . 'Empresa.php');
+include_once(PATH_TABLA . DS . 'CriterioOrigen.php');
+include_once(PATH_TABLA . DS . 'Partida.php');
+include_once(PATH_TABLA . DS . 'TipoCertificadoOrigen.php');
+include_once(PATH_TABLA . DS . 'Direccion.php');
+include_once(PATH_TABLA . DS . 'SGCDdjj.php');
+include_once(PATH_TABLA . DS . 'Regional.php');
 
 include_once(PATH_MODELO . DS . 'SQLDeclaracionJurada.php');
 include_once(PATH_MODELO . DS . 'SQLDdjjAcuerdo.php');
@@ -41,8 +52,7 @@ include_once(PATH_MODELO . DS . 'SQLUnidadMedida.php');
 include_once(PATH_MODELO . DS . 'SQLInsumosNacionales.php');
 include_once(PATH_MODELO . DS . 'SQLInsumosImportados.php');
 include_once(PATH_MODELO . DS . 'SQLComercializador.php');
-include_once(PATH_MODELO . DS . 'SQLAsesoramiento.php');
-include_once(PATH_MODELO . DS . 'SQLAsesoramientoHistorico.php');
+include_once(PATH_MODELO . DS . 'SQLEstadoDdjj.php');
 include_once(PATH_MODELO . DS . 'SQLServicio.php');
 include_once(PATH_MODELO . DS . 'SQLServicioExportador.php');
 include_once(PATH_MODELO . DS . 'SQLPais.php');
@@ -50,12 +60,36 @@ include_once(PATH_MODELO . DS . 'SQLFabrica.php');
 include_once(PATH_MODELO . DS . 'SQLSistemaColas.php');
 include_once(PATH_MODELO . DS . 'SQLPersona.php');
 include_once(PATH_MODELO . DS . 'SQLObservacionesDdjj.php');
+include_once(PATH_MODELO . DS . 'SQLTipoAcuerdo.php');
+include_once(PATH_MODELO . DS . 'SQLTipoValorInternacional.php');
+include_once(PATH_MODELO . DS . 'SQLArancel.php');
+include_once(PATH_MODELO . DS . 'SQLZonasEspeciales.php');
+include_once(PATH_MODELO . DS . 'SQLDeclaracionJuradaZonasEspeciales.php');
+include_once(PATH_MODELO . DS . 'SQLEmpresa.php');
+include_once(PATH_MODELO . DS . 'SQLCriterioOrigen.php');
+include_once(PATH_MODELO . DS . 'SQLDireccion.php');
+include_once(PATH_MODELO . DS . 'SQLPartida.php');
+include_once(PATH_MODELO . DS . 'SQLRegional.php');
+include_once(PATH_MODELO . DS . 'SQLTipoCertificadoOrigen.php');
 
 class AdmDeclaracionJurada extends Principal {
-  public function AdmDeclaracionJurada() 
+  const DDJJ_VIGENTE = 1;
+  const DDJJ_CANCELAR = 5;
+  const DDJJ_VISITA = 6;
+  const DDJJ_CORREGIR = 4;
+  const DDJJ_REVISAR = 0;
+  const DDJJ_ELIMINADA = 7;
+  const DDJJ_VENCIDA = 2;
+  public function AdmDeclaracionJurada()
   {
+    $midleware = new Middleware();
+    $midleware->verificaEmpresaBloqueada();
+
+
     $vista = Principal::getVistaInstance();
-    
+
+
+
     $declaracion_jurada = new DeclaracionJurada();
     $acuerdo = new Acuerdo();
     $detalle_arancel = new DetalleArancel();
@@ -66,15 +100,19 @@ class AdmDeclaracionJurada extends Principal {
     $ddjj_acuerdo = new DdjjAcuerdo();
     $estado_ddjj = new EstadoDdjj();
     $servicio_exportador = new ServicioExportador();
-    $asesoramiento = new Asesoramiento();
-    $asesoramiento_historico = new AsesoramientoHistorico();
     $servicio = new Servicio();
     $sistema_colas = new SistemaColas();
     $pais = new Pais();
     $fabrica = new Fabrica();
     $persona = new Persona();
     $observaciones_ddjj = new ObservacionesDdjj();
-    
+    $tipo_acuerdo = new TipoAcuerdo();
+    $tipo_valor_internacional = new TipoValorInternacional();
+    $arancel = new Arancel();
+    $zonas_especiales = new ZonasEspeciales();
+    $direccion = new Direccion();
+    $functions = new AdmDeclaracionJuradaFunctions();
+
     $sqlDeclaracionJurada = new SQLDeclaracionJurada();
     $sqlAcuerdo = new SQLAcuerdo();
     $sqlDetalleArancel = new SQLDetalleArancel();
@@ -82,9 +120,8 @@ class AdmDeclaracionJurada extends Principal {
     $sqlInsumosNacionales = new SQLInsumosNacionales();
     $sqlInsumosImportados = new SQLInsumosImportados();
     $sqlComercializador = new SQLComercializador();
+    $sqlEstadoDdjj = new SQLEstadoDdjj();
     $sqlDdjjAcuerdo = new SQLDdjjAcuerdo();
-    $sqlAsesoramiento = new SQLAsesoramiento();
-    $sqlAsesoramientoHistorico = new SQLAsesoramientoHistorico();
     $sqlServicio = new SQLServicio();
     $sqlServicioExportador = new SQLServicioExportador();
     $sqlSistemaColas = new SQLSistemaColas();
@@ -92,3162 +129,681 @@ class AdmDeclaracionJurada extends Principal {
     $sqlFabrica = new SQLFabrica();
     $sqlPersona = new SQLPersona();
     $sqlObservacionesDdjj = new SQLObservacionesDdjj();
-    
-    $datosAcuerdo = $sqlAcuerdo->getListarAcuerdo($acuerdo);
-    $datosUnidadMedida = $sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
+    $sqlTipoAcuerdo = new SQLTipoAcuerdo();
+    $sqlTipoValorInternacional = new SQLTipoValorInternacional();
+    $sqlArancel = new SQLArancel();
+    $sqlZonasEspeciales = new SQLZonasEspeciales();
+    $sqlDireccion = new SQLDireccion();
 
-    if($_REQUEST['tarea']=='listarDeclaracionesVigentes'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(1);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
+    $funcionesGenerales = new FuncionesGenerales();
+    $uploader = new AdmUploader();
+    $condicional = new Condicionales();
 
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $detalle_arancel->setId_detalle_arancel($datos->getId_detalle_arancel());
-            $detalle_arancel = $sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-            
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","correlativo_ddjj":"' . $datos->getCorrelativo_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $detalle_arancel->getCodigo() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
+    $perfil_uco=$condicional->esPerfilUco();
+    $vista->assign('perfil_uco',$perfil_uco);
 
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
+    //***********************declaraciones Juradas vista previa******************
+    if($_REQUEST['tarea']=='declaracionesJuradas'){
+
+      if ($condicional->esExportador() && !AdmEmpresa::tieneRuex($_SESSION["id_empresa"])) {
+        $vista->assign('custom_message','No puede acceder a DDJJ, si no tiene RUEX.');
+        $vista->assign('cerrar','cerrar');
+        $vista->assign('display','display');
+        $vista->display("declaracionJurada/NoticeDeclaracionJurada.tpl");
         exit;
+      }
+
+      $estados = $sqlEstadoDdjj->getListarEstadoDdjj($estado_ddjj);
+      $vista->assign('estados',$estados);
+      $vista->assign('esExportador',$condicional->esExportador() || $condicional->esTramites());
+      $vista->display("declaracionJurada/DeclaracionesJuradas.tpl");
     }
-    
-    if($_REQUEST['tarea']=='listarDeclaracionesPasadas'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(2);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
-
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $detalle_arancel->setId_detalle_arancel($datos->getId_detalle_arancel());
-            $detalle_arancel = $sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-            
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","correlativo_ddjj":"' . $datos->getCorrelativo_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $detalle_arancel->getCodigo() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
-
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='listarDeclaracionesEnRevision'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(3);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
-
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $datos->getId_detalle_arancel() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
-
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
-    }    
-    
-    if($_REQUEST['tarea']=='listarDeclaracionesEnviadas'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(0);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
-
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $detalle_arancel->setId_detalle_arancel($datos->getId_detalle_arancel());
-            $detalle_arancel = $sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-            
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $detalle_arancel->getCodigo() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
-
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='listarDeclaracionesConAsesoramiento'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(4);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
-
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $datos->getId_detalle_arancel() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
-
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='listarDeclaracionesParaAprobar'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(6);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
-
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $detalle_arancel->setId_detalle_arancel($datos->getId_detalle_arancel());
-            $detalle_arancel = $sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-            
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $detalle_arancel->getCodigo() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
-
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='listarDeclaracionesRechazadas'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(5);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
-
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $detalle_arancel->setId_detalle_arancel($datos->getId_detalle_arancel());
-            $detalle_arancel = $sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-            
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $detalle_arancel->getCodigo() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
-
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='listarDeclaracionesParaCorregir'){
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_estado_ddjj(7);
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesPorEstado($declaracion_jurada);
-        $selected = ',"selected":true';
-
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $detalle_arancel->setId_detalle_arancel($datos->getId_detalle_arancel());
-            $detalle_arancel = $sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-            
-            $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
-                    '","descripcion_comercial":"' . $datos->getDescripcion_comercial() .
-                    '","detalle_arancel":"' . $detalle_arancel->getCodigo() .
-                    '","caracteristicas":"' . $datos->getCaracteristicas() .
-                    '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .
-                    '","proceso_productivo":"' . $datos->getProceso_productivo() . '"},';
-            $selected='';
-        }
-
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
-    }
-    
-    //************************ Guardar la declaracion jurada nueva ************************///
-    if($_REQUEST['tarea']=='guardarDeclaracionJurada'){
-        $lista_acuerdos = $_REQUEST["lista_acuerdos"];
-        //var_dump($lista_acuerdos);
-        $hoy=date("Y-m-d");
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_Persona($_SESSION["id_persona"]);
-        $declaracion_jurada->setId_estado_ddjj(0);
-        
-        //Generar el Servicio Exportador para la DDJJ
-        $serv_export = AdmSistemaColas::generarServicioExportadorParaDdjj($_SESSION["id_persona"],0,$_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_Servicio_Exportador($serv_export);
-        
-        $declaracion_jurada->setId_fabrica($_REQUEST["combo_fabricas"]);
-        $declaracion_jurada->setDescripcion_Comercial($_REQUEST["denominacion_comercial"]);
-        $declaracion_jurada->setNombre_tecnico($_REQUEST["nombre_tecnico"]);
-        $declaracion_jurada->setCaracteristicas($_REQUEST["caracteristicas"]);
-        $declaracion_jurada->setAplicacion($_REQUEST["aplicacion"]);
-        
-        //Verificar si el campo de Clasificacion Arancelaria esta vacío
-        if($_REQUEST["combonandina"]==''){
-            $declaracion_jurada->setId_Detalle_Arancel(0);
-        }else{
-            $declaracion_jurada->setId_Detalle_Arancel($_REQUEST["combonandina"]);
-        }
-        
-        //Verificar si el campo de Unidad de Medida esta vacío
-        if($_REQUEST["unidadmedida"]==''){
-            $declaracion_jurada->setId_Unidad_Medida(0);
-        }else{
-            $declaracion_jurada->setId_Unidad_Medida($_REQUEST["unidadmedida"]);
-        }
-        
-        //Verificar si el campo de Otros Costos esta vacío
-        if($_REQUEST["otros_costos"]==''){
-            $declaracion_jurada->setOtros_Costos(0);
-        }else{
-            $declaracion_jurada->setOtros_Costos($_REQUEST["otros_costos"]);
-        }
-
-        $declaracion_jurada->setProduccion_mensual($_REQUEST["produccion_mensual"]);
-        $declaracion_jurada->setProceso_Productivo($_REQUEST["procesoproductivo"]);
-        $declaracion_jurada->setFecha_Registro($hoy);
-        
-        //Guardar la lista de elaboración Incentivo
-        $lista_elaboracion = $this->listaElaboracionIncentivo($_REQUEST["lista_elaboracion"]);
-        $declaracion_jurada->setElaboracion_Incentivo($lista_elaboracion);
-        
-        //Recuperar la tabla de insumos nacionales
-        $nacionales = $_REQUEST["tabla_nac"];
-        
-        //Recuperar la tabla de insumos importados y colocar por defecto a false
-        $importados = $_REQUEST["tabla_import"];
-        $declaracion_jurada->setInsumos_importados(FALSE);
-        
-        //Recuperar la tabla de comercializadores y colocar por defecto a false
-        $comerc = $_REQUEST["tabla_comerc"];
-        $declaracion_jurada->setComercializador(FALSE);
-        
-        if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
-            //Recuperar el ID de la declaracion recien insertada
-            $datDdjj = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-            
-            //Iniciar variables para sumar la cantidad de acuerdos y costos para la DDJJ
-            $cantidad_ddjj = 0;
-            $suma_costo_ddjj = 0;
-            
-            //Sacar el costo de las declaraciones juradas (3 para DDJJ)
-            $servicio->setId_servicio(3);
-            $servicio = $sqlServicio->getBuscarServicioPorId($servicio);
-            $costo_ddjj = $servicio->getCosto();
-            
-            //Guardar los Insumos Nacionales
-            $this->guardarInsumosNacionales($nacionales,$datDdjj->getId_ddjj());
-            
-            //Verificar y Guardar los Insumos Importados
-            if($_REQUEST["check_insumosimportados"]==TRUE){
-                $this->guardarInsumosImportados($importados, $datDdjj->getId_ddjj());
-                $datDdjj->setInsumos_importados(TRUE);
-            }
-            
-            //Verificar y Guardar los Comercializadores
-            if($_REQUEST["check_comercializador"]==TRUE){
-                $this->guardarComercializadores($comerc, $datDdjj->getId_ddjj());
-                $datDdjj->setComercializador(TRUE);
-            }
-            
-            //Verificar para cada acuerdo si guarda en la tabla
-            if(in_array('can',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(1);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                $ddjj_acuerdo->setSubpartida(0);
-
-                //***** Establecer si se dá el criterio de origen ****
-                if($_REQUEST["criterio_origen_can"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_can"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda CAN";
-                }else{
-                    echo "No guarda CAN";
-                }
-            }
-            if(in_array('ace22',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(3);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa96"]);
-
-                //***** Establecer si se dá el criterio de origen ****
-                if($_REQUEST["criterio_origen_ace22"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_ace22"]);
-                }
-                
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda Ace22";
-                }else{
-                    echo "No guarda Ace22";
-                }
-            }
-            if(in_array('ace47',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(4);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa2007"]);
-
-                if($_REQUEST["criterio_origen_ace47"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_ace47"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda ACE47";
-                }else{
-                    echo "No guarda ACE47";
-                }
-            }
-            if(in_array('arpar4',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(6);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                if(empty($_REQUEST["naladi83"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladi83"]);
-                }
-
-                if($_REQUEST["criterio_origen_arpar4"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_arpar4"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda ARPAR4";
-                }else{
-                    echo "No guarda ARPAR4";
-                }
-            }
-            if(in_array('aapag',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(7);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa91"]);
-
-                if($_REQUEST["criterio_origen_aapag"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_aapag"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda AAPAG";
-                }else{
-                    echo "No guarda AAPAG";
-                }
-            }
-            if(in_array('mercosur',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(2);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(180);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa93"]);
-
-                if($_REQUEST["criterio_origen_mercosur"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_mercosur"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda MERCOSUR";
-                }else{
-                    echo "No guarda MERCOSUR";
-                }
-            }
-            if(in_array('venezuela',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(5);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(180);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_venezuela"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_venezuela"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda VENEZUELA";
-                }else{
-                    echo "No guarda VENEZUELA";
-                }
-            }
-            if(in_array('arampanama',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(19);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                if(empty($_REQUEST["naladisa2007"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa2007"]);
-                }
-
-                if($_REQUEST["criterio_origen_arampanama"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_venezuela"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda ARAM PANAMÁ";
-                }else{
-                    echo "No guarda ARAM PANAMÁ";
-                }
-            }
-            
-            //************** SISTEMA GENERAL PREFERENCIAL *******
-            if(in_array('canada',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(8);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpcanada"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpcanada"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP CANADA";
-                }else{
-                    echo "No guarda SGP CANADA";
-                }
-            }
-            if(in_array('suiza',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(9);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpsuiza"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpsuiza"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP SUIZA";
-                }else{
-                    echo "No guarda SGP SUIZA";
-                }
-            }
-            if(in_array('noruega',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(10);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpnoruega"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpnoruega"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP NORUEGA";
-                }else{
-                    echo "No guarda SGP NORUEGA";
-                }
-            }
-            if(in_array('japon',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(11);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpjapon"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpjapon"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP JAPON";
-                }else{
-                    echo "No guarda SGP JAPON";
-                }
-            }
-            if(in_array('zelanda',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(12);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpzelanda"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpzelanda"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP NUEVA ZELANDA";
-                }else{
-                    echo "No guarda SGP NUEVA ZELANDA";
-                }
-            }
-            if(in_array('rusia',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(13);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgprusia"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgprusia"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP RUSIA";
-                }else{
-                    echo "No guarda SGP RUSIA";
-                }
-            }
-            if(in_array('turquia',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(14);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpturquia"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpturquia"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP TURQUIA";
-                }else{
-                    echo "No guarda SGP TURQUIA";
-                }
-            }
-            if(in_array('bielorrusia',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(15);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpbielorrusia"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpbielorrusia"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP BIELORRUSIA";
-                }else{
-                    echo "No guarda SGP BIELORRUSIA";
-                }
-            }
-            if(in_array('ue',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(16);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpue"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpue"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP UE";
-                }else{
-                    echo "No guarda SGP UE";
-                }
-            }
-            if(in_array('eeuu',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(17);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpeeuu"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpeeuu"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP EEUU";
-                }else{
-                    echo "No guarda SGP EEUU";
-                }
-            }
-            if(in_array('tp',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(18);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgptp"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgptp"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda TERCEROS PAISES";
-                }else{
-                    echo "No guarda TERCEROS PAISES";
-                }
-            }
-            
-            //Guardar si hay cambios en algun dato de la ddjj
-            $sqlDeclaracionJurada->setGuardarDdjj($datDdjj);
-            
-            /****** Generar la Cola para el Asistente ******/
-            $asist_senavex = AdmSistemaColas::generarColaParaDdjj($serv_export,$cantidad_ddjj);
-
-            /****** Actualizar el valor del servicio exportador *****/
-            $servicio_exportador->setId_servicio_exportador($serv_export);
-            $servicio_exportador=$sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
-            $servicio_exportador->setCosto_Actual($suma_costo_ddjj);
-            $sqlServicioExportador->setGuardarServicioExportador($servicio_exportador);
-            
-            //Envío de Correos
-            $correos=AdmCorreo::obtenerCorreosEmpresa($_SESSION['id_empresa']);
-            $correos=explode(',',$correos);
-            $persona->setId_persona($_SESSION["id_persona"]);
-            $persona=$sqlPersona->getDatosPersonaPorId($persona);
-            $nombre_persona=$persona->getNombres().' '.$persona->getPaterno().' '. $persona->getMaterno();
-            if(trim($correos[0])==trim($correos[1]))
-            {
-                AdmCorreo::enviarCorreo($correos[0],$datDdjj->empresa->getRazon_social(),$nombre_persona,'','',31);
-            }
-            else
-            {
-                AdmCorreo::enviarCorreo($correos[0],$datDdjj->empresa->getRazon_social(),$nombre_persona,'','',31);
-                AdmCorreo::enviarCorreo($correos[1],$datDdjj->empresa->getRazon_social(),$nombre_persona,'','',31);
-            }
-            echo "Se guardó la DDJJ";
-        }else{
-            echo "No se guardó la DDJJ";
-        }     
-        exit;
-    }
-    
-    //******* ASESORAMIENTO ********//
-    if($_REQUEST['tarea']=='pedirAsesoramiento'){
-        $lista_acuerdos = $_REQUEST["lista_acuerdos"];
-        
-        $hoy=date("Y-m-d");
-        $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_Persona($_SESSION["id_persona"]);
-        $declaracion_jurada->setId_estado_ddjj(4);
-        
-        //Generar el Servicio Exportador para la DDJJ
-        $serv_export = AdmSistemaColas::generarServicioExportadorParaDdjj($_SESSION["id_persona"],0,$_SESSION["id_empresa"]);
-        $declaracion_jurada->setId_Servicio_Exportador($serv_export);
-
-        //Verificar si el campo de Fabricas esta vacío
-        if($_REQUEST["combo_fabricas"]==''){
-            $declaracion_jurada->setId_fabrica(0);
-        }else{
-            $declaracion_jurada->setId_fabrica($_REQUEST["combo_fabricas"]);
-        }
-        $declaracion_jurada->setDescripcion_Comercial($_REQUEST["denominacion_comercial"]);
-        $declaracion_jurada->setNombre_tecnico($_REQUEST["nombre_tecnico"]);
-        $declaracion_jurada->setCaracteristicas($_REQUEST["caracteristicas"]);
-        $declaracion_jurada->setAplicacion($_REQUEST["aplicacion"]);
-        
-        //Verificar si el campo de Clasificacion Arancelaria esta vacío
-        if($_REQUEST["combonandina"]==''){
-            $declaracion_jurada->setId_Detalle_Arancel(0);
-        }else{
-            $declaracion_jurada->setId_Detalle_Arancel($_REQUEST["combonandina"]);
-        }
-        
-        //Verificar si el campo de Unidad de Medida esta vacío
-        if($_REQUEST["unidadmedida"]==''){
-            $declaracion_jurada->setId_Unidad_Medida(0);
-        }else{
-            $declaracion_jurada->setId_Unidad_Medida($_REQUEST["unidadmedida"]);
-        }
-        
-        $declaracion_jurada->setOtros_Costos(0);
-        $declaracion_jurada->setProduccion_mensual(0);
-        $declaracion_jurada->setProceso_Productivo($_REQUEST["procesoproductivo"]);
-        $declaracion_jurada->setFecha_Registro($hoy);
-        
-        //Guardar la lista de elaboración Incentivo
-        if(!empty($_REQUEST["lista_elaboracion"])){
-            $lista_elaboracion = $this->listaElaboracionIncentivo($_REQUEST["lista_elaboracion"]);
-            $declaracion_jurada->setElaboracion_Incentivo($lista_elaboracion);
-        }else{
-            $declaracion_jurada->setElaboracion_Incentivo(0);
-        }
-        //Recuperar la tabla de insumos nacionales
-        $nacionales = $_REQUEST["tabla_nac"];
-        
-        //Recuperar la tabla de insumos importados y colocar por defecto a false
-        $importados = $_REQUEST["tabla_import"];
-        $declaracion_jurada->setInsumos_importados(FALSE);
-        
-        //Recuperar la tabla de comercializadores y colocar por defecto a false
-        $comerc = $_REQUEST["tabla_comerc"];
-        $declaracion_jurada->setComercializador(FALSE);
-        //var_dump($declaracion_jurada); exit;
-        if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
-            //Recuperar el ID de la declaracion recien insertada
-            $datDdjj = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-            
-            //Iniciar variables para sumar la cantidad de acuerdos y costos para la DDJJ
-            $cantidad_ddjj = 0;
-            $suma_costo_ddjj = 0;
-            
-            //Sacar el costo de las declaraciones juradas (3 para DDJJ)
-            $servicio->setId_servicio(3);
-            $servicio = $sqlServicio->getBuscarServicioPorId($servicio);
-            $costo_ddjj = $servicio->getCosto();
-            
-            //Guardar los Insumos Nacionales
-            if(!empty($nacionales)){
-               $this->guardarInsumosNacionales($nacionales,$datDdjj->getId_ddjj());
-            }
-            
-            //Verificar y Guardar los Insumos Importados
-            if($_REQUEST["check_insumosimportados"]==TRUE){
-                $this->guardarInsumosImportados($importados, $datDdjj->getId_ddjj());
-                $datDdjj->setInsumos_importados(TRUE);
-            }
-            
-            //Verificar y Guardar los Comercializadores
-            if($_REQUEST["check_comercializador"]==TRUE){
-                $this->guardarComercializadores($comerc, $datDdjj->getId_ddjj());
-                $datDdjj->setComercializador(TRUE);
-            }
-            
-            //Verificar para cada acuerdo si guarda en la tabla
-            if(in_array('can',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(1);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-
-                //***** Establecer si se dá el criterio de origen ****
-                if($_REQUEST["criterio_origen_can"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_can"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda CAN";
-                }else{
-                    echo "No guarda CAN";
-                }
-            }
-            if(in_array('ace22',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(3);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                if(empty($_REQUEST["naladisa96"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa96"]);
-                }
-
-                //***** Establecer si se dá el criterio de origen ****
-                if($_REQUEST["criterio_origen_ace22"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_ace22"]);
-                }
-                
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda Ace22";
-                }else{
-                    echo "No guarda Ace22";
-                }
-            }
-            if(in_array('ace47',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(4);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                if(empty($_REQUEST["naladisa2007"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa2007"]);
-                }
-
-                if($_REQUEST["criterio_origen_ace47"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_ace47"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda ACE47";
-                }else{
-                    echo "No guarda ACE47";
-                }
-            }
-            if(in_array('arpar4',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(6);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                if(empty($_REQUEST["naladi83"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladi83"]);
-                }
-
-                if($_REQUEST["criterio_origen_arpar4"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_arpar4"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda ARPAR4";
-                }else{
-                    echo "No guarda ARPAR4";
-                }
-            }
-            if(in_array('aapag',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(7);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                if(empty($_REQUEST["naladisa91"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa91"]);
-                }
-
-                if($_REQUEST["criterio_origen_aapag"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_aapag"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda AAPAG";
-                }else{
-                    echo "No guarda AAPAG";
-                }
-            }
-            if(in_array('mercosur',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(2);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(180);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                if(empty($_REQUEST["naladisa93"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa93"]);
-                }
-
-                if($_REQUEST["criterio_origen_mercosur"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_mercosur"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda MERCOSUR";
-                }else{
-                    echo "No guarda MERCOSUR";
-                }
-            }
-            if(in_array('venezuela',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(5);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(180);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_venezuela"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_venezuela"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda VENEZUELA";
-                }else{
-                    echo "No guarda VENEZUELA";
-                }
-            }
-            if(in_array('arampanama',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(19);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_fob"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                }
-                if(empty($_REQUEST["naladisa2007"])){
-                    $ddjj_acuerdo->setSubpartida(0);
-                }else{
-                    $ddjj_acuerdo->setSubpartida($_REQUEST["naladisa2007"]);
-                }
-
-                if($_REQUEST["criterio_origen_arampanama"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_venezuela"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda ARAM PANAMÁ";
-                }else{
-                    echo "No guarda ARAM PANAMÁ";
-                }
-            }
-            
-            //************** SISTEMA GENERAL PREFERENCIAL *******
-            if(in_array('canada',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(8);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpcanada"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpcanada"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP CANADA";
-                }else{
-                    echo "No guarda SGP CANADA";
-                }
-            }
-            if(in_array('suiza',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(9);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpsuiza"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpsuiza"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP SUIZA";
-                }else{
-                    echo "No guarda SGP SUIZA";
-                }
-            }
-            if(in_array('noruega',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(10);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpnoruega"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpnoruega"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP NORUEGA";
-                }else{
-                    echo "No guarda SGP NORUEGA";
-                }
-            }
-            if(in_array('japon',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(11);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpjapon"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpjapon"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP JAPON";
-                }else{
-                    echo "No guarda SGP JAPON";
-                }
-            }
-            if(in_array('zelanda',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(12);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpzelanda"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpzelanda"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP NUEVA ZELANDA";
-                }else{
-                    echo "No guarda SGP NUEVA ZELANDA";
-                }
-            }
-            if(in_array('rusia',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(13);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-
-                if($_REQUEST["criterio_origen_sgprusia"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgprusia"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP RUSIA";
-                }else{
-                    echo "No guarda SGP RUSIA";
-                }
-            }
-            if(in_array('turquia',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(14);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpturquia"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpturquia"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP TURQUIA";
-                }else{
-                    echo "No guarda SGP TURQUIA";
-                }
-            }
-            if(in_array('bielorrusia',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(15);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpbielorrusia"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpbielorrusia"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP BIELORRUSIA";
-                }else{
-                    echo "No guarda SGP BIELORRUSIA";
-                }
-            }
-            if(in_array('ue',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(16);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpue"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpue"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP UE";
-                }else{
-                    echo "No guarda SGP UE";
-                }
-            }
-            if(in_array('eeuu',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(17);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgpeeuu"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgpeeuu"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda SGP EEUU";
-                }else{
-                    echo "No guarda SGP EEUU";
-                }
-            }
-            if(in_array('tp',$lista_acuerdos)){
-                //Destruir y crear la variable para generar nuevos registros en la tabla ddjj_acuerdo
-                unset($ddjj_acuerdo);
-                $ddjj_acuerdo = new DdjjAcuerdo();
-                
-                $ddjj_acuerdo->setId_ddjj($datDdjj->getId_ddjj());
-                $ddjj_acuerdo->setId_Acuerdo(18);
-                $ddjj_acuerdo->setId_estado_ddjj(0);
-                $ddjj_acuerdo->setVigencia(730);
-                if($_REQUEST["valor_exwork"]==''){
-                    $ddjj_acuerdo->setValor_Mercancia(0);
-                }else{
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                }
-                $ddjj_acuerdo->setSubpartida(0);
-                
-                if($_REQUEST["criterio_origen_sgptp"]==''){
-                    $ddjj_acuerdo->setId_Criterio_Origen(0);
-                }else{
-                    $ddjj_acuerdo->setId_Criterio_Origen($_REQUEST["criterio_origen_sgptp"]);
-                }
-
-                if($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo)){
-                    $cantidad_ddjj++;
-                    $suma_costo_ddjj = $suma_costo_ddjj + $costo_ddjj;
-                    echo "guarda TERCEROS PAISES";
-                }else{
-                    echo "No guarda TERCEROS PAISES";
-                }
-            }
-            
-            /****** Generar la Cola para el Asistente ******/
-            $asist_senavex = AdmSistemaColas::generarColaParaDdjj($serv_export,$cantidad_ddjj);
-            
-            /****** Generar el asesoramiento ******/
-            $asesoramiento->setId_Persona($_SESSION["id_persona"]);
-            $asesoramiento->setId_Empresa($_SESSION["id_empresa"]);
-            $asesoramiento->setId_Asistente_Senavex($asist_senavex);
-            $asesoramiento->setEstado(0);
-            $asesoramiento->setFecha_Inicio($hoy);
-            $asesoramiento->setId_Servicio_Exportador($serv_export);
-            
-            if($sqlAsesoramiento->setGuardarAsesoramiento($asesoramiento)){
-                $datAsesoramiento = $sqlAsesoramiento->getBuscarAsesoramientoPorId($asesoramiento);
-                //echo "entra";
-                $asesorarddjj = $_REQUEST["asesorarddjj"];
-                //var_dump($asesorarddjj);
-                //Inicializar variable para el inicio del Asesoramiento
-                $observaciones_exportador = "Solicito Asesoramiento en:";
-                
-                if(in_array('arancel',$asesorarddjj)){
-                    $observaciones_exportador .= " Clasificación Arancelaria,";
-                }
-                if(in_array('procesoproductivo',$asesorarddjj)){
-                    $observaciones_exportador .= " Proceso Productivo,";
-                }
-                if(in_array('insumos',$asesorarddjj)){
-                    $observaciones_exportador .= " Insumos Nacionales/Importados,";
-                }
-                
-                $observaciones_exportador = substr($observaciones_exportador, 0, strlen($observaciones_exportador) - 1);
-                $observaciones_exportador .= ". La Pregunta es: ".$_REQUEST["observaciones"];
-                
-                $asesoramiento_historico->setId_Asesoramiento($datAsesoramiento->getId_Asesoramiento());
-                $asesoramiento_historico->setObservaciones_Exportador($observaciones_exportador);
-                $asesoramiento_historico->setFecha_Observacion($hoy);
-                $asesoramiento_historico->setEstado(FALSE);
-                
-                $sqlAsesoramientoHistorico->setGuardarAsesoramientoHistorico($asesoramiento_historico);
-            }
-            
-            //Envío de Correos
-            $correos=AdmCorreo::obtenerCorreosEmpresa($_SESSION['id_empresa']);
-            $correos=explode(',',$correos);
-            $persona->setId_persona($_SESSION["id_persona"]);
-            $persona=$sqlPersona->getDatosPersonaPorId($persona);
-            $nombre_persona=$persona->getNombres().' '.$persona->getPaterno().' '. $persona->getMaterno();
-            if(trim($correos[0])==trim($correos[1]))
-            {
-                AdmCorreo::enviarCorreo($correos[0],$datDdjj->empresa->getRazon_social(),$nombre_persona,'','',32);
-            }
-            else
-            {
-                AdmCorreo::enviarCorreo($correos[0],$datDdjj->empresa->getRazon_social(),$nombre_persona,'','',32);
-                AdmCorreo::enviarCorreo($correos[1],$datDdjj->empresa->getRazon_social(),$nombre_persona,'','',32);
-            }
-
-        }else{
-            echo "No se guardó la DDJJ";
-        }
-        exit;
-    }
-
-    if($_REQUEST['tarea']=='prueba'){
-        //AdmSistemaColas::generarColaParaDdjj(26,4);
-    }
-    
-    if($_REQUEST['tarea']=='editarDeclaracionJurada'){
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        //Sacar el detalle de la clasificación arancelaria
-        $detalle_arancel->setId_detalle_arancel($declaracion_jurada->getId_Detalle_Arancel());
-        $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-        
-        $insumos_nacionales->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $insumos_nacionales = $sqlInsumosNacionales->getBuscarInsumosPorDdjj($insumos_nacionales);
-
-        $insumos_importados->setId_DDJJ($_REQUEST["id_declaracion_jurada"]);
-        $insumos_importados = $sqlInsumosImportados->getBuscarInsumosPorDdjj($insumos_importados);
-        
-        $comercializador->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $comercializador = $sqlComercializador->getBuscarComercializadorPorDdjj($comercializador);
-
-        $unidad_medida->setId_Unidad_Medida($declaracion_jurada->getId_Unidad_Medida());
-        $unidad_medida = $sqlUnidadMedida->getBuscarDescripcionPorId($unidad_medida);
-
-        $fabrica->setId_empresa($_SESSION["id_empresa"]);
-        $fabrica=$sqlFabrica->getListarFabricasporEmpresa($fabrica);
-
-        //Asignar Valores para el tpl
-        $vista->assign('detalle_arancel', $detalle_arancel);
-        $vista->assign('unidad_medida', $unidad_medida);
-        $vista->assign('fabrica', $fabrica);
-        
-        //Para combos en las tablas
-        unset($unidad_medida);
-        $unidad_medida = new UnidadMedida();
-        $umedida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
-        $pais=$sqlPais->getListarPais($pais);
-        $acuerdo=$sqlAcuerdo->getListarAcuerdo($acuerdo);
-        
-        $vista->assign('unidadmedida', $umedida);
-        $vista->assign('pais', $pais);
-        $vista->assign('acuerdo', $acuerdo);
-        
-        //Verificar si existen las tablas
-        if ($insumos_nacionales != NULL){
-            //echo "Hay insumos Nacionales<br>";
-            $vista->assign('insnac', 1);
-            $vista->assign('insumosnacionales', $insumos_nacionales);
-        }else{
-            $vista->assign('insnac', 0);
-        }
-        if ($insumos_importados != NULL){
-            //echo "Hay insumos Importados<br>";
-            $vista->assign('insimp', 1);
-            $vista->assign('insumosimportados', $insumos_importados);
-        }else{
-            $vista->assign('insimp', 0);
-        }
-        if ($comercializador != NULL){
-            //echo "Hay Comercializadores<br>";
-            $vista->assign('comerc', 1);
-            $vista->assign('comercializador', $comercializador);
-        }else{
-            $vista->assign('comerc', 0);
-        }
-
-        $ddjj_acuerdo->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        $fob = 0; $exwork=0; $contar_fob=0; $contar_exwork=0; $contar_naladisa2007=0;
-        $aparece_naladisa93=0;
-        $aparece_naladisa96=0;
-        $aparece_naladisa2007=0;
-        $aparece_naladisa91=0;
-        $aparece_naladi83=0;
-        foreach ($ddjj_acuerdo as $ac){
-            if ($ac->acuerdo->getId_tipo_valor_internacional()==1){
-                $apareceFob = 1;
-                $fob = $ac->getValor_Mercancia();
-                $contar_fob++;
-                if(($ac->getId_Acuerdo()==4)||($ac->getId_Acuerdo()==19)){
-                    $contar_naladisa2007++;
-                    $aparece_naladisa2007=1;
-                    
-                }
-                if($ac->getId_Acuerdo()==2){
-                    $aparece_naladisa93=1;
-                }
-                if($ac->getId_Acuerdo()==3){
-                    $aparece_naladisa96=1;
-                }
-                if($ac->getId_Acuerdo()==7){
-                    $aparece_naladisa91=1;
-                }
-                if($ac->getId_Acuerdo()==6){
-                    $aparece_naladi83=1;
-                }
-            }else{
-                $apareceExWork = 1;
-                $exwork = $ac->getValor_Mercancia();
-                $contar_exwork++;
-            }                
-        }
-        $vista->assign('contar_fob', $contar_fob);
-        $vista->assign('contar_exwork', $contar_exwork);
-        $vista->assign('contar_naladisa2007', $contar_naladisa2007);
-        $vista->assign('aparece_naladisa93', $aparece_naladisa93);
-        $vista->assign('aparece_naladisa96', $aparece_naladisa96);
-        $vista->assign('aparece_naladisa2007', $aparece_naladisa2007);
-        $vista->assign('aparece_naladisa91', $aparece_naladisa91);
-        $vista->assign('aparece_naladi83', $aparece_naladi83);
-
-        $elaboracion = explode(";", $declaracion_jurada->getElaboracion_Incentivo());
-        $elab_0=0;
-        $elab_1=0;
-        $elab_2=0;
-        $elab_3=0;
-        $elab_4=0;
-        $elab_otro='';
-        foreach ($elaboracion as $elab){
-            if ($elab==0) $elab_0=1;
-            if ($elab==1) $elab_1=1;
-            if ($elab==2) $elab_2=1;
-            if ($elab==3) $elab_3=1;
-            if ($elab==4){
-                $elab_4=1;
-                $elab_otro = array_pop($elaboracion);
-            }
-        }
-        $vista->assign('elab_0', $elab_0);
-        $vista->assign('elab_1', $elab_1);
-        $vista->assign('elab_2', $elab_2);
-        $vista->assign('elab_3', $elab_3);
-        $vista->assign('elab_4', $elab_4);
-        $vista->assign('elab_otro', $elab_otro);
-        
-        if($declaracion_jurada->getId_estado_ddjj()==4){
-            $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-            $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
-            $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-            $asesoramiento_historico=$sqlAsesoramientoHistorico->getBuscarPorIdAsesoramiento($asesoramiento_historico);
-            $vista->assign('asesoramiento', $asesoramiento);
-            $vista->assign('historico_asesoramiento', $asesoramiento_historico);
-        }
-        
-        $vista->assign('apareceFob', $apareceFob);
-        $vista->assign('apareceExWork', $apareceExWork);
-        $vista->assign('fob', $fob);
-        $vista->assign('exwork', $exwork);
-        $vista->assign('acuerdos', $ddjj_acuerdo);
-        $vista->assign('ddjj', $declaracion_jurada);
-        $vista->display("declaracionJurada/EditarDeclaracionJurada.tpl");
-        exit;
-    }
-
-    if($_REQUEST['tarea']=='corregirDeclaracionJurada'){
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        //Sacar el detalle de la clasificación arancelaria
-        $detalle_arancel->setId_detalle_arancel($declaracion_jurada->getId_Detalle_Arancel());
-        $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-        
-        $insumos_nacionales->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $insumos_nacionales = $sqlInsumosNacionales->getBuscarInsumosPorDdjj($insumos_nacionales);
-
-        $insumos_importados->setId_DDJJ($_REQUEST["id_declaracion_jurada"]);
-        $insumos_importados = $sqlInsumosImportados->getBuscarInsumosPorDdjj($insumos_importados);
-        
-        $comercializador->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $comercializador = $sqlComercializador->getBuscarComercializadorPorDdjj($comercializador);
-
-        $unidad_medida->setId_Unidad_Medida($declaracion_jurada->getId_Unidad_Medida());
-        $unidad_medida = $sqlUnidadMedida->getBuscarDescripcionPorId($unidad_medida);
-
-        $fabrica->setId_empresa($_SESSION["id_empresa"]);
-        $fabrica=$sqlFabrica->getListarFabricasporEmpresa($fabrica);
-
-        //Asignar Valores para el tpl
-        $vista->assign('detalle_arancel', $detalle_arancel);
-        $vista->assign('unidad_medida', $unidad_medida);
-        $vista->assign('fabrica', $fabrica);
-        
-        //Para combos en las tablas
-        unset($unidad_medida);
-        $unidad_medida = new UnidadMedida();
-        $umedida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
-        $pais=$sqlPais->getListarPais($pais);
-        $acuerdo=$sqlAcuerdo->getListarAcuerdo($acuerdo);
-        
-        $vista->assign('unidadmedida', $umedida);
-        $vista->assign('pais', $pais);
-        $vista->assign('acuerdo', $acuerdo);
-        
-        //Verificar si existen las tablas
-        if ($insumos_nacionales != NULL){
-            //echo "Hay insumos Nacionales<br>";
-            $vista->assign('insnac', 1);
-            $vista->assign('insumosnacionales', $insumos_nacionales);
-        }else{
-            $vista->assign('insnac', 0);
-        }
-        if ($insumos_importados != NULL){
-            //echo "Hay insumos Importados<br>";
-            $vista->assign('insimp', 1);
-            $vista->assign('insumosimportados', $insumos_importados);
-        }else{
-            $vista->assign('insimp', 0);
-        }
-        if ($comercializador != NULL){
-            //echo "Hay Comercializadores<br>";
-            $vista->assign('comerc', 1);
-            $vista->assign('comercializador', $comercializador);
-        }else{
-            $vista->assign('comerc', 0);
-        }
-
-        $ddjj_acuerdo->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        $fob = 0; $exwork=0; $contar_fob=0; $contar_exwork=0; $contar_naladisa2007=0;
-        $aparece_naladisa93=0;
-        $aparece_naladisa96=0;
-        $aparece_naladisa2007=0;
-        $aparece_naladisa91=0;
-        $aparece_naladi83=0;
-        foreach ($ddjj_acuerdo as $ac){
-            if ($ac->acuerdo->getId_tipo_valor_internacional()==1){
-                $apareceFob = 1;
-                $fob = $ac->getValor_Mercancia();
-                $contar_fob++;
-                if(($ac->getId_Acuerdo()==4)||($ac->getId_Acuerdo()==19)){
-                    $contar_naladisa2007++;
-                    $aparece_naladisa2007=1;
-                    $codigo_naladisa2007 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa2007', $codigo_naladisa2007);
-                }
-                if($ac->getId_Acuerdo()==2){
-                    $aparece_naladisa93=1;
-                    $codigo_naladisa93 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa93', $codigo_naladisa93);
-                }
-                if($ac->getId_Acuerdo()==3){
-                    $aparece_naladisa96=1;
-                    $codigo_naladisa96 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa96', $codigo_naladisa96);
-                }
-                if($ac->getId_Acuerdo()==7){
-                    $aparece_naladisa91=1;
-                    $codigo_naladisa91 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa91', $codigo_naladisa91);
-                }
-                if($ac->getId_Acuerdo()==6){
-                    $aparece_naladi83=1;
-                    $codigo_naladi83 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladi83', $codigo_naladi83);
-                }
-            }else{
-                $apareceExWork = 1;
-                $exwork = $ac->getValor_Mercancia();
-                $contar_exwork++;
-            }                
-        }
-        $vista->assign('contar_fob', $contar_fob);
-        $vista->assign('contar_exwork', $contar_exwork);
-        $vista->assign('contar_naladisa2007', $contar_naladisa2007);
-        $vista->assign('aparece_naladisa93', $aparece_naladisa93);
-        $vista->assign('aparece_naladisa96', $aparece_naladisa96);
-        $vista->assign('aparece_naladisa2007', $aparece_naladisa2007);
-        $vista->assign('aparece_naladisa91', $aparece_naladisa91);
-        $vista->assign('aparece_naladi83', $aparece_naladi83);
-
-        $elaboracion = explode(";", $declaracion_jurada->getElaboracion_Incentivo());
-        $elab_0=0;
-        $elab_1=0;
-        $elab_2=0;
-        $elab_3=0;
-        $elab_4=0;
-        $elab_otro='';
-        foreach ($elaboracion as $elab){
-            if ($elab==0) $elab_0=1;
-            if ($elab==1) $elab_1=1;
-            if ($elab==2) $elab_2=1;
-            if ($elab==3) $elab_3=1;
-            if ($elab==4){
-                $elab_4=1;
-                $elab_otro = array_pop($elaboracion);
-            }
-        }
-        $vista->assign('elab_0', $elab_0);
-        $vista->assign('elab_1', $elab_1);
-        $vista->assign('elab_2', $elab_2);
-        $vista->assign('elab_3', $elab_3);
-        $vista->assign('elab_4', $elab_4);
-        $vista->assign('elab_otro', $elab_otro);
-        
-        if($declaracion_jurada->getId_estado_ddjj()==4){
-            $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-            $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
-            $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-            $asesoramiento_historico=$sqlAsesoramientoHistorico->getBuscarPorIdAsesoramiento($asesoramiento_historico);
-            $vista->assign('asesoramiento', $asesoramiento);
-            $vista->assign('historico_asesoramiento', $asesoramiento_historico);
-        }
-        
-        //Historial de Correcciones
-        if($declaracion_jurada->getRevisado()=='TRUE'){
-            $observaciones_ddjj->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-            $observaciones_ddjj = $sqlObservacionesDdjj->getListarObservacionesDdjj($observaciones_ddjj);
-            $vista->assign('observaciones_ddjj', $observaciones_ddjj);
-        }
-        $vista->assign('apareceFob', $apareceFob);
-        $vista->assign('apareceExWork', $apareceExWork);
-        $vista->assign('fob', $fob);
-        $vista->assign('exwork', $exwork);
-        $vista->assign('acuerdos', $ddjj_acuerdo);
-        $vista->assign('ddjj', $declaracion_jurada);
-        $vista->display("declaracionJurada/CorregirDeclaracionJurada.tpl");
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='clonarDeclaracionJurada'){
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-
-        //Sacar el detalle de la clasificación arancelaria
-        $detalle_arancel->setId_detalle_arancel($declaracion_jurada->getId_Detalle_Arancel());
-        $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-        
-        $insumos_nacionales->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $insumos_nacionales = $sqlInsumosNacionales->getBuscarInsumosPorDdjj($insumos_nacionales);
-
-        $insumos_importados->setId_DDJJ($_REQUEST["id_declaracion_jurada"]);
-        $insumos_importados = $sqlInsumosImportados->getBuscarInsumosPorDdjj($insumos_importados);
-        
-        $comercializador->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $comercializador = $sqlComercializador->getBuscarComercializadorPorDdjj($comercializador);
-
-        $unidad_medida->setId_Unidad_Medida($declaracion_jurada->getId_Unidad_Medida());
-        $unidad_medida = $sqlUnidadMedida->getBuscarDescripcionPorId($unidad_medida);
-
-        $fabrica->setId_empresa($_SESSION["id_empresa"]);
-        $fabrica=$sqlFabrica->getListarFabricasporEmpresa($fabrica);
-        
-        //Asignar Valores para el tpl
-        $vista->assign('detalle_arancel', $detalle_arancel);
-        $vista->assign('unidad_medida', $unidad_medida);
-        $vista->assign('fabrica', $fabrica);
-        
-        //Para combos en las tablas
-        unset($unidad_medida);
-        $unidad_medida = new UnidadMedida();
-        $umedida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
-        $pais=$sqlPais->getListarPais($pais);
-        $acuerdo=$sqlAcuerdo->getListarAcuerdo($acuerdo);
-        
-        $vista->assign('unidadmedida', $umedida);
-        $vista->assign('pais', $pais);
-        $vista->assign('acuerdo', $acuerdo);
-        
-        //Verificar si existen las tablas
-        if ($insumos_nacionales != NULL){
-            //echo "Hay insumos Nacionales<br>";
-            $vista->assign('insnac', 1);
-            $vista->assign('insumosnacionales', $insumos_nacionales);
-        }else{
-            $vista->assign('insnac', 0);
-        }
-        if ($insumos_importados != NULL){
-            //echo "Hay insumos Importados<br>";
-            $vista->assign('insimp', 1);
-            $vista->assign('insumosimportados', $insumos_importados);
-        }else{
-            $vista->assign('insimp', 0);
-        }
-        if ($comercializador != NULL){
-            //echo "Hay Comercializadores<br>";
-            $vista->assign('comerc', 1);
-            $vista->assign('comercializador', $comercializador);
-        }else{
-            $vista->assign('comerc', 0);
-        }
-
-        $ddjj_acuerdo->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        $fob = 0; $exwork=0; $contar_fob=0; $contar_exwork=0; $contar_naladisa2007=0;
-        $aparece_naladisa93=0;
-        $aparece_naladisa96=0;
-        $aparece_naladisa2007=0;
-        $aparece_naladisa91=0;
-        $aparece_naladi83=0;
-        foreach ($ddjj_acuerdo as $ac){
-            if ($ac->acuerdo->getId_tipo_valor_internacional()==1){
-                $apareceFob = 1;
-                $fob = $ac->getValor_Mercancia();
-                $contar_fob++;
-                if(($ac->getId_Acuerdo()==4)||($ac->getId_Acuerdo()==19)){
-                    $contar_naladisa2007++;
-                    $aparece_naladisa2007=1;
-                    $codigo_naladisa2007 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa2007', $codigo_naladisa2007);
-                }
-                if($ac->getId_Acuerdo()==2){
-                    $aparece_naladisa93=1;
-                    $codigo_naladisa93 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa93', $codigo_naladisa93);
-                }
-                if($ac->getId_Acuerdo()==3){
-                    $aparece_naladisa96=1;
-                    $codigo_naladisa96 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa96', $codigo_naladisa96);
-                }
-                if($ac->getId_Acuerdo()==7){
-                    $aparece_naladisa91=1;
-                    $codigo_naladisa91 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladisa91', $codigo_naladisa91);
-                }
-                if($ac->getId_Acuerdo()==6){
-                    $aparece_naladi83=1;
-                    $codigo_naladi83 = $ac->getSubpartida();
-                    $vista->assign('codigo_naladi83', $codigo_naladi83);
-                }
-            }else{
-                $apareceExWork = 1;
-                $exwork = $ac->getValor_Mercancia();
-                $contar_exwork++;
-            }                
-        }
-        /* Para Calcular precio de DDJJ
-         * $total_ddjj = count($ddjj_acuerdo);
-        $servicio->setId_servicio(3);
-        $servicio=$sqlServicio->getBuscarServicioPorId($servicio);
-        $total_pagar = $total_ddjj * $servicio->getCosto();
-        $vista->assign('total_pagar', $total_pagar);*/
-        $vista->assign('contar_fob', $contar_fob);
-        $vista->assign('contar_exwork', $contar_exwork);
-        $vista->assign('contar_naladisa2007', $contar_naladisa2007);
-        $vista->assign('aparece_naladisa93', $aparece_naladisa93);
-        $vista->assign('aparece_naladisa96', $aparece_naladisa96);
-        $vista->assign('aparece_naladisa2007', $aparece_naladisa2007);
-        $vista->assign('aparece_naladisa91', $aparece_naladisa91);
-        $vista->assign('aparece_naladi83', $aparece_naladi83);
-        
-        $elaboracion = explode(";", $declaracion_jurada->getElaboracion_Incentivo());
-        $elab_0=0;
-        $elab_1=0;
-        $elab_2=0;
-        $elab_3=0;
-        $elab_4=0;
-        $elab_otro='';
-        foreach ($elaboracion as $elab){
-            if ($elab==0) $elab_0=1;
-            if ($elab==1) $elab_1=1;
-            if ($elab==2) $elab_2=1;
-            if ($elab==3) $elab_3=1;
-            if ($elab==4){
-                $elab_4=1;
-                $elab_otro = array_pop($elaboracion);
-            }
-        }
-        $vista->assign('elab_0', $elab_0);
-        $vista->assign('elab_1', $elab_1);
-        $vista->assign('elab_2', $elab_2);
-        $vista->assign('elab_3', $elab_3);
-        $vista->assign('elab_4', $elab_4);
-        $vista->assign('elab_otro', $elab_otro);
-        
-        if($declaracion_jurada->getId_estado_ddjj()==4){
-            $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-            $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
-            $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-            $asesoramiento_historico=$sqlAsesoramientoHistorico->getBuscarPorIdAsesoramiento($asesoramiento_historico);
-            $vista->assign('asesoramiento', $asesoramiento);
-            $vista->assign('historico_asesoramiento', $asesoramiento_historico);
-        }
-        
-        $vista->assign('apareceFob', $apareceFob);
-        $vista->assign('apareceExWork', $apareceExWork);
-        $vista->assign('fob', $fob);
-        $vista->assign('exwork', $exwork);
-        $vista->assign('acuerdos', $ddjj_acuerdo);
-        $vista->assign('ddjj', $declaracion_jurada);
-        $vista->display("declaracionJurada/ClonarDeclaracionJurada.tpl");
-        exit;
-    }
-
-    
-    if($_REQUEST['tarea']=='actualizarDeclaracionJurada'){
-        $hoy=date("Y-m-d H:i:s");
-        $id_ddjj=$_REQUEST["id_declaracion_jurada"];
-        $declaracion_jurada->setId_ddjj($id_ddjj);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        $declaracion_jurada->setId_estado_ddjj(0);
-        $serv_export = $declaracion_jurada->getId_Servicio_Exportador();
-        $declaracion_jurada->setId_fabrica($_REQUEST["combo_fabricas"]);
-        
-        if($_REQUEST["corregir"]=='1'){
-            $declaracion_jurada->setDescripcion_Comercial($_REQUEST["denominacion_comercial"]);
-            $declaracion_jurada->setCaracteristicas($_REQUEST["caracteristicas"]);
-            $declaracion_jurada->setNombre_tecnico($_REQUEST["nombre_tecnico"]);
-            $declaracion_jurada->setAplicacion($_REQUEST["aplicacion"]);
-            //$declaracion_jurada->setRevisado(TRUE);
-            //Guardar los comentarios para que tome en cuenta el certificador
-            if(trim($_REQUEST["comentario_general"])!=''){
-                $observaciones_ddjj->setObservaciones_generales(trim($_REQUEST["comentario_general"]));
-                $observaciones_ddjj->setFecha_observacion($hoy);
-                $observaciones_ddjj->setId_tipo_usuario($_SESSION["tipo_usuario"]);
-                $observaciones_ddjj->setId_ddjj($id_ddjj);
-                if($sqlObservacionesDdjj->setGuardarObservacionesDdjj($observaciones_ddjj)){
-                    echo "Guarda Observacion";
-                }else{
-                    echo "No guarda observacion";
-                }
-            }
-        }
-        
-        //Verificar si el campo de Clasificacion Arancelaria esta vacío
-        if($_REQUEST["combonandina"]==''){
-            $declaracion_jurada->setId_Detalle_Arancel(0);
-        }else{
-            $declaracion_jurada->setId_Detalle_Arancel($_REQUEST["combonandina"]);
-        }
-        
-        //Verificar si el campo de Unidad de Medida esta vacío
-        if($_REQUEST["unidadmedida"]==''){
-            $declaracion_jurada->setId_Unidad_Medida(0);
-        }else{
-            $declaracion_jurada->setId_Unidad_Medida($_REQUEST["unidadmedida"]);
-        }
-        
-        //Verificar si el campo de Otros Costos esta vacío
-        if($_REQUEST["otros_costos"]==''){
-            $declaracion_jurada->setOtros_Costos(0);
-        }else{
-            $declaracion_jurada->setOtros_Costos($_REQUEST["otros_costos"]);
-        }
-
-        $declaracion_jurada->setProduccion_mensual($_REQUEST["produccion_mensual"]);
-        $declaracion_jurada->setProceso_Productivo($_REQUEST["procesoproductivo"]);
-        
-        //Guardar la lista de elaboración Incentivo
-        $lista_elaboracion = $this->listaElaboracionIncentivo($_REQUEST["lista_elaboracion"]);
-        $declaracion_jurada->setElaboracion_Incentivo($lista_elaboracion);
-        
-        //Recuperar la tabla de insumos nacionales
-        $nacionales = $_REQUEST["tabla_nac"];
-        
-        //Recuperar la tabla de insumos importados y colocar por defecto a false
-        $importados = $_REQUEST["tabla_import"];
-        $declaracion_jurada->setInsumos_importados(FALSE);
-        
-        //Recuperar la tabla de comercializadores y colocar por defecto a false
-        $comerc = $_REQUEST["tabla_comerc"];
-        $declaracion_jurada->setComercializador(FALSE);
-        
-        //if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
-        //Recuperar el ID de la declaracion
-        //$datDdjj = $_REQUEST["id_declaracion_jurada"];
-
-        //Borrar primero lo que habia y Guardar los Insumos Nacionales
-        $insumos_nacionales->setId_ddjj($id_ddjj);
-        $sqlInsumosNacionales->setEliminarInsumosNacionalesPorDdjj($insumos_nacionales);
-        $this->guardarInsumosNacionales($nacionales,$id_ddjj);
-        //Verificar y Guardar los Insumos Importados
-        if($_REQUEST["check_insumosimportados"]==TRUE){
-            $this->guardarInsumosImportados($importados, $id_ddjj);
-            $datDdjj->setInsumos_importados(TRUE);
-        }
-
-        //Verificar y Guardar los Comercializadores
-        if($_REQUEST["check_comercializador"]==TRUE){
-            $this->guardarComercializadores($comerc, $id_ddjj);
-            $datDdjj->setComercializador(TRUE);
-        }
-
-        //Listar todos los acuerdos asociados a la ddjj
-        $ddjj_acuerdo->setId_ddjj($id_ddjj);
-        $resultado=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        foreach ($resultado as $acuerdos){
-            unset($ddjj_acuerdo);
-            $ddjj_acuerdo = new DdjjAcuerdo();
-
-            switch($acuerdos->acuerdo->getId_tipo_valor_internacional()){
-                case 1:
-                    $ddjj_acuerdo->setId_ddjj_acuerdo($acuerdos->getId_ddjj_acuerdo());
-                    $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarDdjjAcuerdosPorId($ddjj_acuerdo);
-                    if($_REQUEST["valor_fob"]!=''){
-                        $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_fob"]);
-                    }
-                    //echo "1-".$acuerdos->acuerdo->getSigla().$acuerdos->getId_ddjj_acuerdo()."<br>";
-                    $sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo);
-                    break;
-                case 2: 
-                    $ddjj_acuerdo->setId_ddjj_acuerdo($acuerdos->getId_ddjj_acuerdo());
-                    $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarDdjjAcuerdosPorId($ddjj_acuerdo);
-                    $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                    if($_REQUEST["valor_exwork"]!=''){
-                        $ddjj_acuerdo->setValor_Mercancia($_REQUEST["valor_exwork"]);
-                    }
-                    //echo "2-".$acuerdos->acuerdo->getSigla().$acuerdos->getId_ddjj_acuerdo()."<br>";
-                    $sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo);
-                    break;
-            }
-            //$sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ddjj_acuerdo);
-        }
-        //var_dump($declaracion_jurada);
-        $sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada);
-        exit;
-    }
-    
-    /******* Mostrar la Declaración jurada al Exportador *****/
-    if($_REQUEST['tarea']=='mostrardeclaracion'){
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        //Sacar el detalle de la clasificación arancelaria
-        $detalle_arancel->setId_detalle_arancel($declaracion_jurada->getId_Detalle_Arancel());
-        $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-        
-        $insumos_nacionales->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $insumos_nacionales = $sqlInsumosNacionales->getBuscarInsumosPorDdjj($insumos_nacionales);
-
-        $insumos_importados->setId_DDJJ($_REQUEST["id_declaracion_jurada"]);
-        $insumos_importados = $sqlInsumosImportados->getBuscarInsumosPorDdjj($insumos_importados);
-        
-        $comercializador->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $comercializador = $sqlComercializador->getBuscarComercializadorPorDdjj($comercializador);
-
-        $unidad_medida->setId_Unidad_Medida($declaracion_jurada->getId_Unidad_Medida());
-        $unidad_medida = $sqlUnidadMedida->getBuscarDescripcionPorId($unidad_medida);
-
-        //Asignar Valores para el tpl
-        $vista->assign('detalle_arancel', $detalle_arancel);
-        $vista->assign('unidad_medida', $unidad_medida);
-        
-        //Verificar si existen las tablas
-        if ($insumos_nacionales != NULL){
-            //echo "Hay insumos Nacionales<br>";
-            $vista->assign('insnac', 1);
-            $vista->assign('insumosnacionales', $insumos_nacionales);
-        }else{
-            $vista->assign('insnac', 0);
-        }
-        
-        if ($insumos_importados != NULL){
-            //echo "Hay insumos Importados<br>";
-            $vista->assign('insimp', 1);
-            $vista->assign('insumosimportados', $insumos_importados);
-        }else{
-            $vista->assign('insimp', 0);
-        }
-        
-        if ($comercializador != NULL){
-            //echo "Hay Comercializadores<br>";
-            $vista->assign('comerc', 1);
-            $vista->assign('comercializador', $comercializador);
-        }else{
-            $vista->assign('comerc', 0);
-        }
-
-        $ddjj_acuerdo->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        
-        $fob = 0; $exwork=0;
-        foreach ($ddjj_acuerdo as $ac){
-            if ($ac->acuerdo->getId_tipo_valor_internacional()==1){
-                $fob = $ac->getValor_Mercancia();
-            }else{
-                $exwork = $ac->getValor_Mercancia();
-            }
-            unset($detalle_arancel);
-            $detalle_arancel = new DetalleArancel();
-            
-            if ($ac->getId_acuerdo()==2){
-                if($ac->getSubpartida()==0){
-                    $naladisa93 = 'Sin Naladisa 93';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa93 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa93', $naladisa93);
-            }
-            if ($ac->getId_acuerdo()==3){
-                if($ac->getSubpartida()==0){
-                    $naladisa96 = 'Sin Naladisa 96';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa96 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa96', $naladisa96);
-            }
-            if(($ac->getId_acuerdo()==4)||($ac->getId_acuerdo()==19)){
-                if($ac->getSubpartida()==0){
-                    $naladisa2007 = 'Sin Naladisa 2007';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa2007 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa2007', $naladisa2007);
-            }
-            if ($ac->getId_acuerdo()==7){
-                if($ac->getSubpartida()==0){
-                    $naladisa91 = 'Sin Naladisa 91';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa91 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa91', $naladisa91);
-            }
-            if ($ac->getId_acuerdo()==6){
-                if($ac->getSubpartida()==0){
-                    $naladi83 = 'Sin Naladi 83';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladi83 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladi83', $naladi83);
-            }
-        }
-        $vista->assign('acuerdos', $ddjj_acuerdo);
-        $vista->assign('fob', $fob);
-        $vista->assign('exwork', $exwork);
-        $vista->assign('ddjj', $declaracion_jurada);
-        
-        //Preguntamos si es con asesoramiento o es normal
-        if($declaracion_jurada->getId_estado_ddjj()==4){
-            $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-            $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
-            
-            $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-            $asesoramiento_historico=$sqlAsesoramientoHistorico->getBuscarPorIdAsesoramiento($asesoramiento_historico);
-            
-            $vista->assign('asesoramiento', $asesoramiento);
-            $vista->assign('historico_asesoramiento', $asesoramiento_historico);
-        }
-        
-        $vista->display("declaracionJurada/MostrarDeclaracionJurada.tpl");
-        exit;
-    }
-    
-    /******* Mostrar la Declaración jurada al Exportador *****/
-    if($_REQUEST['tarea']=='mostrarDdjjParaAprobacion'){
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        //Sacar el detalle de la clasificación arancelaria
-        $detalle_arancel->setId_detalle_arancel($declaracion_jurada->getId_Detalle_Arancel());
-        $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-        
-        $insumos_nacionales->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $insumos_nacionales = $sqlInsumosNacionales->getBuscarInsumosPorDdjj($insumos_nacionales);
-        
-        $insumos_importados->setId_DDJJ($_REQUEST["id_declaracion_jurada"]);
-        $insumos_importados = $sqlInsumosImportados->getBuscarInsumosPorDdjj($insumos_importados);
-
-        $comercializador->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $comercializador = $sqlComercializador->getBuscarComercializadorPorDdjj($comercializador);
-
-        $unidad_medida->setId_Unidad_Medida($declaracion_jurada->getId_Unidad_Medida());
-        $unidad_medida = $sqlUnidadMedida->getBuscarDescripcionPorId($unidad_medida);
-
-        //Asignar Valores para el tpl
-        $vista->assign('detalle_arancel', $detalle_arancel);
-        $vista->assign('unidad_medida', $unidad_medida);
-        
-        //Verificar si existen las tablas
-        if ($insumos_nacionales != NULL){
-            //echo "Hay insumos Nacionales<br>";
-            $vista->assign('insnac', 1);
-            $vista->assign('insumosnacionales', $insumos_nacionales);
-        }else{
-            $vista->assign('insnac', 0);
-        }
-        
-        if ($insumos_importados != NULL){
-            //echo "Hay insumos Importados<br>";
-            $vista->assign('insimp', 1);
-            $vista->assign('insumosimportados', $insumos_importados);
-        }else{
-            $vista->assign('insimp', 0);
-        }
-        
-        if ($comercializador != NULL){
-            //echo "Hay Comercializadores<br>";
-            $vista->assign('comerc', 1);
-            $vista->assign('comercializador', $comercializador);
-        }else{
-            $vista->assign('comerc', 0);
-        }
-
-        $ddjj_acuerdo->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        
-        $fob = 0; $exwork=0;
-        foreach ($ddjj_acuerdo as $ac){
-            if ($ac->acuerdo->getId_tipo_valor_internacional()==1){
-                $fob = $ac->getValor_Mercancia();
-            }else{
-                $exwork = $ac->getValor_Mercancia();
-            }
-            unset($detalle_arancel);
-            $detalle_arancel = new DetalleArancel();
-            
-            if ($ac->getId_acuerdo()==2){
-                if($ac->getSubpartida()==0){
-                    $naladisa93 = 'Sin Naladisa 93';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa93 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa93', $naladisa93);
-            }
-            if ($ac->getId_acuerdo()==3){
-                if($ac->getSubpartida()==0){
-                    $naladisa96 = 'Sin Naladisa 96';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa96 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa96', $naladisa96);
-            }
-            if(($ac->getId_acuerdo()==4)||($ac->getId_acuerdo()==19)){
-                if($ac->getSubpartida()==0){
-                    $naladisa2007 = 'Sin Naladisa 2007';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa2007 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa2007', $naladisa2007);
-            }
-            if ($ac->getId_acuerdo()==7){
-                if($ac->getSubpartida()==0){
-                    $naladisa91 = 'Sin Naladisa 91';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa91 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa91', $naladisa91);
-            }
-            if ($ac->getId_acuerdo()==6){
-                if($ac->getSubpartida()==0){
-                    $naladi83 = 'Sin Naladi 83';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladi83 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladi83', $naladi83);
-            }
-        }
-        $vista->assign('acuerdos', $ddjj_acuerdo);
-        $vista->assign('fob', $fob);
-        $vista->assign('exwork', $exwork);
-        $vista->assign('ddjj', $declaracion_jurada);
-        
-        //Preguntamos si es con asesoramiento o es normal
-        if($declaracion_jurada->getId_estado_ddjj()==4){
-            $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-            $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
-            
-            $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-            $asesoramiento_historico=$sqlAsesoramientoHistorico->getBuscarPorIdAsesoramiento($asesoramiento_historico);
-            
-            $vista->assign('asesoramiento', $asesoramiento);
-            $vista->assign('historico_asesoramiento', $asesoramiento_historico);
-        }
-        
-        $vista->display("declaracionJurada/MostrarDdjjParaAprobacion.tpl");
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='aprobarDdjj')
-    {
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_ddjj"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        $correlativo_ddjj = $sqlDeclaracionJurada->getDesignarCorrelativoDDJJ($declaracion_jurada);
-        $declaracion_jurada->setId_estado_ddjj(1);
-        $declaracion_jurada->setCorrelativo_ddjj($correlativo_ddjj[0]['max']+1);
-        
-        if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
-            echo "Aprobado";
-        }else{
-            echo "No se actualizo";
-        }
-        
-        exit;
-    }
-
-    if($_REQUEST['tarea']=='rechazarDdjj')
-    {
-        $hoy=date("Y-m-d H:i:s");
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_ddjj"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        if($_REQUEST["devolver"]==1){
-            $declaracion_jurada->setId_estado_ddjj(7);
-            $declaracion_jurada->setRevisado('TRUE');
-            //Guardar las observaciones para que corrija
-            $observaciones_ddjj->setObservaciones_generales($_REQUEST["observacion_general"]);
-            $observaciones_ddjj->setFecha_observacion($hoy);
-            $observaciones_ddjj->setId_tipo_usuario($_SESSION["tipo_usuario"]);
-            $observaciones_ddjj->setId_ddjj($_REQUEST["id_ddjj"]);
-            if($sqlObservacionesDdjj->setGuardarObservacionesDdjj($observaciones_ddjj)){
-                echo "Guarda Observacion";
-            }else{
-                echo "No guarda observacion";
-            }
-        }else{
-            $declaracion_jurada->setId_estado_ddjj(5);
-        }
-        
-        //$declaracion_jurada->setObservacion_general($_REQUEST["observacion_general"]);
-        //Envío de Correos
-        $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
-        $correos=explode(',',$correos);
-        if(trim($correos[0])==trim($correos[1]))
-        {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-        }
-        else
-        {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-            AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-        }
-        
-        if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
-            echo "Devuelto o Rechazado";
-        }else{
-            echo "No se actualizo";
-        }
-        
-        //Actualizar el estado del Servicio Exportador a TRUE
-        $servicio_exportador->setId_servicio_exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $servicio_exportador=$sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
-        $servicio_exportador->setEstado(TRUE);
-        $sqlServicioExportador->setGuardarServicioExportador($servicio_exportador);
-        //Actualizar el Sistema de Colas para eliminar el registro que ya esta revisado
-        $sistema_colas->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $sistema_colas=$sqlSistemaColas->getBuscarColaPorServicioExportador($sistema_colas);
-        if($_REQUEST["devolver"]==1){
-            $sistema_colas->setAtendido(1);
-        }else{
-            $sistema_colas->setAtendido(2);
-        }
-        $sqlSistemaColas->setGuardarSistemaColas($sistema_colas);
-        exit;
-    }
-
-    //Vistas a los TPLs para el Exportador
+    // ************************envia el formulario de una ddjj*******************************/////
     if($_REQUEST['tarea']=='altadeclaracionjurada')
     {
-        $unidad_medida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
-        $pais=$sqlPais->getListarPais($pais);
-        $acuerdo=$sqlAcuerdo->getListarAcuerdo($acuerdo);
-        
-        $vista->assign('unidadmedida', $unidad_medida);
-        $vista->assign('pais', $pais);
-        $vista->assign('acuerdo', $acuerdo);
-        $vista->display("declaracionJurada/AltaDeclaracionJurada.tpl");
-        exit;
+      if($_REQUEST['correction']=='true' || $_REQUEST['clonacion']=='true'){
+        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
+        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+        $vista->assign('ddjj', $declaracion_jurada);
+        $vista->assign('edition',true);
+        $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
+      }
+      if($_REQUEST['clonacion']=='true') $vista->assign('clon', true);
+      $uploader->DeleteSessionFolder();
+      $unidad_medida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
+      $pais=$sqlPais->getListarPais($pais);
+      $tipo_acuerdos=$sqlTipoAcuerdo->getListarTipoAcuerdo($tipo_acuerdo);
+      $tipo_valor_internacionales = $sqlTipoValorInternacional->getListarTipoValorInternacional($tipo_valor_internacional);
+      $arancel_vigente = $sqlArancel->getArancelVigente($arancel);
+      $aranceles = $sqlArancel->getListarNoVigente($arancel);
+      $zonas_especialess = $sqlZonasEspeciales->getAll($zonas_especiales);
+      $representanteEmpresa = $functions->getPersonaEmpresa($_SESSION["id_empresa"],$_SESSION['id_persona']);
+      //********************* verifica si tiene bloqueo por acuerdo,si no extrae normalmente******
+      $acuerdosVerificacion=$functions->extraeAcuerdoSiHayBloqueo($_SESSION['id_empresa']);
+      $acuerdos = $acuerdosVerificacion[0];
+
+      $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($representanteEmpresa[1]->direccion);
+   
+
+      if($acuerdosVerificacion[1]) $vista->assign('acuerdoBloqueo',$acuerdosVerificacion[1]);
+
+
+
+      $vista->assign('representanteEmpresa',$representanteEmpresa);
+      $vista->assign('unidadmedida', $unidad_medida);
+      $vista->assign('tipoacuerdos', $tipo_acuerdos);
+      $vista->assign('pais', $pais);
+      $vista->assign('acuerdos', $acuerdos);
+      $vista->assign('tipo_valor_internacionales', $tipo_valor_internacionales);
+      $vista->assign('arancel_vigente', $arancel_vigente);
+      $vista->assign('aranceles', $aranceles);
+      $vista->assign('zonas_especiales',$zonas_especialess);
+      $vista->assign('key',session_id());
+
+      if($_REQUEST['correction']=='true'){
+        $vista->assign('observaciones_ddjj',$functions->getObservaciones($_REQUEST["id_declaracion_jurada"]));
+        $vista->display('declaracionJurada/Observaciones.tpl');
+      } ;
+      $vista->assign('direccionTpl',$direccionRepresentanteTpl);
+      $vista->display("declaracionJurada/FormDeclaracionJurada.tpl");
+
+     
+      $vista->assign('representanteEmpresa',$representanteEmpresa);
+      $vista->assign('edition',true);
+      $vista->assign('id','view_ddjj');
+
+      $vista->display("declaracionJurada/DeclaracionJurada.tpl");
+      exit;
     }
-/*
-    if($_REQUEST['tarea']=='declaracionesJuradasPasadas')
+    if($_REQUEST['tarea']=='rechazodeclaracionjurada')
     {
-        $vista->display("declaracionJurada/DeclaracionesJuradasPasadas.tpl");
-        exit;
+
+      $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
+      $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+      $vista->assign('ddjj', $declaracion_jurada);
+      $vista->assign('edition',true);
+      $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
+
+      $uploader->DeleteSessionFolder();
+      $unidad_medida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
+      $pais=$sqlPais->getListarPais($pais);
+      $tipo_acuerdos=$sqlTipoAcuerdo->getListarTipoAcuerdo($tipo_acuerdo);
+      $tipo_valor_internacionales = $sqlTipoValorInternacional->getListarTipoValorInternacional($tipo_valor_internacional);
+      $arancel_vigente = $sqlArancel->getArancelVigente($arancel);
+      $aranceles = $sqlArancel->getListarNoVigente($arancel);
+      $zonas_especialess = $sqlZonasEspeciales->getAll($zonas_especiales);
+      //********************* verifica si tiene bloqueo por acuerdo,si no extrae normalmente******
+      $acuerdosVerificacion=$functions->extraeAcuerdoSiHayBloqueo($_SESSION['id_empresa']);
+      $acuerdos = $acuerdosVerificacion[0];
+
+      if($acuerdosVerificacion[1]) $vista->assign('acuerdoBloqueo',$acuerdosVerificacion[1]);
+
+
+      //********************* esta seccion incluye la regional a ser escojida***********
+      /*$regional = new Regional();
+      $sqlRegional = new SQLRegional();
+      $regionales = $sqlRegional->getListarRegionales($regional,FALSE);
+      $vista->assign('regionales',$regionales);
+      $vista->display("declaracionJurada/Regionales.tpl");*/
+      //********************************************************************************
+
+      $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($_SESSION["id_empresa"],$_SESSION['id_persona']));
+      $vista->assign('unidadmedida', $unidad_medida);
+      $vista->assign('tipoacuerdos', $tipo_acuerdos);
+      $vista->assign('pais', $pais);
+      $vista->assign('acuerdos', $acuerdos);
+      $vista->assign('tipo_valor_internacionales', $tipo_valor_internacionales);
+      $vista->assign('arancel_vigente', $arancel_vigente);
+      $vista->assign('aranceles', $aranceles);
+      $vista->assign('zonas_especiales',$zonas_especialess);
+      $vista->assign('key',session_id());
+
+      if($_REQUEST['correction']=='true'){
+        $vista->assign('observaciones_ddjj',$functions->getObservaciones($_REQUEST["id_declaracion_jurada"]));
+        $vista->display('declaracionJurada/Observaciones.tpl');
+      } ;
+//laura
+
+      $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($_SESSION["id_empresa"],$_SESSION['id_persona']));
+      // $vista->assign('edition',true);
+      $vista->assign('id','view_ddjj');
+      $vista->assign('preview',true);
+      //$vista->display("declaracionJurada/previewDeclaracion&id_declaracion_jurada.tpl");
+
+      exit;
+    }
+    if($_REQUEST['tarea']=='reasignardeclaracionjurada')
+    {
+      $conf = new stdClass();
+      $conf->reasignarDeclaracion = true;
+      print $this->getDdjjTpl($_REQUEST["id_declaracion_jurada"],$conf);
+      exit;
     }
 
-    if($_REQUEST['tarea']=='declaracionesJuradasEnviadas')
-    {
-        $vista->display("declaracionJurada/DeclaracionesJuradasEnviadas.tpl");
-        exit;
+    //************************ guarda la declaracion juradad opcional id_ddjj si no significa que es nueva ************************///
+    if($_REQUEST['tarea']=='saveDeclaracionJurada'){
+      if($_REQUEST['id_ddjj']){
+        $declaracion_jurada->setId_ddjj($_REQUEST['id_ddjj']);
+        $declaracion_jurada = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+        $servicio_exportador=AdmSistemaColas::buscarServicioExportadorParaDdjj($declaracion_jurada->getId_servicio_exportador());
+      }
+      else{
+        $servicio_exportador=AdmSistemaColas::generarServicioExportadorParaDdjj($_SESSION["id_persona"],0,$_SESSION["id_empresa"]);
+      }
+
+      $acuerdo->setId_Acuerdo($_REQUEST['acuerdo']);
+      $acuerdo = $sqlAcuerdo->getBuscarAcuerdoPorId($acuerdo);
+      $date=date("Y-m-d");
+
+      $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
+      $declaracion_jurada->setId_Persona($_SESSION["id_persona"]);
+      $declaracion_jurada->setId_estado_ddjj(0);// status por Revisar
+
+      $declaracion_jurada->setId_Servicio_Exportador($servicio_exportador->getId_servicio_exportador());
+      $declaracion_jurada->setDenominacion_Comercial(strtoupper ($_REQUEST["denominacion_comercial"]));
+      if(isset($_REQUEST["caracteristicas"]) && $_REQUEST["caracteristicas"] !='') $declaracion_jurada->setCaracteristicas(strtoupper ($_REQUEST["caracteristicas"]));
+      $declaracion_jurada->setId_Unidad_Medida(strtoupper ($_REQUEST["unidadmedida"]));
+      $declaracion_jurada->setProceso_Productivo(strtoupper ($_REQUEST["procesoproductivo"]));
+      $declaracion_jurada->setComplemento(strtoupper ($_REQUEST["complemento"]));
+      $declaracion_jurada->setFecha_Registro($date);
+      //echo $_REQUEST["esComercializador"];
+      $declaracion_jurada->setComercializador($_REQUEST["esComercializador"]=='true'?TRUE:FALSE);
+      $declaracion_jurada->setMuestra($_REQUEST["muestra"]=='true'?TRUE:FALSE);
+      $declaracion_jurada->setNombre_tecnico(strtoupper ($_REQUEST["nombre_tecnico"]));
+      $declaracion_jurada->setAplicacion(strtoupper ($_REQUEST["aplicacion"]));
+      if($_REQUEST["produccion_mensual_mercancia"]!='') $declaracion_jurada->setProduccion_mensual(str_replace(',', '.',$_REQUEST["produccion_mensual_mercancia"]));
+
+      $declaracion_jurada->setValor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["valor_total_insumosnacional"]));
+      $declaracion_jurada->setSobrevalor_total_insumosnacional($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_total_insumosnacional"]));
+      $declaracion_jurada->setValor_total_insumosimportados($funcionesGenerales->setNumeric($_REQUEST["valor_total_insumosimportados"]));
+      $declaracion_jurada->setSobrevalor_total_insumosimportados($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_total_insumosimportados"]));
+      $declaracion_jurada->setValor_mano_obra($funcionesGenerales->setNumeric($_REQUEST["valor_mano_obra"]));
+      $declaracion_jurada->setSobrevalor_mano_obra($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_mano_obra"]));
+      $declaracion_jurada->setValor_exw($funcionesGenerales->setNumeric($_REQUEST["valor_exw"]));
+      $declaracion_jurada->setSobrevalor_exw($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_exw"]));
+
+      if(isset($_REQUEST["valor_fob"])) $declaracion_jurada->setValor_fob($funcionesGenerales->setNumeric($_REQUEST["valor_fob"]));
+      if(isset($_REQUEST["sobrevalor_fob"])) $declaracion_jurada->setSobrevalor_fob($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_fob"]));
+      if(isset($_REQUEST["valor_frontera"])) $declaracion_jurada->setValor_frontera($funcionesGenerales->setNumeric($_REQUEST["valor_frontera"]));
+      if(isset($_REQUEST["sobrevalor_frontera"])) $declaracion_jurada->setSobrevalor_frontera($funcionesGenerales->setNumeric($_REQUEST["sobrevalor_frontera"]));
+
+      //buscamos el ID DIRECCION DE EMPRESA
+      $empresa = new Empresa();
+      $sqlEmpresa = new SQLEmpresa();
+      $empresa->setId_empresa($_SESSION['id_empresa']);
+      $empresa=$sqlEmpresa->getEmpresaPorID($empresa);
+      $direccion = new Direccion();
+      $sqlDireccion = new SQLDireccion();
+      $direccion->setId_direccion($empresa->getDireccion());
+      $direccion = $sqlDireccion->getDireccionByID($direccion);
+      $regional = new Regional();
+      $sqlRegional = new SQLRegional();
+      $regional->setId_departamento($direccion->getId_departamento());
+      $regional = $sqlRegional->getBuscarRegionalPorDepto($regional);
+      $regional_id=$regional->getId_regional();
+      $declaracion_jurada->setId_regional($regional_id);
+
+      if($_REQUEST["combo_fabricas"]!='') $declaracion_jurada->setId_direccion($_REQUEST["combo_fabricas"]);
+      else $declaracion_jurada->setId_direccion($empresa->getDireccion());
+      $declaracion_jurada->setDetalle_otros(strtoupper ($_REQUEST['elaboracion_detalle']));
+      $declaracion_jurada->setId_acuerdo($_REQUEST['acuerdo']);
+//            $declaracion_jurada->setId_criterios( implode (",", json_decode($_REQUEST['criterios_origen'])));
+      $declaracion_jurada->setId_arancel( $_REQUEST['id_arancel']);
+      $declaracion_jurada->setId_partida( $_REQUEST['id_partida']);
+      $declaracion_jurada->setId_partidas_acuerdo( implode (",", json_decode($_REQUEST['id_partidas_acuerdo'])));
+      $declaracion_jurada->setReo(strtoupper ($_REQUEST['reo']));
+      $declaracion_jurada->setFecha_limite_revision($functions->addDaysReview($date));//3 days for senavex revition;
+      $declaracion_jurada->setRevisado_uco(0);
+      $declaracion_jurada->setAprobado_uco(0);
+
+
+      if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
+        if($_REQUEST['observacion_general']) $functions->saveObservacion($_REQUEST['observacion_general']);
+        //print_r($_REQUEST["tabla_insumosnacionales"]);
+        $functions->guardarInsumosNacionales($_REQUEST["tabla_insumosnacionales"], $declaracion_jurada->getId_ddjj());
+        $functions->guardarInsumosImportados($_REQUEST["tabla_insumosimportados"], $declaracion_jurada->getId_ddjj());
+        if($_REQUEST["esComercializador"]=='true') $functions->guardarComercializadores($_REQUEST["tabla_comercializadores"], $declaracion_jurada->getId_ddjj());
+        $functions->saveZonasEspeciales($_REQUEST["lista_elaboracion"], $declaracion_jurada->getId_ddjj());
+        $uploader->saveDocuments($_REQUEST['ddjj_documents'],$declaracion_jurada->getId_ddjj());
+
+        $asist_senavex = AdmSistemaColas::generarColaParaDdjj($servicio_exportador->getId_servicio_exportador(),$regional_id);
+        $declaracion_jurada->setId_asistente($asist_senavex);
+        $declaracion_jurada->save();
+        //Send Mails
+        $PersonaEmpresa=$functions->getPersonaEmpresa($_SESSION["id_empresa"],$_SESSION["id_persona"]);
+        $nombre_persona=$PersonaEmpresa[0]->getNombres().' '.$PersonaEmpresa[0]->getPaterno().' '. $PersonaEmpresa[0]->getMaterno();
+        AdmCorreo::enviarCorreo($PersonaEmpresa[0]->email,$PersonaEmpresa[1]->razon_social,$nombre_persona,'','',31);
+        $functions->auditoriaDdjj(0, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+        echo '{"status":"success"}';
+      }else{
+        $servicio_exportador->delete();
+        echo '{"status":"fail"}';
+      }
+      exit;
+    }
+    //************************ json de la lista de ddjj *******************////
+    if($_REQUEST['tarea']=='listarDeclaraciones'){
+
+
+      $declaracion_jurada->setId_Empresa($_SESSION["id_empresa"]);
+      $declaracion_jurada->setId_estado_ddjj($_REQUEST['estado_ddjj']!=''?$_REQUEST['estado_ddjj']:1);
+      $resultado = $sqlDeclaracionJurada->getListarDdjjObjectsEstado($declaracion_jurada,$condicional->esPerfilUco() || $condicional->esCertificador());
+      $sqlpartida = new SQLPartida();
+      $strJson = '';
+      echo '[';
+      foreach ($resultado as $datos){
+//                $detalle_arancel->setId_detalle_arancel($datos->getId_detalle_arancel());
+//                $detalle_arancel = $sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
+        $partida=new Partida();
+
+        $partida->setId_partida($datos->getId_partida());
+        $partida = $sqlpartida->getById($partida);
+        $strJson .= '{"id_ddjj":"' . $datos->getId_ddjj() .
+          '","denominacion_comercial":' . json_encode($datos->getDenominacion_comercial()) .
+          ',"acuerdo":' . json_encode($datos->acuerdo->getSigla()) .
+          ',"denominacion":' . json_encode($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
+          ',"codigo":' . json_encode($datos->getCorrelativo_ddjj() ).
+          ',"fecha_vencimiento":"' . substr($datos->getFecha_vencimiento(), 0, 11).
+          '","fecha_registro":"' . substr($datos->getFecha_registro(), 0, 11) .'"},';
+      }
+
+      $strJson = substr($strJson, 0, strlen($strJson) - 1);
+      echo $strJson;
+      echo ']';
+      exit;
+    }
+    //************************ vista de la declaracion jurada *******************////
+    if($_REQUEST['tarea']=='previewDeclaracion'){
+      if($condicional->esCertificador()){
+        $conf = new stdClass();
+        $conf->documentReview = true;
+      }
+      print $this->getDdjjTpl($_REQUEST["id_declaracion_jurada"],$conf);
+      exit;
+    }
+    if($_REQUEST['tarea']=='reviewDocumentsDeclaracion'){
+      $conf = new stdClass();
+      $conf->documentReview = true;
+      print $this->getDdjjTpl($_REQUEST["id_declaracion_jurada"],$conf);
+      exit;
     }
 
-    if($_REQUEST['tarea']=='declaracionesJuradasRechazadas')
-    {
-        $vista->display("declaracionJurada/DeclaracionesJuradasRechazadas.tpl");
-        exit;
-    }
-
-    if($_REQUEST['tarea']=='declaracionesJuradasEnRevision')
-    {
-        $vista->display("declaracionJurada/DeclaracionesJuradasEnRevision.tpl");
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='declaracionesJuradasConAsesoramiento')
-    {
-        $vista->display("declaracionJurada/DeclaracionesJuradasConAsesoramiento.tpl");
-        exit;
-    }
-    
-    if($_REQUEST['tarea']=='declaracionesJuradasParaAprobar')
-    {
-        $vista->display("declaracionJurada/declaracionesJuradasParaAprobar.tpl");
-        exit;
-    }
- */
-    /********** CONTROLADORES PARA EL CERTIFICADOR ***********/
+    /********** Asistente SENAVEX***********/
     if($_REQUEST['tarea']=='listarRevisionDeclaracionJurada')
     {
-        $vista->display("declaracionJurada/ListarRevisionDeclaracionJurada.tpl");
-        exit;
+      $estados = $sqlEstadoDdjj->getListarEstadoDdjjRevisionCertificador($estado_ddjj,[AdmDeclaracionJurada::DDJJ_REVISAR,AdmDeclaracionJurada::DDJJ_CANCELAR]);
+      $vista->assign('estados',$estados);
+      $vista->display("declaracionJurada/ListarRevisionDeclaracionJurada.tpl");
+      exit;
     }
-
     if($_REQUEST['tarea']=='listarRevisionDeclaraciones')
     {
-        $certif = $_SESSION["id_persona"];
-        //Listar las DDJJ por persona a revisar
-        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesParaRevisar($declaracion_jurada,$certif);
-        $selected = ',"selected":true';
+      if($_REQUEST['estado_ddjj'] && $_REQUEST['estado_ddjj'] == AdmDeclaracionJurada::DDJJ_CANCELAR) {
+        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesEstado($declaracion_jurada,AdmDeclaracionJurada::DDJJ_CANCELAR);
+      } else {
+        $resultado = $sqlDeclaracionJurada->getListarDeclaracionesParaRevisar($declaracion_jurada,$_SESSION["id_persona"]);
+      }
 
-        $strJson = '';
-        echo '[';
-        
-        $longitud = sizeof($resultado);
+      $strJson = '';
+      echo '[';
 
-        for($i=0; $i<$longitud; $i++){
-            $strJson .= '{"id_ddjj":"' . $resultado[$i]["id_ddjj"] .
-                    '","descripcion_comercial":"' . $resultado[$i]["descripcion_comercial"] .
-                    '","detalle_arancel":"' . $resultado[$i]["arancel"] .
-                    '","caracteristicas":"' . $resultado[$i]["caracteristicas"] .
-                    '","fecha_registro":"' . substr($resultado[$i]["fecha_registro"], 0, 11) .
-                    '","estadoddjj":"' . $resultado[$i]["estadoddjj"] . '"},';
+      $longitud = sizeof($resultado);
 
-            $selected='';
-        }
+      $sqlpartida=new SQLPartida();
 
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
+      for($i=0; $i<$longitud; $i++){
+        $partida=new Partida();
+        $partida->setId_partida($resultado[$i]["id_partida"]);
+        $partida = $sqlpartida->getById($partida);
+
+        $strJson .= '{"id_ddjj":"' . $resultado[$i]["id_ddjj"] .
+          '","descripcion_comercial":' . json_encode($resultado[$i]["denominacion_comercial"]) .
+          ',"denominacion":' . json_encode($partida?$partida->getPartida().' - '.$partida->getDenominacion():'') .
+          ',"caracteristicas":' . json_encode($resultado[$i]["caracteristicas"]) .
+          ',"ruex":' . json_encode($resultado[$i]["ruex"]) .
+ //         '","fecha_limite_revision":"' . substr($resultado[$i]["fecha_limite_revision"], 0, 11) .
+          ',"fecha_registro":"' . substr($resultado[$i]["fecha_registro"], 0, 11) .
+          '","estadoddjj":"' . $resultado[$i]["estadoddjj"] . '"},';
+
+        $selected='';
+      }
+
+      $strJson = substr($strJson, 0, strlen($strJson) - 1);
+      echo $strJson;
+      echo ']';
+      exit;
     }
-    
-    //Revisar la DDJJ enviada con todos los datos
-    if($_REQUEST['tarea']=='revisarDeclaracionJurada')
-    {
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        //Sacar el detalle de la clasificación arancelaria
-        $detalle_arancel->setId_detalle_arancel($declaracion_jurada->getId_Detalle_Arancel());
-        $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-        
-        $insumos_nacionales->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $insumos_nacionales = $sqlInsumosNacionales->getBuscarInsumosPorDdjj($insumos_nacionales);
-        
-        $insumos_importados->setId_DDJJ($_REQUEST["id_declaracion_jurada"]);
-        $insumos_importados = $sqlInsumosImportados->getBuscarInsumosPorDdjj($insumos_importados);
-        
-        $comercializador->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $comercializador = $sqlComercializador->getBuscarComercializadorPorDdjj($comercializador);
+    if($_REQUEST['tarea'] == 'saveReasignarDatos') {
+      $declaracion_jurada->setId_ddjj($_REQUEST['id_ddjj']);
+      $declaracion_jurada = $sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+      $reasignar = new stdClass();
+      $reasignar->ref = $_REQUEST['ref'];
+      if(isset($_REQUEST['id_partida']) AND $_REQUEST['id_partida'] != ''){
+        $reasignar->id_partida = $declaracion_jurada->getId_partida();
+        $declaracion_jurada->setId_partida( $_REQUEST['id_partida']);
+      }
+      if(isset($_REQUEST['fecha_vencimiento']) AND $_REQUEST['fecha_vencimiento'] != ''){
+        $fecha_vencimiento = $funcionesGenerales->setFechaToBd($_REQUEST['fecha_vencimiento']);
+        $reasignar->fecha_vencimiento = $declaracion_jurada->getFecha_vencimiento();
+        $declaracion_jurada->setFecha_vencimiento($fecha_vencimiento);
+      }
 
-        $unidad_medida->setId_Unidad_Medida($declaracion_jurada->getId_Unidad_Medida());
-        $unidad_medida = $sqlUnidadMedida->getBuscarDescripcionPorId($unidad_medida);
+      $functions->auditoriaDdjjReasignar($reasignar, $_REQUEST['id_ddjj']);
 
-        
-        //Asignar Valores para el tpl
-        $vista->assign('detalle_arancel', $detalle_arancel);
-        $vista->assign('unidad_medida', $unidad_medida);
-        
-        //Verificar si existen las tablas
-        if ($insumos_nacionales != NULL){
-            //echo "Hay insumos Nacionales<br>";
-            $vista->assign('insnac', 1);
-            $vista->assign('insumosnacionales', $insumos_nacionales);
-        }else{
-            $vista->assign('insnac', 0);
-        }
-        
-        if ($insumos_importados != NULL){
-            //echo "Hay insumos Importados<br>";
-            $vista->assign('insimp', 1);
-            $vista->assign('insumosimportados', $insumos_importados);
-        }else{
-            $vista->assign('insimp', 0);
-        }
-        
-        if ($comercializador != NULL){
-            //echo "Hay Comercializadores<br>";
-            $vista->assign('comerc', 1);
-            $vista->assign('comercializador', $comercializador);
-        }else{
-            $vista->assign('comerc', 0);
-        }
 
-        $ddjj_acuerdo->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        
-        $fob = 0; $exwork=0;
-        foreach ($ddjj_acuerdo as $ac){
-            if ($ac->acuerdo->getId_tipo_valor_internacional()==1){
-                $fob = $ac->getValor_Mercancia();
-            }else{
-                $exwork = $ac->getValor_Mercancia();
-            }
-            unset($detalle_arancel);
-            $detalle_arancel = new DetalleArancel();
-            
-            if ($ac->getId_acuerdo()==2){
-                if($ac->getSubpartida()==0){
-                    $naladisa93 = 'Sin Naladisa 93';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa93 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa93', $naladisa93);
-            }
-            if ($ac->getId_acuerdo()==3){
-                if($ac->getSubpartida()==0){
-                    $naladisa96 = 'Sin Naladisa 96';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa96 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa96', $naladisa96);
-            }
-            if(($ac->getId_acuerdo()==4)||($ac->getId_acuerdo()==19)){
-                if($ac->getSubpartida()==0){
-                    $naladisa2007 = 'Sin Naladisa 2007';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa2007 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa2007', $naladisa2007);
-            }
-            if ($ac->getId_acuerdo()==7){
-                if($ac->getSubpartida()==0){
-                    $naladisa91 = 'Sin Naladisa 91';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladisa91 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladisa91', $naladisa91);
-            }
-            if ($ac->getId_acuerdo()==6){
-                if($ac->getSubpartida()==0){
-                    $naladi83 = 'Sin Naladi 83';
-                }else{
-                    $detalle_arancel->setId_detalle_arancel($ac->getSubpartida());
-                    $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-                    $naladi83 = $detalle_arancel->getCodigo()." - ".$detalle_arancel->getDescripcion();
-                }
-                $vista->assign('naladi83', $naladi83);
-            }
-        }
-        $vista->assign('acuerdos', $ddjj_acuerdo);
-        $vista->assign('fob', $fob);
-        $vista->assign('exwork', $exwork);
-        $vista->assign('ddjj', $declaracion_jurada);
-        
-        //Historial de Correcciones
-        if($declaracion_jurada->getRevisado()=='TRUE'){
-            $observaciones_ddjj->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-            $observaciones_ddjj = $sqlObservacionesDdjj->getListarObservacionesDdjj($observaciones_ddjj);
-            $vista->assign('observaciones_ddjj', $observaciones_ddjj);
-        }
-        
-        //Preguntamos si es con asesoramiento o es normal
-        if($declaracion_jurada->getId_estado_ddjj()==4){
-            $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-            $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
-            
-            $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-            $asesoramiento_historico=$sqlAsesoramientoHistorico->getBuscarPorIdAsesoramiento($asesoramiento_historico);
-            
-            $vista->assign('asesoramiento', $asesoramiento);
-            $vista->assign('historico_asesoramiento', $asesoramiento_historico);
-            $vista->display("declaracionJurada/RevisarDdjjConAsesoramiento.tpl");
-        }
-        // En caso de que sea una DDJJ enviada directamente
-        else{
-            $vista->display("declaracionJurada/RevisarDdjj.tpl");
-        }
-        exit;
+
+
+      if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
+        $PersonaEmpresa=$functions->getPersonaEmpresa($declaracion_jurada->getId_Empresa(),$declaracion_jurada->getId_Persona());
+        $nombre_persona=$PersonaEmpresa[0]->getNombres().' '.$PersonaEmpresa[0]->getPaterno().' '. $PersonaEmpresa[0]->getMaterno();
+        AdmCorreo::enviarCorreo($PersonaEmpresa[0]->email,$PersonaEmpresa[1]->razon_social,$nombre_persona,$declaracion_jurada,'',53);
+        $functions->auditoriaDdjj(6, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+        echo '{"status":"success"}';
+      }else{
+        echo '{"status":"fail"}';
+      }
+      exit;
     }
 
-    //Revisar la DDJJ enviada con todos los datos
-    if($_REQUEST['tarea']=='aceptarDeclaracionJurada')
+    ///---------------------------revision de la declaracion jurada pro pate del analista
+    if($_REQUEST['tarea']=='reviewDeclaracion'){
+      $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
+      $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+      $tipo_valor_internacional->setId_tipo_valor_internacional($declaracion_jurada->acuerdo->id_tipo_valor_internacional);
+      $tipo_valor_internacional = $sqlTipoValorInternacional->getBuscarDescripcionPorId($tipo_valor_internacional);
+      $zonas=$functions->getZonasEspeciales($declaracion_jurada->getId_ddjj());
+
+      $tipo_acuerdos=$sqlTipoAcuerdo->getListarTipoAcuerdo($tipo_acuerdo);
+      $unidad_medida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
+      $pais=$sqlPais->getListarPais($pais);
+      $acuerdos=$sqlAcuerdo->getAcuerdoSinNinguno($acuerdo,true);
+      $direccion = $functions->getDireccion($declaracion_jurada->getId_direccion());
+      $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($declaracion_jurada->getId_direccion());
+      $fabrica=$functions->getFabrica($declaracion_jurada->getId_direccion());
+
+      $acuerdo->setId_Acuerdo($declaracion_jurada->getId_acuerdo());
+      $acuerdo=$sqlAcuerdo->getByIdArguments($acuerdo);
+
+      //--------------FUNCION DE ANALISIS DE RIESGO: Esta funcion devuelve la formula prearmada, las variables utilizadas con sus valores-----
+      $analisisRiesgo = new AdmAnalisisFormula();
+      $objetoAnalisiRiesgo = $analisisRiesgo->getAnalisisRiesgo($declaracion_jurada);
+      $vista->assign('objectoAnalisiRiesgo', $objetoAnalisiRiesgo);
+      $verificacion = new AdmVerificaciones();
+      $verificacion->verificacionesAntiguasPorEmpresa($vista,$declaracion_jurada->getId_empresa());
+
+//      ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+      $vista->assign('direccionTpl',$direccionRepresentanteTpl);
+      $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
+      $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
+      $vista->assign('observaciones_ddjj',$functions->getObservaciones($_REQUEST["id_declaracion_jurada"]));
+      $vista->assign('tipo_valor_internacional',$tipo_valor_internacional->abreviatura);
+      $vista->assign('tipoacuerdos', $tipo_acuerdos);
+      $vista->assign('direccion', $direccion);
+      $vista->assign('fabrica', $fabrica);
+      $vista->assign('paises', $pais);
+      $vista->assign('acuerdos', $acuerdos);
+      $vista->assign('review',true);
+      $vista->assign('ddjj', $declaracion_jurada);
+      $vista->assign('unidadmedida', $unidad_medida);
+      $vista->assign('zonas', $zonas);
+      $vista->assign('criterios', $functions->getCriterios($declaracion_jurada->getId_criterios()));
+      $vista->assign('id', 'review');
+
+      $vista->display("declaracionJurada/DeclaracionJurada.tpl");
+      exit;
+    }
+    /// para denegar una declaracion jurada para no ponerla en vigencia
+    if($_REQUEST['tarea']=='denyDdjj')
     {
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        $ddjj_acuerdo->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $ddjj_acuerdo=$sqlDdjjAcuerdo->getListarAcuerdosPorDdjj($ddjj_acuerdo);
-        
-        //Variable para saber si hay por lo menos un acuerdo aprobado en la ddjj
-        $acuerdo_aprobado = 0;
-        
-        //Hacer un recorrido de los acuerdos
-        foreach ($ddjj_acuerdo as $ac){
-            $hoy = date('Y-m-d H:i:s');
-            $var = $ac->getId_Acuerdo();
-            
-            //Variables auxiliares para beneficio,cumple y observaciones
-            $ben = "beneficio_".$var;
-            $cum = "cumple_".$var;
-            $obs = "observ_".$var;
-            $criterio = $this->colocarCriterioOrigen($var);
-            
-            $ac->setBeneficio($_REQUEST[$ben]);
-            $ac->setCumple($_REQUEST[$cum]);
-            $ac->setObservaciones($_REQUEST[$obs]);
-            $ac->setId_Criterio_Origen($criterio);
-            $ac->setFecha_Revision($hoy);
-            
-            if(($_REQUEST[$ben]==1)AND($_REQUEST[$cum]==1)){
-                $ac->setId_estado_ddjj(1);
-                $ac->setFecha_aprobacion($hoy);
-                
-                //Calcular la vigencia del Acuerdo
-                $fecha= new DateTime($hoy);
-                $aumentar_dias = 'P'.$ac->getVigencia().'D';
-                $fecha->add(new DateInterval($aumentar_dias));
-                $ac->setFecha_fin($fecha->format('Y-m-d'));
-                //Cambiar el valor de variable de acuerdos para la ddjj general
-                $acuerdo_aprobado = 1;
-            }else{
-                $ac->setId_estado_ddjj(5);
-            }
-            if ($sqlDdjjAcuerdo->setGuardarDdjjAcuerdo($ac)){
-                echo "Guardó";
-            }else{
-                echo "No guardó ";
-            }         
-        }
-        //Actualizar el estado del Servicio Exportador a TRUE
-        $servicio_exportador->setId_servicio_exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $servicio_exportador=$sqlServicioExportador->getBuscarServicioExportadorPorId($servicio_exportador);
-        $servicio_exportador->setEstado(TRUE);
-        $sqlServicioExportador->setGuardarServicioExportador($servicio_exportador);
+      $hoy=date("Y-m-d H:i:s");
+      $declaracion_jurada->setId_ddjj($_REQUEST["id_ddjj"]);
+      $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+      $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CORREGIR); //para corregir
+      $declaracion_jurada->setObservacion_ddjj($_REQUEST['observacion_ddjj']);
+      $functions->saveObservacion($_REQUEST['observacion_general']);
+      //Envío de Correos
+      $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
+      $correos=explode(',',$correos);
+      if(trim($correos[0])==trim($correos[1]))
+      {
+        AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',34);
+      }
+      else
+      {
+        AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',34);
+        AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'','','',34);
+      }
+
+      if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
         //Actualizar el Sistema de Colas para eliminar el registro que ya esta revisado
-        $sistema_colas->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $sistema_colas=$sqlSistemaColas->getBuscarColaPorServicioExportador($sistema_colas);
-        $sistema_colas->setAtendido(1);
-        $sqlSistemaColas->setGuardarSistemaColas($sistema_colas);
-        
-        if($acuerdo_aprobado==1){
-            $declaracion_jurada->setId_estado_ddjj(6);
-        }else{
-            $declaracion_jurada->setId_estado_ddjj(5);
+        AdmDeclaracionJuradaFunctions::terminarServicioColas($declaracion_jurada->getId_Servicio_Exportador());
+        $functions->auditoriaDdjj(4, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+
+        echo '{"status":1,"message":"success"}';
+      }else{
+        echo '{"status":0,"message":"fail"}';
+      }
+      exit;
+    }
+    //------------------para aprovar una ddjj por parate del exportador
+    if($_REQUEST['tarea']=='aproveDdjj')
+    {
+      $hoy = date('Y-m-d H:i:s');
+      $declaracion_jurada->setId_ddjj($_REQUEST["id_ddjj"]);
+      $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+      $declaracion_jurada->setFecha_Revision($hoy);
+      //si la DDJJ es Para ferias o muestras
+      if ($declaracion_jurada->getMuestra()=== true){
+        $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_VIGENTE);/// verificacion aprobada
+      }
+      //si no es para ferias o muestras le mandamos a pago
+      else{
+        $declaracion_jurada->setId_estado_ddjj(AdmDeclaracionJurada::DDJJ_CANCELAR);/// verificacion aprobada
+        $declaracion_jurada->setFecha_limite_cancelacion($funcionesGenerales->addDate($hoy,15));
+      }
+      $declaracion_jurada->setObservacion_ddjj(trim($_REQUEST['observacion_ddjj']));
+      $declaracion_jurada->setComplemento(strtoupper ($_REQUEST["complemento"]));
+      $declaracion_jurada->setId_asistente($_SESSION['id_persona']);
+      $declaracion_jurada->setId_criterios( implode (",", json_decode($_REQUEST['criterios_origen'])));
+
+
+      //---------creacion de la verificacon y asignacion de revision estricta si es necesario--------
+      $admVerificaciones= new AdmVerificaciones();
+      $declaracion_jurada=$admVerificaciones->procesaVerificacion($_REQUEST['verificacion'], $declaracion_jurada);
+      //----------------------------------------------------------------
+
+      if($sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada)){
+
+        AdmDeclaracionJuradaFunctions::terminarServicioColas($declaracion_jurada->getId_Servicio_Exportador());
+
+        if($declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_VISITA) {
+          $functions->auditoriaDdjj(8, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+          $tipo_correo = 54; //correo de visita de ferificacion
         }
-        $declaracion_jurada->setFecha_Revision($hoy);
-        
-        //Envío de Correos
+        else if($declaracion_jurada->getMuestra()=== true) {
+          $functions->auditoriaDdjj(8, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+          AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
+          $tipo_correo = 56; //correo de vigencia de feria o muestra
+        }
+        else {
+          $functions->auditoriaDdjj(5, $declaracion_jurada->getId_ddjj(), $_SESSION['id_persona']);
+          AdmDeclaracionJuradaFunctions::setVigenciaDdjjxServicioexportador_APROVE($declaracion_jurada->getId_Servicio_Exportador());
+          $tipo_correo = 33; // correo de cancelarion
+        }
+
         $correos=AdmCorreo::obtenerCorreosEmpresa($declaracion_jurada->getId_Empresa());
         $correos=explode(',',$correos);
+
+          //añadir para facturar
+          AdmSistemaColas::generarServicioExportadorParaDdjjPago($_SESSION["id_persona"],80, $declaracion_jurada->getId_Servicio_Exportador());
+
         if(trim($correos[0])==trim($correos[1]))
         {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
+          AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);
         }
         else
         {
-            AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
-            AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'','','',33);
+          AdmCorreo::enviarCorreo($correos[0],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);
+          AdmCorreo::enviarCorreo($correos[1],$declaracion_jurada->empresa->getRazon_social(),'','','',$tipo_correo);
         }
-        
-        //Guardar la DDJJ con las actualizaciones
-        $sqlDeclaracionJurada->setGuardarDdjj($declaracion_jurada);
 
-        exit;
+        echo '{"status":1,"message":"success"}';
+      }else{
+        echo '{"status":0,"message":"fail"}';
+      }
+      exit;
     }
-
-    if($_REQUEST['tarea']=='enviarRespuestaAsesoramiento')
+    ////METODO especial para poner en vigencia la ddjjj debe ser utiliaado por el modulo de facturacion
+    if($_REQUEST['tarea']=='validarCancelacion')
     {
-        $hoy = date('Y-m-d H:i:s');
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
-        
-        $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-        $asesoramiento_historico=$sqlAsesoramientoHistorico->getBuscarUltimoPorIdAsesoramientoParaRespuesta($asesoramiento_historico);
-        
-        $asesoramiento_historico->setRespuesta_Asistente($_REQUEST["observ"]);
-        $asesoramiento_historico->setFecha_Respuesta($hoy);
-        $asesoramiento_historico->setEstado(TRUE);
-
-        $sqlAsesoramientoHistorico->setGuardarAsesoramientoHistorico($asesoramiento_historico);
-
-        exit;
+      if($functions->validarCancelacion($_REQUEST['id_ddjj'])){
+        echo '{"status":1,"message":"success"}';
+      }else{
+        echo '{"status":0,"message":"fail"}';
+      }
+      exit;
     }
 
-    if($_REQUEST['tarea']=='enviarPreguntaAsesoramiento')
-    {
-        $hoy = date('Y-m-d H:i:s');
-        $declaracion_jurada->setId_ddjj($_REQUEST["id_declaracion_jurada"]);
-        $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
-        
-        $asesoramiento->setId_Servicio_Exportador($declaracion_jurada->getId_Servicio_Exportador());
-        $asesoramiento=$sqlAsesoramiento->getBuscarAsesoramientoPorServicioExportador($asesoramiento);
 
-        $asesoramiento_historico->setId_Asesoramiento($asesoramiento->getId_Asesoramiento());
-        $asesoramiento_historico->setObservaciones_Exportador($_REQUEST["masobservaciones"]);
-        $asesoramiento_historico->setFecha_Observacion($hoy);
-        $asesoramiento_historico->setEstado(FALSE);
-
-        $sqlAsesoramientoHistorico->setGuardarAsesoramientoHistorico($asesoramiento_historico);
-
-        exit;
-    }
-    
+//-----------------------------------------------------------------------------------------------------------------------------------------------
     if($_REQUEST['tarea']=='listarDeclaracionesVigentesConCriterioOrigen'){
-        $ddjj_acuerdo->setId_Acuerdo($_REQUEST["id_acuerdo"]);
-        $ddjj_acuerdo->setId_estado_ddjj(1);
-        
-        $resultado = $sqlDdjjAcuerdo->getListarDDJJAcuerdoVigentesConDatosDDJJ($ddjj_acuerdo);
-        $selected = ',"selected":true';
-        
-        $strJson = '';
-        echo '[';
-        foreach ($resultado as $datos){
-            $detalle_arancel->setId_detalle_arancel($datos->declaracion_jurada->getId_detalle_arancel());
-            $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
-            
-            $strJson .= '{"id_ddjj_acuerdo":"' . $datos->getId_ddjj_acuerdo() .
-                    '","id_ddjj":"' . $datos->getId_ddjj() .
-                    '","descripcion_comercial":"' . $datos->declaracion_jurada->getDescripcion_comercial() .
-                    '","clasificacion_arancelaria":"' . $detalle_arancel->getCodigo() .
-                    '","criterio_origen":"' . $datos->criterio_origen->getDescripcion() .
-                    '","fecha_inicio":"' .$datos->getFecha_aprobacion() .
-                    '","fecha_fin":"' . $datos->getFecha_fin() . '"},';
-            $selected='';
-        }
+      $ddjj_acuerdo->setId_Acuerdo($_REQUEST["id_acuerdo"]);
+      $ddjj_acuerdo->setId_estado_ddjj(1);
 
-        $strJson = substr($strJson, 0, strlen($strJson) - 1);
-        echo $strJson;
-        echo ']';
-        exit;
+      $resultado = $sqlDdjjAcuerdo->getListarDDJJAcuerdoVigentesConDatosDDJJ($ddjj_acuerdo);
+      $selected = ',"selected":true';
+
+      $strJson = '';
+      echo '[';
+      foreach ($resultado as $datos){
+        $detalle_arancel->setId_detalle_arancel($datos->declaracion_jurada->getId_detalle_arancel());
+        $detalle_arancel=$sqlDetalleArancel->getBuscarDescripcionPorId($detalle_arancel);
+
+        $strJson .= '{"id_ddjj_acuerdo":"' . $datos->getId_ddjj_acuerdo() .
+          '","id_ddjj":"' . $datos->getId_ddjj() .
+          '","descripcion_comercial":"' . $datos->declaracion_jurada->getDescripcion_comercial() .
+          '","clasificacion_arancelaria":"' . $detalle_arancel->getCodigo() .
+          '","criterio_origen":"' . $datos->criterio_origen->getDescripcion() .
+          '","fecha_inicio":"' .$datos->getFecha_aprobacion() .
+          '","fecha_fin":"' . $datos->getFecha_fin() . '"},';
+        $selected='';
+      }
+
+      $strJson = substr($strJson, 0, strlen($strJson) - 1);
+      echo $strJson;
+      echo ']';
+      exit;
     }
-    
-    $vista->display("declaracionJurada/DeclaracionesJuradas.tpl");
-  }
 
-  //****** FUNCIONES PARA LAS DDJJ **********************//
-  public static function guardarInsumosNacionales($nacionales,$id_ddjj){
-    $insumos_nacionales = new InsumosNacionales();
-    $sqlInsumosNacionales = new SQLInsumosNacionales();
-    
-    $filas_nac = explode(",", $nacionales);
+    if($_REQUEST['tarea']=='eliminarDeclaracion'){
+      if(isset($_REQUEST['id_ddjj']) AND isset($_REQUEST['justificacion'])){
 
-    foreach ($filas_nac as $filas) {
-        $valor_nac = explode(";", $filas);
-        
-        unset($insumos_nacionales);
-        $insumos_nacionales = new InsumosNacionales();
-        
-        $insumos_nacionales->setId_ddjj($id_ddjj);
-        $insumos_nacionales->setDescripcion($valor_nac[0]);
-        $insumos_nacionales->setNombre_Fabricante($valor_nac[1]);
-        $insumos_nacionales->setTelefono_Fabricante($valor_nac[2]);
-        $insumos_nacionales->setValor($valor_nac[3]);
-        $sqlInsumosNacionales->setGuardarInsumosNacionales($insumos_nacionales);
+        $functions->bajaDdjj($_REQUEST['id_ddjj'],$_REQUEST['justificacion']);
+        echo '{"status":1,"message":"success"}';
+      }else{
+        echo '{"status":0,"message":"fail"}';
+      }
     }
+    if($_REQUEST['tarea']=='BajasCausas'){
+      if($perfil_uco)
+      {
+        $sw=1;
+      }
+      else{
+        $sw=2;
+      }
+
+      $DdjjBajas = new DdjjBajas();
+      $SqlDdjjBajas = new SQLDdjjBajas();
+      $DdjjBajas->setPermisos($sw);
+      $DdjjBajas=$SqlDdjjBajas->getbyPermiso($DdjjBajas);
+      print_r($DdjjBajas);
+      //echo 'LauLau';
+    }
+
   }
-  
-  public static function guardarInsumosImportados($importados,$id_ddjj){
-    $insumos_importados = new InsumosImportados();
-    $sqlInsumosImportados = new SQLInsumosImportados();
-    $pais = new Pais();
-    $sqlPais = new SQLPais();
-    $unidad_medida = new UnidadMedida();
-    $sqlUnidadMedida = new SQLUnidadMedida();
+  public function getDdjjTpl($id_ddjj, $conf = null){
+    if($conf == null) $conf = new stdClass();
+    if(!isset($conf->preview)) $conf->preview = false;
+    if(!isset($conf->documentReview)) $conf->documentReview = false;
+    if(!isset($conf->reasignarDeclaracion)) $conf->reasignarDeclaracion = false;
+
+    $vista = Principal::getVistaInstance();
+    $declaracion_jurada = new DeclaracionJurada();
     $acuerdo = new Acuerdo();
-    $sqlAcuerdo = new SQLAcuerdo();
-    
-    $filas_imp = explode(",", $importados);
-
-    foreach ($filas_imp as $filas) {
-        $valor_imp = explode(";", $filas);
-        
-        unset($insumos_importados);
-        unset($pais);
-        unset($acuerdo);
-        $insumos_importados = new InsumosImportados();
-        $pais = new Pais();
-        $acuerdo = new Acuerdo();
-        
-        $insumos_importados->setId_DDJJ($id_ddjj);
-        $insumos_importados->setDescripcion($valor_imp[0]);
-        $insumos_importados->setId_Detalle_Arancel($valor_imp[1]);
-        
-        $pais->setNombre($valor_imp[2]);
-        $pa = $sqlPais->getBuscarIdPorNombrePais($pais);
-        $insumos_importados->setId_Pais($pa->getId_pais());
-        
-        $insumos_importados->setRazon_Social_Productor($valor_imp[3]);
-        
-        if($valor_imp[4]=="SI"){
-            $insumos_importados->setTiene_Certificado_Origen(TRUE);
-        }
-        else {
-            $insumos_importados->setTiene_Certificado_Origen(FALSE);
-        }
-        
-        $acuerdo->setDescripcion($valor_imp[5]);
-        $ac = $sqlAcuerdo->getBuscarIdporNombreAcuerdo($acuerdo);
-        $insumos_importados->setId_Acuerdo($ac->getId_Acuerdo());
-        
-        $insumos_importados->setCantidad($valor_imp[6]);
-        
-        $unidad_medida->setDescripcion($valor_imp[7]);
-        $um = $sqlUnidadMedida->getBuscarIdPorDescripcion($unidad_medida);
-        $insumos_importados->setId_unidad_medida($um->getId_Unidad_Medida());
-
-        $insumos_importados->setValor($valor_imp[8]);
-        $sqlInsumosImportados->setGuardarInsumosImportados($insumos_importados);
-    } 
-  }
-  
-  public static function guardarComercializadores($comerc,$id_ddjj){
-    $comercializador = new Comercializador();
-    $sqlComercializador = new SQLComercializador();
     $unidad_medida = new UnidadMedida();
-    $sqlUnidadMedida = new SQLUnidadMedida();
-    
-    $filas_com = explode(",", $comerc);
+    $pais = new Pais();
+    $tipo_acuerdo = new TipoAcuerdo();
+    $tipo_valor_internacional = new TipoValorInternacional();
+    $functions = new AdmDeclaracionJuradaFunctions();
 
-    foreach ($filas_com as $filas) {
-        $valor_com = explode(";", $filas);
-        
-        unset($comercializador);
-        unset($unidad_medida);
-        $comercializador = new Comercializador();
-        $unidad_medida = new UnidadMedida();
-        
-        $comercializador->setId_ddjj($id_ddjj);
-        $comercializador->setRazon_social($valor_com[0]);
-        $comercializador->setCi_nit($valor_com[1]);
-        $comercializador->setDomicilio_legal($valor_com[2]);
-        $comercializador->setRepresentante_legal($valor_com[3]);
-        $comercializador->setDireccion_fabrica($valor_com[4]);
-        $comercializador->setTelefono($valor_com[5]);
-        $comercializador->setPrecio_venta($valor_com[6]);
-        
-        $unidad_medida->setDescripcion($valor_com[7]);
-        $um = $sqlUnidadMedida->getBuscarIdPorDescripcion($unidad_medida);
-        $comercializador->setId_unidad_medida($um->getId_Unidad_Medida());
-        
-        $comercializador->setProduccion_mensual($valor_com[8]);
-        
-        $sqlComercializador->setGuardarComercializador($comercializador);
-    } 
-  }
-  
-  public static function listaElaboracionIncentivo($lista_elaboracion){
-    $cadena='';
-    if(in_array('ninguno',$lista_elaboracion)){
-        $cadena=$cadena.'0;';
+    $sqlDeclaracionJurada = new SQLDeclaracionJurada();
+    $sqlAcuerdo = new SQLAcuerdo();
+    $sqlUnidadMedida = new SQLUnidadMedida();
+    $sqlPais = new SQLPais();
+    $sqlTipoAcuerdo = new SQLTipoAcuerdo();
+    $sqlTipoValorInternacional = new SQLTipoValorInternacional();
+
+
+
+    $declaracion_jurada->setId_ddjj($id_ddjj);
+    $declaracion_jurada=$sqlDeclaracionJurada->getBuscarDeclaracionPorId($declaracion_jurada);
+    $tipo_valor_internacional->setId_tipo_valor_internacional($declaracion_jurada->acuerdo->id_tipo_valor_internacional);
+    $tipo_valor_internacional = $sqlTipoValorInternacional->getBuscarDescripcionPorId($tipo_valor_internacional);
+    $zonas=$functions->getZonasEspeciales($declaracion_jurada->getId_ddjj());
+    $tipo_acuerdos=$sqlTipoAcuerdo->getListarTipoAcuerdo($tipo_acuerdo);
+    $unidad_medida=$sqlUnidadMedida->getListarUnidadMedida($unidad_medida);
+    $pais=$sqlPais->getListarPais($pais);
+    $acuerdos=$sqlAcuerdo->getAcuerdoSinNinguno($acuerdo,true);
+    $direccion=$functions->getDireccion($declaracion_jurada->getId_direccion());
+    $direccionRepresentanteTpl = AdmDireccion::obtenerDireccionTpl($declaracion_jurada->getId_direccion());
+    $fabrica=$functions->getFabrica($declaracion_jurada->getId_direccion());
+
+
+
+
+    $id = $conf->documentReview? 'documentReview' : 'preview';
+    if($conf->reasignarDeclaracion) $id = 'reasignarDatos';
+
+
+    if($conf->reasignarDeclaracion){
+      $reasignaciones = $functions->reasignacionesAnteriores($id_ddjj);
+      if($reasignaciones){
+        $vista->assign('reasignaciones', $reasignaciones);
+      }
+
     }
-    if(in_array('zonafranca',$lista_elaboracion)){
-        $cadena=$cadena.'1;';
+
+    if($declaracion_jurada->getFecha_vencimiento()){
+      $vista->assign('fecha_vencimiento', date('d/m/y',strtotime($declaracion_jurada->getFecha_vencimiento())));
     }
-    if(in_array('cedeims',$lista_elaboracion)){
-        $cadena=$cadena.'2;';
-    }
-    if(in_array('ritex',$lista_elaboracion)){
-        $cadena=$cadena.'3;';
-    }
-    if(in_array('otros',$lista_elaboracion)){
-        $otro = $_REQUEST["elaboracion_detalle"];
-        $cadena=$cadena.'4;'.$otro.';';
-    }
-    $cadena = substr($cadena, 0, strlen($cadena) - 1);
-    return $cadena;
-  }
-  
-  public static function colocarCriterioOrigen($var){
-    $criterio='';
-    if($var==1){
-        $criterio=$_REQUEST["co_can"];
-        echo "Criterio de co_can";
-    }
-    if($var==2){
-        $criterio=$_REQUEST["co_mercosur"];
-        echo "Criterio de co_mercosur";
-    }
-    if($var==3){
-        $criterio=$_REQUEST["co_ace22"];
-        echo "Criterio de CAN";
-    }
-    if($var==4){
-        $criterio=$_REQUEST["co_ace47"];
-        echo "Criterio de co_ace47";
-    }
-    if($var==5){
-        $criterio=$_REQUEST["co_venezuela"];
-        echo "Criterio de co_venezuela";
-    }
-    if($var==6){
-        $criterio=$_REQUEST["co_arpar4"];
-        echo "Criterio de co_arpar4";
-    }
-    if($var==7){
-        $criterio=$_REQUEST["co_aapag"];
-        echo "Criterio de co_aapag";
-    }
-    if($var==8){
-        $criterio=$_REQUEST["co_sgpcanada"];
-        echo "Criterio de co_sgpcanada";
-    }
-    if($var==9){
-        $criterio=$_REQUEST["co_sgpsuiza"];
-        echo "Criterio de co_sgpsuiza";
-    }
-    if($var==10){
-        $criterio=$_REQUEST["co_sgpnoruega"];
-        echo "Criterio de co_sgpnoruega";
-    }
-    if($var==11){
-        $criterio=$_REQUEST["co_sgpjapon"];
-        echo "Criterio de co_sgpjapon";
-    }
-    if($var==12){
-        $criterio=$_REQUEST["co_sgpzelanda"];
-        echo "Criterio de co_sgpzelanda";
-    }
-    if($var==13){
-        $criterio=$_REQUEST["co_sgprusia"];
-        echo "Criterio de co_sgprusia";
-    }
-    if($var==14){
-        $criterio=$_REQUEST["co_sgpturquia"];
-        echo "Criterio de co_sgpturquia";
-    }
-    if($var==15){
-        $criterio=$_REQUEST["co_sgpbielorrusia"];
-        echo "Criterio de co_sgpbielorrusia";
-    }
-    if($var==16){
-        $criterio=$_REQUEST["co_sgpue"];
-        echo "Criterio de co_sgpue";
-    }
-    if($var==17){
-        $criterio=$_REQUEST["co_sgpeeuu"];
-        echo "Criterio de co_sgpeeuu";
-    }
-    if($var==18){
-        $criterio=$_REQUEST["co_sgptp"];
-        echo "Criterio de co_sgptp";
-    }
-    if($var==19){
-        $criterio=$_REQUEST["co_arampanama"];
-        echo "Criterio de co_arampanama";
-    }
-    return $criterio;
+
+    $vista->assign('representanteEmpresa',$functions->getPersonaEmpresa($declaracion_jurada->getId_empresa(),$declaracion_jurada->getId_persona()));
+    $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
+    $vista->assign('partidas',$functions->getPartidas($declaracion_jurada->getId_partidas_acuerdo()));
+    $vista->assign('direccion',$direccion);
+    $vista->assign('direccionTpl',$direccionRepresentanteTpl);
+    $vista->assign('fabrica',$fabrica);
+    $vista->assign('tipo_valor_internacional',$tipo_valor_internacional->abreviatura);
+    $vista->assign('tipoacuerdos', $tipo_acuerdos);
+    $vista->assign('paises', $pais);
+    $vista->assign('acuerdos', $acuerdos);
+    $vista->assign('preview',$conf->preview);
+    $vista->assign('documentReview',$conf->documentReview);
+    $vista->assign('reasignarDeclaracion',$conf->reasignarDeclaracion);
+    $vista->assign('ddjj', $declaracion_jurada);
+    $vista->assign('unidadmedida', $unidad_medida);
+    $vista->assign('zonas', $zonas);
+    $vista->assign('id', $id);
+    $vista->assign("facturacion",$declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_CANCELAR && $_SESSION["id_empresa"]!=0);
+    $vista->assign('estado', AdmDeclaracionJuradaFunctions::getEstado($declaracion_jurada->getId_estado_ddjj()));
+    $vista->assign('esCancelacion', $declaracion_jurada->getId_estado_ddjj() === AdmDeclaracionJurada::DDJJ_CANCELAR);
+
+    //solo para las de vigencia
+    if($declaracion_jurada && $declaracion_jurada->getId_estado_ddjj()==AdmDeclaracionJurada::DDJJ_VIGENTE) $vista->assign('criterios',$functions->getCriterios($declaracion_jurada->getId_criterios()));
+
+    return $vista->fetch("declaracionJurada/DeclaracionJuradaWrapper.tpl");
   }
 }
 

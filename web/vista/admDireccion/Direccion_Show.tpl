@@ -58,7 +58,8 @@
             url: 'index.php',
             data: 'opcion=admDireccion&tarea=get_data_direccion&id_direccion={$ds_id}',
             success: function (data) {
-                var dt=eval("("+data+")");
+                var dt=JSON.parse(data);
+
                 $('#sh_tc_{$ds_id}').html(dt[0].tipo_calle);
                 $('#sh_ntc_{$ds_id}').html(dt[0].nombre_tipo_calle);
                 

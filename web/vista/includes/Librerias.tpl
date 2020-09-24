@@ -21,6 +21,8 @@
 <link href="styles/css-personales/k-window-bienvenida.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="styles/css-personales/idangerous.swiper.css" media="screen" />
 <link rel="stylesheet" href="styles/fontawesome/css/fontawesome.css">
+<link rel="stylesheet" type="text/css" href="styles/css-personales/jquery.auto-complete.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="styles/css-personales/utilities.css" media="screen" />
 <!-- Scripts JS globales -->
 <script src="styles/js/jquery.min.js"></script>
 <script src="styles/js/kendo.all.min.js"></script>

@@ -25,6 +25,7 @@ class Municipio extends Db {
     private $id_municipio;
     private $descripcion;
     private $id_departamento;
+
     function getId_municipio() {
         return $this->id_municipio;
     }
@@ -48,7 +49,5 @@ class Municipio extends Db {
     function setId_departamento($id_departamento) {
         $this->id_departamento = $id_departamento;
     }
-
-
 }
 ?>

@@ -521,7 +521,7 @@
             success: function(data) {
                 //remover(tabStrip.select());
                 historial_asesoramiento.close();
-                cerraractualizartab('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada');
+                cerraractualizartab('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada');
                 $("#observ_asesoramiento").val('');
             }
         });
@@ -722,7 +722,7 @@
             success: function(data) {
                 //remover(tabStrip.select());
                 ventana_enviar.close();
-                cerraractualizartab('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada')
+                cerraractualizartab('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada')
             }
         });
 

@@ -37,7 +37,7 @@ class Departamento extends Db {
     public function getSigla() {
         return $this->sigla;
     }
-    
+
 }
 
 ?>

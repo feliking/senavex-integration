@@ -29,6 +29,7 @@ class RubroExportaciones extends Db {
     public function getDescripcion() {
         return $this->descripcion;
     }
+
     
 }
 

@@ -257,14 +257,12 @@ class Login extends Principal {
                             $SQLPOpciones = new SQLPerfilOpciones();
                             $POpciones->setOpcion($opcion_x[$index]);
                             $lista = $SQLPOpciones->getPerfilOpcionesByOpcion($POpciones);
-                            if($lista[0]->getHabilitado()=='1'){
+                            if($lista[0] AND $lista[0]->getHabilitado()=='1'){
                                 $str.=$lista[0]->getOpcion();
                             }
 
                         }
                         $_SESSION["opciones_persona"] = str_split($str);
-//                        $_SESSION["opciones_persona"] = str_split($perfil->getOpciones());// declaramos las opciones que tiene la persona dividiendola en un array                }
-//                        $_SESSION["opciones_persona"] = str_split($empresapersona->getOpciones_persona());// declaramos las opciones que tiene la persona dividiendola en un array                }
                 }
                 else
                 {
@@ -279,8 +277,8 @@ class Login extends Principal {
                 $vista->assign('empresa', $_SESSION["empresa"]);//declaramos en ola vista la variable empresa
                 $vista->assign('id_perfil', $_SESSION["id_perfil"]);//declaramos el perfil del usuario  
                 $vista->assign('perfil', $_SESSION["perfil"]);//declaramos el perfil del usuario  
-                $vista->assign('opciones_persona',$_SESSION["opciones_persona"]);//declaramos las opciones que tiene la persona  
-            }  
+                $vista->assign('opciones_persona',$_SESSION["opciones_persona"]);//declaramos las opciones que tiene la persona
+            }
             if($_SESSION["tipo_usuario"] =='2')//es para un usuario externo
             {
                 $persona->setId_persona($datos_usuario->getId_persona());
@@ -336,9 +334,9 @@ class Login extends Principal {
                         $perfil = $sqlPerfil->getBuscarDescripcionPorId($perfil);
                         $_SESSION["perfil"]=$perfil->getDescripcion();
                     //-----------------------------------
-//                    $_SESSION["opciones_persona"]=str_split($elementoempresa[0]->opciones_persona);
                        $opcion_x=$perfil->getOpciones();
-                        $str='';
+
+                       $str='';
                         for ($index = 0; $index < strlen($opcion_x); $index++) {
                             $POpciones = new PerfilOpciones();
                             $SQLPOpciones = new SQLPerfilOpciones();
@@ -349,8 +347,8 @@ class Login extends Principal {
                             }
 
                         }
+
                         $_SESSION["opciones_persona"] = str_split($str);
-//                    $_SESSION["opciones_persona"]=str_split($perfil->getOpciones());
                     $vista->assign('menor_cuantia', $_SESSION["menor_cuantia"]);
                     if($separador != '-IMP'){
                         $empresa = new Empresa();
@@ -412,7 +410,6 @@ class Login extends Principal {
                 $_SESSION["clave"] = md5($datos_usuario->getClave());            
                 $_SESSION["rol"] = 'root';
                 $_SESSION["opciones_persona"] = str_split($perfilrenato[0]->getOpciones());
-                //$_SESSION["opciones_persona"] = str_split('fheoq');
                 $_SESSION["id_empresa_persona"]='empresa';//esto es un caso especial solo para empresa
                 $_SESSION["ruex"]=$empresa->getRuex();
                 if($empresa->getMenor_Cuantia()=='1')
@@ -434,7 +431,7 @@ class Login extends Principal {
                 $vista->assign('id_usuario', $_SESSION["id_usuario"]);
                 $vista->assign('usuario',$_SESSION["usuario"]);
                 $vista->assign('clave', $_SESSION["clave"]);
-                $vista->assign('tipo_usuario', $_SESSION["tipo_usuario"]);   
+                $vista->assign('tipo_usuario', $_SESSION["tipo_usuario"]);
                 $vista->assign('opciones_persona',$_SESSION["opciones_persona"]);//declaramos las opciones que tiene la persona         
                 $vista->assign('estado_empresa',$_SESSION["opciones_persona"]);
                 

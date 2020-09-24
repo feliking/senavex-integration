@@ -92,8 +92,8 @@
             {if $opciones[opcion]=='k'}
             <div class="slideopcion" >
                 <a  href="" onclick="return false;"/>
-                    <img onclick="mostrarmenu();anadir('Declaraciones Juradas','admDeclaracionJurada','revisarDeclaracionJurada')" src="styles/img/ICO_Factura_g.png"  />
-                    <p class="plomaparrafo" onclick="mostrarmenu();anadir('Declaraciones Juradas','admDeclaracionJurada','listarRevisionDeclaracionJurada');">Declaraciones Juradas</p>
+                    <img onclick="mostrarmenu();anadir('Revisiones DDJJ','admDeclaracionJurada','revisarDeclaracionJurada')" src="styles/img/ICO_Factura_g.png"  />
+                    <p class="plomaparrafo" onclick="mostrarmenu();anadir('Revisiones DDJJ','admDeclaracionJurada','listarRevisionDeclaracionJurada');">Declaraciones Juradas</p>
                 </a>
             </div>
             {/if}

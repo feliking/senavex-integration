@@ -5,9 +5,9 @@ include_once(PATH_BASE . DS . 'config' . DS . 'Db.php');
 //control de acceso
 defined('_ACCESO') or die('Acceso restringido');
 
-class CriterioOrigen extends Db {
+class CriterioOrigen extends Db implements JsonSerializable {
         
-    const TABLE = 'planilla_criterio_origen';
+    const TABLE = 'criterio_origen';
 
     public static function finder($className=__CLASS__) {
         return parent::finder($className);
@@ -17,8 +17,11 @@ class CriterioOrigen extends Db {
     private $id_acuerdo;
     private $descripcion;
     private $literal;
-    private $obligatorio;
-    
+    private $parrafo;
+    private $orden;
+    private $activo;
+
+
     public function setId_criterio_origen($id_criterio_origen) {
         $this->id_criterio_origen = $id_criterio_origen;
     }
@@ -46,12 +49,35 @@ class CriterioOrigen extends Db {
     public function getLiteral() {
         return $this->literal;
     }
-    function getObligatorio() {
-        return $this->obligatorio;
+
+    public function setParrafo($parrafo) {
+        $this->parrafo = $parrafo;
+    }
+    public function getParrafo() {
+        return $this->parrafo;
+    }
+    public function setOrden($orden) {
+        $this->orden = $orden;
+    }
+    public function getOrden() {
+        return $this->orden;
+    }
+    public function setActivo($activo) {
+        $this->activo = $activo;
+    }
+    public function getActivo() {
+        return $this->activo;
     }
 
-    function setObligatorio($obligatorio) {
-        $this->obligatorio = $obligatorio;
+    public function jsonSerialize() {
+        return [
+          'id_criterio_origen' => $this->id_criterio_origen,
+          'id_acuerdo' => $this->id_acuerdo,
+          'descripcion' => $this->descripcion,
+          'literal' => $this->literal,
+          'parrafo' => $this->parrafo,
+          'orden' => $this->orden,
+        ];
     }
 }
 
