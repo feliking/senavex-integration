@@ -126,6 +126,6 @@ RewriteCond %{HTTP_USER_AGENT} ^Zeus
 RewriteRule .* - [F]
 
 #### prueba conexion viceministerio
-php_value upload_max_filesize 10M
-php_value post_max_size 20M
-php_value max_execution_time 7200
+#### php_value upload_max_filesize 10M
+#### php_value post_max_size 20M
+#### php_value max_execution_time 7200
